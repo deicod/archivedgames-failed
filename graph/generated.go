@@ -45,6 +45,7 @@ type Config struct {
 type ResolverRoot interface {
 	Mutation() MutationResolver
 	Query() QueryResolver
+	SiteSetting() SiteSettingResolver
 }
 
 type DirectiveRoot struct {
@@ -127,6 +128,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		CreateImageUploads   func(childComplexity int, gameXid string, kind image.Kind, count int) int
 		FinalizeImageUploads func(childComplexity int, gameXid string, kind image.Kind, items []*model.UploadedImageInput) int
+		SetSiteSetting       func(childComplexity int, key string, value gqltypes.RawMessage, public *bool) int
 	}
 
 	PageInfo struct {
@@ -148,6 +150,7 @@ type ComplexityRoot struct {
 		Node                  func(childComplexity int, id string) int
 		Nodes                 func(childComplexity int, ids []string) int
 		OpensearchSuggestions func(childComplexity int, q string, platform *game.Platform) int
+		PublicSiteConfig      func(childComplexity int) int
 	}
 
 	SiteSetting struct {
@@ -169,6 +172,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	CreateImageUploads(ctx context.Context, gameXid string, kind image.Kind, count int) ([]*model.PresignedPut, error)
 	FinalizeImageUploads(ctx context.Context, gameXid string, kind image.Kind, items []*model.UploadedImageInput) ([]*ent.Image, error)
+	SetSiteSetting(ctx context.Context, key string, value gqltypes.RawMessage, public *bool) (*ent.SiteSetting, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (ent.Noder, error)
@@ -177,6 +181,10 @@ type QueryResolver interface {
 	Games(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int) (*ent.GameConnection, error)
 	GetDownloadURL(ctx context.Context, fileXid string, ttlSeconds *int) (string, error)
 	OpensearchSuggestions(ctx context.Context, q string, platform *game.Platform) ([]string, error)
+	PublicSiteConfig(ctx context.Context) (gqltypes.RawMessage, error)
+}
+type SiteSettingResolver interface {
+	Value(ctx context.Context, obj *ent.SiteSetting) (gqltypes.RawMessage, error)
 }
 
 type executableSchema struct {
@@ -554,6 +562,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Mutation.FinalizeImageUploads(childComplexity, args["gameXid"].(string), args["kind"].(image.Kind), args["items"].([]*model.UploadedImageInput)), true
 
+	case "Mutation.setSiteSetting":
+		if e.complexity.Mutation.SetSiteSetting == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_setSiteSetting_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SetSiteSetting(childComplexity, args["key"].(string), args["value"].(gqltypes.RawMessage), args["public"].(*bool)), true
+
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
 			break
@@ -667,6 +687,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.OpensearchSuggestions(childComplexity, args["q"].(string), args["platform"].(*game.Platform)), true
+
+	case "Query.publicSiteConfig":
+		if e.complexity.Query.PublicSiteConfig == nil {
+			break
+		}
+
+		return e.complexity.Query.PublicSiteConfig(childComplexity), true
 
 	case "SiteSetting.id":
 		if e.complexity.SiteSetting.ID == nil {
@@ -1155,6 +1182,7 @@ scalar RawMessage
 extend type Query {
   getDownloadURL(fileXid: String!, ttlSeconds: Int = 120): String!
   opensearchSuggestions(q: String!, platform: GamePlatform): [String!]!
+  publicSiteConfig: RawMessage!
 }
 
 type PresignedPut {
@@ -1171,6 +1199,7 @@ input UploadedImageInput {
 extend type Mutation {
   createImageUploads(gameXid: String!, kind: ImageKind!, count: Int!): [PresignedPut!]!
   finalizeImageUploads(gameXid: String!, kind: ImageKind!, items: [UploadedImageInput!]!): [Image!]!
+  setSiteSetting(key: String!, value: RawMessage!, public: Boolean): SiteSetting!
 }
 `, BuiltIn: false},
 }
@@ -1519,6 +1548,80 @@ func (ec *executionContext) field_Mutation_finalizeImageUploads_argsItems(
 	}
 
 	var zeroVal []*model.UploadedImageInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_setSiteSetting_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Mutation_setSiteSetting_argsKey(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["key"] = arg0
+	arg1, err := ec.field_Mutation_setSiteSetting_argsValue(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["value"] = arg1
+	arg2, err := ec.field_Mutation_setSiteSetting_argsPublic(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["public"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_setSiteSetting_argsKey(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	if _, ok := rawArgs["key"]; !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("key"))
+	if tmp, ok := rawArgs["key"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_setSiteSetting_argsValue(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (gqltypes.RawMessage, error) {
+	if _, ok := rawArgs["value"]; !ok {
+		var zeroVal gqltypes.RawMessage
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
+	if tmp, ok := rawArgs["value"]; ok {
+		return ec.unmarshalNRawMessage2githubᚗcomᚋdeicodᚋarchivedgamesᚋinternalᚋgqltypesᚐRawMessage(ctx, tmp)
+	}
+
+	var zeroVal gqltypes.RawMessage
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_setSiteSetting_argsPublic(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*bool, error) {
+	if _, ok := rawArgs["public"]; !ok {
+		var zeroVal *bool
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("public"))
+	if tmp, ok := rawArgs["public"]; ok {
+		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+	}
+
+	var zeroVal *bool
 	return zeroVal, nil
 }
 
@@ -4345,6 +4448,71 @@ func (ec *executionContext) fieldContext_Mutation_finalizeImageUploads(ctx conte
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_setSiteSetting(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_setSiteSetting(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().SetSiteSetting(rctx, fc.Args["key"].(string), fc.Args["value"].(gqltypes.RawMessage), fc.Args["public"].(*bool))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.SiteSetting)
+	fc.Result = res
+	return ec.marshalNSiteSetting2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋentᚐSiteSetting(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_setSiteSetting(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_SiteSetting_id(ctx, field)
+			case "key":
+				return ec.fieldContext_SiteSetting_key(ctx, field)
+			case "value":
+				return ec.fieldContext_SiteSetting_value(ctx, field)
+			case "public":
+				return ec.fieldContext_SiteSetting_public(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SiteSetting", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_setSiteSetting_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *entgql.PageInfo[int]) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PageInfo_hasNextPage(ctx, field)
 	if err != nil {
@@ -4946,6 +5114,50 @@ func (ec *executionContext) fieldContext_Query_opensearchSuggestions(ctx context
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_publicSiteConfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_publicSiteConfig(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().PublicSiteConfig(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gqltypes.RawMessage)
+	fc.Result = res
+	return ec.marshalNRawMessage2githubᚗcomᚋdeicodᚋarchivedgamesᚋinternalᚋgqltypesᚐRawMessage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_publicSiteConfig(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type RawMessage does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query___type(ctx, field)
 	if err != nil {
@@ -5077,7 +5289,7 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _SiteSetting_id(ctx context.Context, field graphql.CollectedField, obj *model.SiteSetting) (ret graphql.Marshaler) {
+func (ec *executionContext) _SiteSetting_id(ctx context.Context, field graphql.CollectedField, obj *ent.SiteSetting) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SiteSetting_id(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5103,9 +5315,9 @@ func (ec *executionContext) _SiteSetting_id(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SiteSetting_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5121,7 +5333,7 @@ func (ec *executionContext) fieldContext_SiteSetting_id(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _SiteSetting_key(ctx context.Context, field graphql.CollectedField, obj *model.SiteSetting) (ret graphql.Marshaler) {
+func (ec *executionContext) _SiteSetting_key(ctx context.Context, field graphql.CollectedField, obj *ent.SiteSetting) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SiteSetting_key(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5165,7 +5377,7 @@ func (ec *executionContext) fieldContext_SiteSetting_key(_ context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _SiteSetting_value(ctx context.Context, field graphql.CollectedField, obj *model.SiteSetting) (ret graphql.Marshaler) {
+func (ec *executionContext) _SiteSetting_value(ctx context.Context, field graphql.CollectedField, obj *ent.SiteSetting) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SiteSetting_value(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5179,7 +5391,7 @@ func (ec *executionContext) _SiteSetting_value(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Value, nil
+		return ec.resolvers.SiteSetting().Value(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5197,8 +5409,8 @@ func (ec *executionContext) fieldContext_SiteSetting_value(_ context.Context, fi
 	fc = &graphql.FieldContext{
 		Object:     "SiteSetting",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type RawMessage does not have child fields")
 		},
@@ -5206,7 +5418,7 @@ func (ec *executionContext) fieldContext_SiteSetting_value(_ context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _SiteSetting_public(ctx context.Context, field graphql.CollectedField, obj *model.SiteSetting) (ret graphql.Marshaler) {
+func (ec *executionContext) _SiteSetting_public(ctx context.Context, field graphql.CollectedField, obj *ent.SiteSetting) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SiteSetting_public(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -7471,9 +7683,7 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._UserShadow(ctx, sel, obj)
-	case model.SiteSetting:
-		return ec._SiteSetting(ctx, sel, &obj)
-	case *model.SiteSetting:
+	case *ent.SiteSetting:
 		if obj == nil {
 			return graphql.Null
 		}
@@ -8162,6 +8372,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "setSiteSetting":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_setSiteSetting(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8425,6 +8642,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "publicSiteConfig":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_publicSiteConfig(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -8458,7 +8697,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 
 var siteSettingImplementors = []string{"SiteSetting", "Node"}
 
-func (ec *executionContext) _SiteSetting(ctx context.Context, sel ast.SelectionSet, obj *model.SiteSetting) graphql.Marshaler {
+func (ec *executionContext) _SiteSetting(ctx context.Context, sel ast.SelectionSet, obj *ent.SiteSetting) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, siteSettingImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -8470,19 +8709,50 @@ func (ec *executionContext) _SiteSetting(ctx context.Context, sel ast.SelectionS
 		case "id":
 			out.Values[i] = ec._SiteSetting_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "key":
 			out.Values[i] = ec._SiteSetting_key(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "value":
-			out.Values[i] = ec._SiteSetting_value(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SiteSetting_value(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "public":
 			out.Values[i] = ec._SiteSetting_public(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -9231,6 +9501,36 @@ func (ec *executionContext) marshalNPresignedPut2ᚖgithubᚗcomᚋdeicodᚋarch
 		return graphql.Null
 	}
 	return ec._PresignedPut(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNRawMessage2githubᚗcomᚋdeicodᚋarchivedgamesᚋinternalᚋgqltypesᚐRawMessage(ctx context.Context, v any) (gqltypes.RawMessage, error) {
+	var res gqltypes.RawMessage
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNRawMessage2githubᚗcomᚋdeicodᚋarchivedgamesᚋinternalᚋgqltypesᚐRawMessage(ctx context.Context, sel ast.SelectionSet, v gqltypes.RawMessage) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) marshalNSiteSetting2githubᚗcomᚋdeicodᚋarchivedgamesᚋentᚐSiteSetting(ctx context.Context, sel ast.SelectionSet, v ent.SiteSetting) graphql.Marshaler {
+	return ec._SiteSetting(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNSiteSetting2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋentᚐSiteSetting(ctx context.Context, sel ast.SelectionSet, v *ent.SiteSetting) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._SiteSetting(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v any) (string, error) {

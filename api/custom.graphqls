@@ -6,6 +6,7 @@ scalar RawMessage
 extend type Query {
   getDownloadURL(fileXid: String!, ttlSeconds: Int = 120): String!
   opensearchSuggestions(q: String!, platform: GamePlatform): [String!]!
+  publicSiteConfig: RawMessage!
 }
 
 type PresignedPut {
@@ -22,4 +23,5 @@ input UploadedImageInput {
 extend type Mutation {
   createImageUploads(gameXid: String!, kind: ImageKind!, count: Int!): [PresignedPut!]!
   finalizeImageUploads(gameXid: String!, kind: ImageKind!, items: [UploadedImageInput!]!): [Image!]!
+  setSiteSetting(key: String!, value: RawMessage!, public: Boolean): SiteSetting!
 }

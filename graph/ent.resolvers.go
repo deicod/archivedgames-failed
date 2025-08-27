@@ -6,10 +6,12 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"entgo.io/contrib/entgql"
 	"github.com/deicod/archivedgames/ent"
+	"github.com/deicod/archivedgames/internal/gqltypes"
 )
 
 // Node is the resolver for the node field.
@@ -45,7 +47,16 @@ func (r *queryResolver) Games(ctx context.Context, after *entgql.Cursor[int], fi
 	return r.Client.Game.Query().Paginate(ctx, after, first, before, last)
 }
 
+// Value is the resolver for the value field.
+func (r *siteSettingResolver) Value(ctx context.Context, obj *ent.SiteSetting) (gqltypes.RawMessage, error) {
+	panic(fmt.Errorf("not implemented: Value - value"))
+}
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+// SiteSetting returns SiteSettingResolver implementation.
+func (r *Resolver) SiteSetting() SiteSettingResolver { return &siteSettingResolver{r} }
+
 type queryResolver struct{ *Resolver }
+type siteSettingResolver struct{ *Resolver }

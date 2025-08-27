@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-
-	"github.com/deicod/archivedgames/internal/gqltypes"
 )
 
 type Mutation struct {
@@ -21,15 +19,6 @@ type PresignedPut struct {
 
 type Query struct {
 }
-
-type SiteSetting struct {
-	ID     string              `json:"id"`
-	Key    string              `json:"key"`
-	Value  gqltypes.RawMessage `json:"value,omitempty"`
-	Public bool                `json:"public"`
-}
-
-func (SiteSetting) IsNode() {}
 
 type UploadedImageInput struct {
 	Key    string `json:"key"`

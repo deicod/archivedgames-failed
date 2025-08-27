@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -15,8 +16,10 @@ import (
 	"github.com/deicod/archivedgames/ent/file"
 	"github.com/deicod/archivedgames/ent/game"
 	"github.com/deicod/archivedgames/ent/image"
+	"github.com/deicod/archivedgames/ent/sitesetting"
 	"github.com/deicod/archivedgames/graph/model"
 	"github.com/deicod/archivedgames/internal/auth"
+	"github.com/deicod/archivedgames/internal/gqltypes"
 	reqctx "github.com/deicod/archivedgames/internal/request"
 	"github.com/deicod/archivedgames/internal/s3client"
 )
@@ -77,6 +80,35 @@ func (r *mutationResolver) FinalizeImageUploads(ctx context.Context, gameXid str
 	return created, nil
 }
 
+// SetSiteSetting is the resolver for the setSiteSetting field.
+func (r *mutationResolver) SetSiteSetting(ctx context.Context, key string, value gqltypes.RawMessage, public *bool) (*ent.SiteSetting, error) {
+	// Admin guard
+	isAdmin := false
+	for _, ro := range auth.Roles(ctx) {
+		if ro == "admin" {
+			isAdmin = true
+			break
+		}
+	}
+	if !isAdmin {
+		return nil, errors.New("forbidden")
+	}
+	// Try update
+	upd := r.Client.SiteSetting.Update().Where(sitesetting.KeyEQ(key)).SetValue(json.RawMessage(value))
+	if public != nil {
+		upd = upd.SetPublic(*public)
+	}
+	if err := upd.Exec(ctx); err == nil {
+		return r.Client.SiteSetting.Query().Where(sitesetting.KeyEQ(key)).Only(ctx)
+	}
+	// Create new
+	create := r.Client.SiteSetting.Create().SetKey(key).SetValue(json.RawMessage(value))
+	if public != nil {
+		create = create.SetPublic(*public)
+	}
+	return create.Save(ctx)
+}
+
 // GetDownloadURL is the resolver for the getDownloadURL field.
 func (r *queryResolver) GetDownloadURL(ctx context.Context, fileXid string, ttlSeconds *int) (string, error) {
 	f, err := r.Client.File.Query().Where(file.XidEQ(fileXid)).Only(ctx)
@@ -123,6 +155,27 @@ func (r *queryResolver) OpensearchSuggestions(ctx context.Context, q string, pla
 		return nil, err
 	}
 	return titles, nil
+}
+
+// PublicSiteConfig is the resolver for the publicSiteConfig field.
+func (r *queryResolver) PublicSiteConfig(ctx context.Context) (gqltypes.RawMessage, error) {
+	items, err := r.Client.SiteSetting.Query().Where(sitesetting.Public(true)).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	obj := make(map[string]any)
+	for _, it := range items {
+		var v any
+		if len(it.Value) > 0 {
+			_ = json.Unmarshal(it.Value, &v)
+			obj[it.Key] = v
+		}
+	}
+	b, err := json.Marshal(obj)
+	if err != nil {
+		return nil, err
+	}
+	return gqltypes.RawMessage(b), nil
 }
 
 // Mutation returns MutationResolver implementation.

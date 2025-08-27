@@ -31,6 +31,9 @@ models:
   Image:
     model:
       - github.com/deicod/archivedgames/ent.Image
+  SiteSetting:
+    model:
+      - github.com/deicod/archivedgames/ent.SiteSetting
   GamePlatform:
     model:
       - github.com/deicod/archivedgames/ent/game.Platform
