@@ -46,6 +46,7 @@ type FileMutation struct {
 	_path           *string
 	original_name   *string
 	normalized_name *string
+	set_key         *string
 	checksum        *string
 	size_bytes      *int64
 	addsize_bytes   *int64
@@ -275,6 +276,55 @@ func (m *FileMutation) OldNormalizedName(ctx context.Context) (v string, err err
 // ResetNormalizedName resets all changes to the "normalized_name" field.
 func (m *FileMutation) ResetNormalizedName() {
 	m.normalized_name = nil
+}
+
+// SetSetKey sets the "set_key" field.
+func (m *FileMutation) SetSetKey(s string) {
+	m.set_key = &s
+}
+
+// SetKey returns the value of the "set_key" field in the mutation.
+func (m *FileMutation) SetKey() (r string, exists bool) {
+	v := m.set_key
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSetKey returns the old "set_key" field's value of the File entity.
+// If the File object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileMutation) OldSetKey(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSetKey is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSetKey requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSetKey: %w", err)
+	}
+	return oldValue.SetKey, nil
+}
+
+// ClearSetKey clears the value of the "set_key" field.
+func (m *FileMutation) ClearSetKey() {
+	m.set_key = nil
+	m.clearedFields[file.FieldSetKey] = struct{}{}
+}
+
+// SetKeyCleared returns if the "set_key" field was cleared in this mutation.
+func (m *FileMutation) SetKeyCleared() bool {
+	_, ok := m.clearedFields[file.FieldSetKey]
+	return ok
+}
+
+// ResetSetKey resets all changes to the "set_key" field.
+func (m *FileMutation) ResetSetKey() {
+	m.set_key = nil
+	delete(m.clearedFields, file.FieldSetKey)
 }
 
 // SetChecksum sets the "checksum" field.
@@ -767,7 +817,7 @@ func (m *FileMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FileMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m._path != nil {
 		fields = append(fields, file.FieldPath)
 	}
@@ -776,6 +826,9 @@ func (m *FileMutation) Fields() []string {
 	}
 	if m.normalized_name != nil {
 		fields = append(fields, file.FieldNormalizedName)
+	}
+	if m.set_key != nil {
+		fields = append(fields, file.FieldSetKey)
 	}
 	if m.checksum != nil {
 		fields = append(fields, file.FieldChecksum)
@@ -818,6 +871,8 @@ func (m *FileMutation) Field(name string) (ent.Value, bool) {
 		return m.OriginalName()
 	case file.FieldNormalizedName:
 		return m.NormalizedName()
+	case file.FieldSetKey:
+		return m.SetKey()
 	case file.FieldChecksum:
 		return m.Checksum()
 	case file.FieldSizeBytes:
@@ -851,6 +906,8 @@ func (m *FileMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldOriginalName(ctx)
 	case file.FieldNormalizedName:
 		return m.OldNormalizedName(ctx)
+	case file.FieldSetKey:
+		return m.OldSetKey(ctx)
 	case file.FieldChecksum:
 		return m.OldChecksum(ctx)
 	case file.FieldSizeBytes:
@@ -898,6 +955,13 @@ func (m *FileMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetNormalizedName(v)
+		return nil
+	case file.FieldSetKey:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSetKey(v)
 		return nil
 	case file.FieldChecksum:
 		v, ok := value.(string)
@@ -1019,6 +1083,9 @@ func (m *FileMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *FileMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(file.FieldSetKey) {
+		fields = append(fields, file.FieldSetKey)
+	}
 	if m.FieldCleared(file.FieldMimeType) {
 		fields = append(fields, file.FieldMimeType)
 	}
@@ -1045,6 +1112,9 @@ func (m *FileMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *FileMutation) ClearField(name string) error {
 	switch name {
+	case file.FieldSetKey:
+		m.ClearSetKey()
+		return nil
 	case file.FieldMimeType:
 		m.ClearMimeType()
 		return nil
@@ -1073,6 +1143,9 @@ func (m *FileMutation) ResetField(name string) error {
 		return nil
 	case file.FieldNormalizedName:
 		m.ResetNormalizedName()
+		return nil
+	case file.FieldSetKey:
+		m.ResetSetKey()
 		return nil
 	case file.FieldChecksum:
 		m.ResetChecksum()

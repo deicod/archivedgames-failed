@@ -78,6 +78,11 @@ func NormalizedName(v string) predicate.File {
 	return predicate.File(sql.FieldEQ(FieldNormalizedName, v))
 }
 
+// SetKey applies equality check predicate on the "set_key" field. It's identical to SetKeyEQ.
+func SetKey(v string) predicate.File {
+	return predicate.File(sql.FieldEQ(FieldSetKey, v))
+}
+
 // Checksum applies equality check predicate on the "checksum" field. It's identical to ChecksumEQ.
 func Checksum(v string) predicate.File {
 	return predicate.File(sql.FieldEQ(FieldChecksum, v))
@@ -316,6 +321,81 @@ func NormalizedNameEqualFold(v string) predicate.File {
 // NormalizedNameContainsFold applies the ContainsFold predicate on the "normalized_name" field.
 func NormalizedNameContainsFold(v string) predicate.File {
 	return predicate.File(sql.FieldContainsFold(FieldNormalizedName, v))
+}
+
+// SetKeyEQ applies the EQ predicate on the "set_key" field.
+func SetKeyEQ(v string) predicate.File {
+	return predicate.File(sql.FieldEQ(FieldSetKey, v))
+}
+
+// SetKeyNEQ applies the NEQ predicate on the "set_key" field.
+func SetKeyNEQ(v string) predicate.File {
+	return predicate.File(sql.FieldNEQ(FieldSetKey, v))
+}
+
+// SetKeyIn applies the In predicate on the "set_key" field.
+func SetKeyIn(vs ...string) predicate.File {
+	return predicate.File(sql.FieldIn(FieldSetKey, vs...))
+}
+
+// SetKeyNotIn applies the NotIn predicate on the "set_key" field.
+func SetKeyNotIn(vs ...string) predicate.File {
+	return predicate.File(sql.FieldNotIn(FieldSetKey, vs...))
+}
+
+// SetKeyGT applies the GT predicate on the "set_key" field.
+func SetKeyGT(v string) predicate.File {
+	return predicate.File(sql.FieldGT(FieldSetKey, v))
+}
+
+// SetKeyGTE applies the GTE predicate on the "set_key" field.
+func SetKeyGTE(v string) predicate.File {
+	return predicate.File(sql.FieldGTE(FieldSetKey, v))
+}
+
+// SetKeyLT applies the LT predicate on the "set_key" field.
+func SetKeyLT(v string) predicate.File {
+	return predicate.File(sql.FieldLT(FieldSetKey, v))
+}
+
+// SetKeyLTE applies the LTE predicate on the "set_key" field.
+func SetKeyLTE(v string) predicate.File {
+	return predicate.File(sql.FieldLTE(FieldSetKey, v))
+}
+
+// SetKeyContains applies the Contains predicate on the "set_key" field.
+func SetKeyContains(v string) predicate.File {
+	return predicate.File(sql.FieldContains(FieldSetKey, v))
+}
+
+// SetKeyHasPrefix applies the HasPrefix predicate on the "set_key" field.
+func SetKeyHasPrefix(v string) predicate.File {
+	return predicate.File(sql.FieldHasPrefix(FieldSetKey, v))
+}
+
+// SetKeyHasSuffix applies the HasSuffix predicate on the "set_key" field.
+func SetKeyHasSuffix(v string) predicate.File {
+	return predicate.File(sql.FieldHasSuffix(FieldSetKey, v))
+}
+
+// SetKeyIsNil applies the IsNil predicate on the "set_key" field.
+func SetKeyIsNil() predicate.File {
+	return predicate.File(sql.FieldIsNull(FieldSetKey))
+}
+
+// SetKeyNotNil applies the NotNil predicate on the "set_key" field.
+func SetKeyNotNil() predicate.File {
+	return predicate.File(sql.FieldNotNull(FieldSetKey))
+}
+
+// SetKeyEqualFold applies the EqualFold predicate on the "set_key" field.
+func SetKeyEqualFold(v string) predicate.File {
+	return predicate.File(sql.FieldEqualFold(FieldSetKey, v))
+}
+
+// SetKeyContainsFold applies the ContainsFold predicate on the "set_key" field.
+func SetKeyContainsFold(v string) predicate.File {
+	return predicate.File(sql.FieldContainsFold(FieldSetKey, v))
 }
 
 // ChecksumEQ applies the EQ predicate on the "checksum" field.

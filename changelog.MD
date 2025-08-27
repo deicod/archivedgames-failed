@@ -25,6 +25,8 @@ Entry template:
   - SEO & Prerender (H2): add bot-targeted prerender for `/`, `/platform/*`, `/game/*` with OG/Twitter meta (uses cover image when available); keep SPA for regular users.
   - Admin reports polish (I2): add subjectType filter and offset pagination; "Admin" link in header when authenticated.
   - Ingestion grouping metadata: parse disk/side tokens from filenames and persist `disk_number`/`side` on File records
+  - SEO: enrich game meta with publisher/year; add `/static/og/{platform}.png` solid placeholders when no cover
+  - Ingestion: persist `set_key` on File to group multi-disk/side sets per normalized title and platform
   - Frontend: SupportButton reads donations from `publicSiteConfig` (env fallback); sync OIDC access_token to localStorage for API
   - Web upgrades: Relay 20 + React 19.1; add schema merge step for relay-compiler; remove legacy JS relay config
 

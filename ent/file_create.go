@@ -38,6 +38,20 @@ func (fc *FileCreate) SetNormalizedName(s string) *FileCreate {
 	return fc
 }
 
+// SetSetKey sets the "set_key" field.
+func (fc *FileCreate) SetSetKey(s string) *FileCreate {
+	fc.mutation.SetSetKey(s)
+	return fc
+}
+
+// SetNillableSetKey sets the "set_key" field if the given value is not nil.
+func (fc *FileCreate) SetNillableSetKey(s *string) *FileCreate {
+	if s != nil {
+		fc.SetSetKey(*s)
+	}
+	return fc
+}
+
 // SetChecksum sets the "checksum" field.
 func (fc *FileCreate) SetChecksum(s string) *FileCreate {
 	fc.mutation.SetChecksum(s)
@@ -289,6 +303,10 @@ func (fc *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 	if value, ok := fc.mutation.NormalizedName(); ok {
 		_spec.SetField(file.FieldNormalizedName, field.TypeString, value)
 		_node.NormalizedName = value
+	}
+	if value, ok := fc.mutation.SetKey(); ok {
+		_spec.SetField(file.FieldSetKey, field.TypeString, value)
+		_node.SetKey = value
 	}
 	if value, ok := fc.mutation.Checksum(); ok {
 		_spec.SetField(file.FieldChecksum, field.TypeString, value)

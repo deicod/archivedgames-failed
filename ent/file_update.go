@@ -70,6 +70,26 @@ func (fu *FileUpdate) SetNillableNormalizedName(s *string) *FileUpdate {
 	return fu
 }
 
+// SetSetKey sets the "set_key" field.
+func (fu *FileUpdate) SetSetKey(s string) *FileUpdate {
+	fu.mutation.SetSetKey(s)
+	return fu
+}
+
+// SetNillableSetKey sets the "set_key" field if the given value is not nil.
+func (fu *FileUpdate) SetNillableSetKey(s *string) *FileUpdate {
+	if s != nil {
+		fu.SetSetKey(*s)
+	}
+	return fu
+}
+
+// ClearSetKey clears the value of the "set_key" field.
+func (fu *FileUpdate) ClearSetKey() *FileUpdate {
+	fu.mutation.ClearSetKey()
+	return fu
+}
+
 // SetChecksum sets the "checksum" field.
 func (fu *FileUpdate) SetChecksum(s string) *FileUpdate {
 	fu.mutation.SetChecksum(s)
@@ -312,6 +332,12 @@ func (fu *FileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fu.mutation.NormalizedName(); ok {
 		_spec.SetField(file.FieldNormalizedName, field.TypeString, value)
 	}
+	if value, ok := fu.mutation.SetKey(); ok {
+		_spec.SetField(file.FieldSetKey, field.TypeString, value)
+	}
+	if fu.mutation.SetKeyCleared() {
+		_spec.ClearField(file.FieldSetKey, field.TypeString)
+	}
 	if value, ok := fu.mutation.Checksum(); ok {
 		_spec.SetField(file.FieldChecksum, field.TypeString, value)
 	}
@@ -445,6 +471,26 @@ func (fuo *FileUpdateOne) SetNillableNormalizedName(s *string) *FileUpdateOne {
 	if s != nil {
 		fuo.SetNormalizedName(*s)
 	}
+	return fuo
+}
+
+// SetSetKey sets the "set_key" field.
+func (fuo *FileUpdateOne) SetSetKey(s string) *FileUpdateOne {
+	fuo.mutation.SetSetKey(s)
+	return fuo
+}
+
+// SetNillableSetKey sets the "set_key" field if the given value is not nil.
+func (fuo *FileUpdateOne) SetNillableSetKey(s *string) *FileUpdateOne {
+	if s != nil {
+		fuo.SetSetKey(*s)
+	}
+	return fuo
+}
+
+// ClearSetKey clears the value of the "set_key" field.
+func (fuo *FileUpdateOne) ClearSetKey() *FileUpdateOne {
+	fuo.mutation.ClearSetKey()
 	return fuo
 }
 
@@ -719,6 +765,12 @@ func (fuo *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) 
 	}
 	if value, ok := fuo.mutation.NormalizedName(); ok {
 		_spec.SetField(file.FieldNormalizedName, field.TypeString, value)
+	}
+	if value, ok := fuo.mutation.SetKey(); ok {
+		_spec.SetField(file.FieldSetKey, field.TypeString, value)
+	}
+	if fuo.mutation.SetKeyCleared() {
+		_spec.ClearField(file.FieldSetKey, field.TypeString)
 	}
 	if value, ok := fuo.mutation.Checksum(); ok {
 		_spec.SetField(file.FieldChecksum, field.TypeString, value)

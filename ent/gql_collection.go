@@ -65,6 +65,11 @@ func (f *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 				selectedFields = append(selectedFields, file.FieldNormalizedName)
 				fieldSeen[file.FieldNormalizedName] = struct{}{}
 			}
+		case "setKey":
+			if _, ok := fieldSeen[file.FieldSetKey]; !ok {
+				selectedFields = append(selectedFields, file.FieldSetKey)
+				fieldSeen[file.FieldSetKey] = struct{}{}
+			}
 		case "checksum":
 			if _, ok := fieldSeen[file.FieldChecksum]; !ok {
 				selectedFields = append(selectedFields, file.FieldChecksum)

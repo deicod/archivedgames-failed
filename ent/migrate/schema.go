@@ -14,6 +14,7 @@ var (
 		{Name: "path", Type: field.TypeString},
 		{Name: "original_name", Type: field.TypeString},
 		{Name: "normalized_name", Type: field.TypeString},
+		{Name: "set_key", Type: field.TypeString, Nullable: true},
 		{Name: "checksum", Type: field.TypeString},
 		{Name: "size_bytes", Type: field.TypeInt64},
 		{Name: "mime_type", Type: field.TypeString, Nullable: true},
@@ -33,7 +34,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "files_games_files",
-				Columns:    []*schema.Column{FilesColumns[13]},
+				Columns:    []*schema.Column{FilesColumns[14]},
 				RefColumns: []*schema.Column{GamesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

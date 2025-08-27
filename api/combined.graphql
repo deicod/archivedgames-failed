@@ -10,6 +10,7 @@ type File implements Node {
   path: String!
   originalName: String!
   normalizedName: String!
+  setKey: String
   checksum: String!
   sizeBytes: Int!
   mimeType: String
@@ -17,6 +18,8 @@ type File implements Node {
   source: String!
   quarantine: Boolean!
   needsReview: Boolean!
+  diskNumber: Int
+  side: String
   game: Game!
 }
 """
@@ -119,6 +122,24 @@ input FileWhereInput {
   normalizedNameEqualFold: String
   normalizedNameContainsFold: String
   """
+  set_key field predicates
+  """
+  setKey: String
+  setKeyNEQ: String
+  setKeyIn: [String!]
+  setKeyNotIn: [String!]
+  setKeyGT: String
+  setKeyGTE: String
+  setKeyLT: String
+  setKeyLTE: String
+  setKeyContains: String
+  setKeyHasPrefix: String
+  setKeyHasSuffix: String
+  setKeyIsNil: Boolean
+  setKeyNotNil: Boolean
+  setKeyEqualFold: String
+  setKeyContainsFold: String
+  """
   checksum field predicates
   """
   checksum: String
@@ -207,6 +228,37 @@ input FileWhereInput {
   """
   needsReview: Boolean
   needsReviewNEQ: Boolean
+  """
+  disk_number field predicates
+  """
+  diskNumber: Int
+  diskNumberNEQ: Int
+  diskNumberIn: [Int!]
+  diskNumberNotIn: [Int!]
+  diskNumberGT: Int
+  diskNumberGTE: Int
+  diskNumberLT: Int
+  diskNumberLTE: Int
+  diskNumberIsNil: Boolean
+  diskNumberNotNil: Boolean
+  """
+  side field predicates
+  """
+  side: String
+  sideNEQ: String
+  sideIn: [String!]
+  sideNotIn: [String!]
+  sideGT: String
+  sideGTE: String
+  sideLT: String
+  sideLTE: String
+  sideContains: String
+  sideHasPrefix: String
+  sideHasSuffix: String
+  sideIsNil: Boolean
+  sideNotNil: Boolean
+  sideEqualFold: String
+  sideContainsFold: String
   """
   game edge predicates
   """

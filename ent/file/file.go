@@ -18,6 +18,8 @@ const (
 	FieldOriginalName = "original_name"
 	// FieldNormalizedName holds the string denoting the normalized_name field in the database.
 	FieldNormalizedName = "normalized_name"
+	// FieldSetKey holds the string denoting the set_key field in the database.
+	FieldSetKey = "set_key"
 	// FieldChecksum holds the string denoting the checksum field in the database.
 	FieldChecksum = "checksum"
 	// FieldSizeBytes holds the string denoting the size_bytes field in the database.
@@ -55,6 +57,7 @@ var Columns = []string{
 	FieldPath,
 	FieldOriginalName,
 	FieldNormalizedName,
+	FieldSetKey,
 	FieldChecksum,
 	FieldSizeBytes,
 	FieldMimeType,
@@ -117,6 +120,11 @@ func ByOriginalName(opts ...sql.OrderTermOption) OrderOption {
 // ByNormalizedName orders the results by the normalized_name field.
 func ByNormalizedName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldNormalizedName, opts...).ToFunc()
+}
+
+// BySetKey orders the results by the set_key field.
+func BySetKey(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSetKey, opts...).ToFunc()
 }
 
 // ByChecksum orders the results by the checksum field.

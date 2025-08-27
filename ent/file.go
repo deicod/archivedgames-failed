@@ -23,6 +23,8 @@ type File struct {
 	OriginalName string `json:"original_name,omitempty"`
 	// NormalizedName holds the value of the "normalized_name" field.
 	NormalizedName string `json:"normalized_name,omitempty"`
+	// SetKey holds the value of the "set_key" field.
+	SetKey string `json:"set_key,omitempty"`
 	// Checksum holds the value of the "checksum" field.
 	Checksum string `json:"checksum,omitempty"`
 	// SizeBytes holds the value of the "size_bytes" field.
@@ -79,7 +81,7 @@ func (*File) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case file.FieldSizeBytes, file.FieldDiskNumber:
 			values[i] = new(sql.NullInt64)
-		case file.FieldID, file.FieldPath, file.FieldOriginalName, file.FieldNormalizedName, file.FieldChecksum, file.FieldMimeType, file.FieldFormat, file.FieldSource, file.FieldSide:
+		case file.FieldID, file.FieldPath, file.FieldOriginalName, file.FieldNormalizedName, file.FieldSetKey, file.FieldChecksum, file.FieldMimeType, file.FieldFormat, file.FieldSource, file.FieldSide:
 			values[i] = new(sql.NullString)
 		case file.ForeignKeys[0]: // game_files
 			values[i] = new(sql.NullString)
@@ -121,6 +123,12 @@ func (f *File) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field normalized_name", values[i])
 			} else if value.Valid {
 				f.NormalizedName = value.String
+			}
+		case file.FieldSetKey:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field set_key", values[i])
+			} else if value.Valid {
+				f.SetKey = value.String
 			}
 		case file.FieldChecksum:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -233,6 +241,9 @@ func (f *File) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("normalized_name=")
 	builder.WriteString(f.NormalizedName)
+	builder.WriteString(", ")
+	builder.WriteString("set_key=")
+	builder.WriteString(f.SetKey)
 	builder.WriteString(", ")
 	builder.WriteString("checksum=")
 	builder.WriteString(f.Checksum)

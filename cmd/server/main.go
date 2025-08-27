@@ -226,10 +226,11 @@ func prerenderPlatform(w http.ResponseWriter, r *http.Request) {
 	plat := strings.TrimPrefix(r.URL.Path, "/platform/")
 	title := fmt.Sprintf("%s — ArchivedGames", strings.ToUpper(plat))
 	meta := map[string]string{
-		"description": "Browse classic games by platform",
-		"og:title":    title,
-		"og:type":     "website",
-		"og:url":      b + r.URL.Path,
+		"description":  "Browse classic games by platform",
+		"og:title":     title,
+		"og:type":      "website",
+		"og:url":       b + r.URL.Path,
+		"og:site_name": "ArchivedGames",
 	}
 	writeHTML(w, title, meta, fmt.Sprintf("<h1>%s</h1>", htmlEscape(strings.ToUpper(plat))))
 }
@@ -252,15 +253,33 @@ func prerenderGame(w http.ResponseWriter, r *http.Request, c *ent.Client) {
 			}
 		}
 	}
-	meta := map[string]string{
-		"description": "Download and view screenshots",
-		"og:title":    title,
-		"og:type":     "article",
-		"og:url":      b + r.URL.Path,
+	// Enrich description with publisher/year
+	desc := "Download and view screenshots"
+	if g.Publisher != "" || g.Year != nil {
+		parts := []string{}
+		if g.Publisher != "" {
+			parts = append(parts, g.Publisher)
+		}
+		if g.Year != nil {
+			parts = append(parts, fmt.Sprintf("%d", *g.Year))
+		}
+		desc = fmt.Sprintf("%s — %s", desc, strings.Join(parts, ", "))
 	}
-	if ogImg != "" {
-		meta["og:image"] = ogImg
-		meta["twitter:card"] = "summary_large_image"
+	// Fallback og:image if no cover
+	if ogImg == "" {
+		plat := strings.ToLower(string(g.Platform))
+		ogImg = b + "/static/og/" + plat + ".png"
+	}
+	meta := map[string]string{
+		"description":         desc,
+		"og:title":            title,
+		"og:type":             "article",
+		"og:url":              b + r.URL.Path,
+		"og:site_name":        "ArchivedGames",
+		"og:image":            ogImg,
+		"twitter:title":       title,
+		"twitter:description": desc,
+		"twitter:card":        "summary_large_image",
 	}
 	writeHTML(w, title, meta, fmt.Sprintf("<h1>%s</h1>", htmlEscape(g.Title)))
 }

@@ -79,6 +79,23 @@ type FileWhereInput struct {
 	NormalizedNameEqualFold    *string  `json:"normalizedNameEqualFold,omitempty"`
 	NormalizedNameContainsFold *string  `json:"normalizedNameContainsFold,omitempty"`
 
+	// "set_key" field predicates.
+	SetKey             *string  `json:"setKey,omitempty"`
+	SetKeyNEQ          *string  `json:"setKeyNEQ,omitempty"`
+	SetKeyIn           []string `json:"setKeyIn,omitempty"`
+	SetKeyNotIn        []string `json:"setKeyNotIn,omitempty"`
+	SetKeyGT           *string  `json:"setKeyGT,omitempty"`
+	SetKeyGTE          *string  `json:"setKeyGTE,omitempty"`
+	SetKeyLT           *string  `json:"setKeyLT,omitempty"`
+	SetKeyLTE          *string  `json:"setKeyLTE,omitempty"`
+	SetKeyContains     *string  `json:"setKeyContains,omitempty"`
+	SetKeyHasPrefix    *string  `json:"setKeyHasPrefix,omitempty"`
+	SetKeyHasSuffix    *string  `json:"setKeyHasSuffix,omitempty"`
+	SetKeyIsNil        bool     `json:"setKeyIsNil,omitempty"`
+	SetKeyNotNil       bool     `json:"setKeyNotNil,omitempty"`
+	SetKeyEqualFold    *string  `json:"setKeyEqualFold,omitempty"`
+	SetKeyContainsFold *string  `json:"setKeyContainsFold,omitempty"`
+
 	// "checksum" field predicates.
 	Checksum             *string  `json:"checksum,omitempty"`
 	ChecksumNEQ          *string  `json:"checksumNEQ,omitempty"`
@@ -412,6 +429,51 @@ func (i *FileWhereInput) P() (predicate.File, error) {
 	}
 	if i.NormalizedNameContainsFold != nil {
 		predicates = append(predicates, file.NormalizedNameContainsFold(*i.NormalizedNameContainsFold))
+	}
+	if i.SetKey != nil {
+		predicates = append(predicates, file.SetKeyEQ(*i.SetKey))
+	}
+	if i.SetKeyNEQ != nil {
+		predicates = append(predicates, file.SetKeyNEQ(*i.SetKeyNEQ))
+	}
+	if len(i.SetKeyIn) > 0 {
+		predicates = append(predicates, file.SetKeyIn(i.SetKeyIn...))
+	}
+	if len(i.SetKeyNotIn) > 0 {
+		predicates = append(predicates, file.SetKeyNotIn(i.SetKeyNotIn...))
+	}
+	if i.SetKeyGT != nil {
+		predicates = append(predicates, file.SetKeyGT(*i.SetKeyGT))
+	}
+	if i.SetKeyGTE != nil {
+		predicates = append(predicates, file.SetKeyGTE(*i.SetKeyGTE))
+	}
+	if i.SetKeyLT != nil {
+		predicates = append(predicates, file.SetKeyLT(*i.SetKeyLT))
+	}
+	if i.SetKeyLTE != nil {
+		predicates = append(predicates, file.SetKeyLTE(*i.SetKeyLTE))
+	}
+	if i.SetKeyContains != nil {
+		predicates = append(predicates, file.SetKeyContains(*i.SetKeyContains))
+	}
+	if i.SetKeyHasPrefix != nil {
+		predicates = append(predicates, file.SetKeyHasPrefix(*i.SetKeyHasPrefix))
+	}
+	if i.SetKeyHasSuffix != nil {
+		predicates = append(predicates, file.SetKeyHasSuffix(*i.SetKeyHasSuffix))
+	}
+	if i.SetKeyIsNil {
+		predicates = append(predicates, file.SetKeyIsNil())
+	}
+	if i.SetKeyNotNil {
+		predicates = append(predicates, file.SetKeyNotNil())
+	}
+	if i.SetKeyEqualFold != nil {
+		predicates = append(predicates, file.SetKeyEqualFold(*i.SetKeyEqualFold))
+	}
+	if i.SetKeyContainsFold != nil {
+		predicates = append(predicates, file.SetKeyContainsFold(*i.SetKeyContainsFold))
 	}
 	if i.Checksum != nil {
 		predicates = append(predicates, file.ChecksumEQ(*i.Checksum))

@@ -10,6 +10,7 @@ type File implements Node {
   path: String!
   originalName: String!
   normalizedName: String!
+  setKey: String
   checksum: String!
   sizeBytes: Int!
   mimeType: String
@@ -120,6 +121,24 @@ input FileWhereInput {
   normalizedNameHasSuffix: String
   normalizedNameEqualFold: String
   normalizedNameContainsFold: String
+  """
+  set_key field predicates
+  """
+  setKey: String
+  setKeyNEQ: String
+  setKeyIn: [String!]
+  setKeyNotIn: [String!]
+  setKeyGT: String
+  setKeyGTE: String
+  setKeyLT: String
+  setKeyLTE: String
+  setKeyContains: String
+  setKeyHasPrefix: String
+  setKeyHasSuffix: String
+  setKeyIsNil: Boolean
+  setKeyNotNil: Boolean
+  setKeyEqualFold: String
+  setKeyContainsFold: String
   """
   checksum field predicates
   """

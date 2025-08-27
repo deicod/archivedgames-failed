@@ -142,6 +142,8 @@ func Scan(ctx context.Context, client *ent.Client, root string, opts *Options) e
 			title = strings.TrimSuffix(fname, filepath.Ext(fname))
 		}
 		slug := slugify(platDir, title)
+		// Group key used to tie multi-disk/side files for the same game title
+		groupKey := fmt.Sprintf("%s:%s", platDir, slug)
 
 		// Find or create game by slug.
 		g, err := client.Game.Query().Where(game.SlugEQ(slug)).Only(ctx)
@@ -194,13 +196,14 @@ func Scan(ctx context.Context, client *ent.Client, root string, opts *Options) e
 			needsReview = true
 		}
 		if opts.DryRun {
-			fmt.Printf("[DRY] add file: %s size=%d fmt=%s game=%s\n", rel, size, fmtStr, g.Slug)
+			fmt.Printf("[DRY] add file: %s size=%d fmt=%s game=%s set=%s\n", rel, size, fmtStr, g.Slug, groupKey)
 			return nil
 		}
 		_, err = client.File.Create().
 			SetOriginalName(fname).
 			SetNormalizedName(title).
 			SetPath(filepath.ToSlash(rel)).
+			SetSetKey(groupKey).
 			SetChecksum(checksum).
 			SetSizeBytes(size).
 			SetFormat(fmtStr).
