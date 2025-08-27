@@ -64,3 +64,9 @@ models:
   PageInfo:
     model:
       - github.com/deicod/archivedgames/ent.PageInfo
+  ReportConnection:
+    model:
+      - github.com/deicod/archivedgames/ent.ReportConnection
+  ReportEdge:
+    model:
+      - github.com/deicod/archivedgames/ent.ReportEdge

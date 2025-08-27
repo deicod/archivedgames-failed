@@ -153,6 +153,7 @@ type ComplexityRoot struct {
 		OpensearchSuggestions func(childComplexity int, q string, platform *game.Platform) int
 		PublicSiteConfig      func(childComplexity int) int
 		Reports               func(childComplexity int) int
+		ReportsOpen           func(childComplexity int, first *int) int
 	}
 
 	Report struct {
@@ -200,6 +201,7 @@ type QueryResolver interface {
 	GetDownloadURL(ctx context.Context, fileID string, ttlSeconds *int) (string, error)
 	OpensearchSuggestions(ctx context.Context, q string, platform *game.Platform) ([]string, error)
 	PublicSiteConfig(ctx context.Context) (gqltypes.RawMessage, error)
+	ReportsOpen(ctx context.Context, first *int) ([]*ent.Report, error)
 }
 type SiteSettingResolver interface {
 	Value(ctx context.Context, obj *ent.SiteSetting) (gqltypes.RawMessage, error)
@@ -722,6 +724,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Reports(childComplexity), true
+
+	case "Query.reportsOpen":
+		if e.complexity.Query.ReportsOpen == nil {
+			break
+		}
+
+		args, err := ec.field_Query_reportsOpen_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ReportsOpen(childComplexity, args["first"].(*int)), true
 
 	case "Report.id":
 		if e.complexity.Report.ID == nil {
@@ -1891,6 +1905,7 @@ extend type Query {
   getDownloadURL(fileId: String!, ttlSeconds: Int = 120): String!
   opensearchSuggestions(q: String!, platform: GamePlatform): [String!]!
   publicSiteConfig: RawMessage!
+  reportsOpen(first: Int = 50): [Report!]!
 }
 
 type PresignedPut {
@@ -2952,6 +2967,34 @@ func (ec *executionContext) field_Query_opensearchSuggestions_argsPlatform(
 	}
 
 	var zeroVal *game.Platform
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_reportsOpen_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_reportsOpen_argsFirst(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["first"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_reportsOpen_argsFirst(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int, error) {
+	if _, ok := rawArgs["first"]; !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+	if tmp, ok := rawArgs["first"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
 	return zeroVal, nil
 }
 
@@ -6172,6 +6215,77 @@ func (ec *executionContext) fieldContext_Query_publicSiteConfig(_ context.Contex
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type RawMessage does not have child fields")
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_reportsOpen(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_reportsOpen(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ReportsOpen(rctx, fc.Args["first"].(*int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.Report)
+	fc.Result = res
+	return ec.marshalNReport2ᚕᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋentᚐReportᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_reportsOpen(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Report_id(ctx, field)
+			case "subjectType":
+				return ec.fieldContext_Report_subjectType(ctx, field)
+			case "subjectID":
+				return ec.fieldContext_Report_subjectID(ctx, field)
+			case "reporterID":
+				return ec.fieldContext_Report_reporterID(ctx, field)
+			case "reason":
+				return ec.fieldContext_Report_reason(ctx, field)
+			case "note":
+				return ec.fieldContext_Report_note(ctx, field)
+			case "status":
+				return ec.fieldContext_Report_status(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Report", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_reportsOpen_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -13119,6 +13233,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_publicSiteConfig(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "reportsOpen":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_reportsOpen(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

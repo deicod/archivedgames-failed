@@ -19,6 +19,7 @@ Entry template:
   - Add HTTP download redirect endpoint `/d/{fileId}` and wire GameDetail downloads to it (D2)
   - Add ImageUploader component: calls createImageUploads → PUT → finalizeImageUploads (auth required)
   - Add Report button on file rows (GameDetail) to call `reportContent` (I1)
+  - Add basic AdminReports page to list OPEN reports and trigger quarantine action (I2)
   - Frontend: SupportButton reads donations from `publicSiteConfig` (env fallback); sync OIDC access_token to localStorage for API
   - Web upgrades: Relay 20 + React 19.1; add schema merge step for relay-compiler; remove legacy JS relay config
 

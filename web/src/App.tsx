@@ -5,6 +5,7 @@ import PlatformList from './pages/PlatformList';
 import GameDetail from './pages/GameDetail';
 import { useAuth } from 'react-oidc-context';
 import SupportButton from './components/SupportButton';
+import AdminReports from './pages/AdminReports';
 
 const Header: React.FC = () => {
   const auth = useAuth();
@@ -38,6 +39,7 @@ const App: React.FC = () => (
         <Route path="/" element={<Home />} />
         <Route path="/platform/:platform" element={<PlatformList />} />
         <Route path="/game/:slug" element={<GameDetail />} />
+        <Route path="/admin/reports" element={<AdminReports />} />
       </Routes>
     </main>
     <footer className="border-t border-white/10 py-6 text-center text-xs text-white/60">© ArchivedGames</footer>

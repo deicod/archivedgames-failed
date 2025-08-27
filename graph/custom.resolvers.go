@@ -16,6 +16,7 @@ import (
 	"github.com/deicod/archivedgames/ent/file"
 	"github.com/deicod/archivedgames/ent/game"
 	"github.com/deicod/archivedgames/ent/image"
+	"github.com/deicod/archivedgames/ent/report"
 	"github.com/deicod/archivedgames/ent/sitesetting"
 	"github.com/deicod/archivedgames/graph/model"
 	"github.com/deicod/archivedgames/internal/auth"
@@ -213,6 +214,15 @@ func (r *queryResolver) PublicSiteConfig(ctx context.Context) (gqltypes.RawMessa
 		return nil, err
 	}
 	return gqltypes.RawMessage(b), nil
+}
+
+// ReportsOpen is the resolver for the reportsOpen field.
+func (r *queryResolver) ReportsOpen(ctx context.Context, first *int) ([]*ent.Report, error) {
+	lim := 50
+	if first != nil && *first > 0 {
+		lim = *first
+	}
+	return r.Client.Report.Query().Where(report.StatusEQ(report.StatusOPEN)).Limit(lim).All(ctx)
 }
 
 // Mutation returns MutationResolver implementation.
