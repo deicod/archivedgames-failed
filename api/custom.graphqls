@@ -27,4 +27,6 @@ extend type Mutation {
   setSiteSetting(key: String!, value: RawMessage!, public: Boolean): SiteSetting!
   reportContent(subjectType: String!, subjectId: String!, reason: String!, note: String): Report!
   quarantineFile(fileId: String!, reason: String!): File!
+  setCoverImage(imageId: String!): Image!
+  deleteImage(imageId: String!): Boolean!
 }

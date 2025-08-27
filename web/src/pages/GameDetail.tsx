@@ -53,7 +53,12 @@ export default function GameDetail(){
       <div className="md:col-span-2 space-y-4">
         <div className="aspect-video bg-white/5 rounded-2xl flex items-center justify-center">{images[0] ? <img src={"/s3/"+images[0].s3Key} alt="cover" className="w-full h-full object-cover rounded-2xl"/> : null}</div>
         <div className="grid grid-cols-2 gap-3">
-          {images.slice(1).map((img:any)=> <div key={img.id} className="aspect-[4/3] bg-white/5 rounded-xl" />)}
+          {images.slice(1).map((img:any)=> (
+          <div key={img.id} className="aspect-[4/3] bg-white/5 rounded-xl flex items-center justify-center">
+            {/* thumbnail placeholder */}
+            <div className="text-xs text-white/50">{img.s3Key}</div>
+          </div>
+        ))}
         </div>
       </div>
       <aside className="space-y-4">
@@ -67,7 +72,10 @@ export default function GameDetail(){
               </div>
           ))}
         </div>
-          {auth?.isAuthenticated ? <ImageUploader gameId={node.id} /> : null}
+          {auth?.isAuthenticated ? <div className="space-y-3">
+            <ImageUploader gameId={node.id} kind="COVER" allowMultiple={false} />
+            <ImageUploader gameId={node.id} kind="GALLERY" allowMultiple={true} />
+          </div> : null}
       </aside>
     </div>
   );

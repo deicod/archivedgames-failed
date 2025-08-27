@@ -126,9 +126,11 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateImageUploads   func(childComplexity int, gameID string, kind image.Kind, count int) int
+		DeleteImage          func(childComplexity int, imageID string) int
 		FinalizeImageUploads func(childComplexity int, gameID string, kind image.Kind, items []*model.UploadedImageInput) int
 		QuarantineFile       func(childComplexity int, fileID string, reason string) int
 		ReportContent        func(childComplexity int, subjectType string, subjectID string, reason string, note *string) int
+		SetCoverImage        func(childComplexity int, imageID string) int
 		SetSiteSetting       func(childComplexity int, key string, value gqltypes.RawMessage, public *bool) int
 	}
 
@@ -191,6 +193,8 @@ type MutationResolver interface {
 	SetSiteSetting(ctx context.Context, key string, value gqltypes.RawMessage, public *bool) (*ent.SiteSetting, error)
 	ReportContent(ctx context.Context, subjectType string, subjectID string, reason string, note *string) (*ent.Report, error)
 	QuarantineFile(ctx context.Context, fileID string, reason string) (*ent.File, error)
+	SetCoverImage(ctx context.Context, imageID string) (*ent.Image, error)
+	DeleteImage(ctx context.Context, imageID string) (bool, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (ent.Noder, error)
@@ -549,6 +553,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Mutation.CreateImageUploads(childComplexity, args["gameId"].(string), args["kind"].(image.Kind), args["count"].(int)), true
 
+	case "Mutation.deleteImage":
+		if e.complexity.Mutation.DeleteImage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteImage_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteImage(childComplexity, args["imageId"].(string)), true
+
 	case "Mutation.finalizeImageUploads":
 		if e.complexity.Mutation.FinalizeImageUploads == nil {
 			break
@@ -584,6 +600,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.ReportContent(childComplexity, args["subjectType"].(string), args["subjectId"].(string), args["reason"].(string), args["note"].(*string)), true
+
+	case "Mutation.setCoverImage":
+		if e.complexity.Mutation.SetCoverImage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_setCoverImage_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SetCoverImage(childComplexity, args["imageId"].(string)), true
 
 	case "Mutation.setSiteSetting":
 		if e.complexity.Mutation.SetSiteSetting == nil {
@@ -1925,6 +1953,8 @@ extend type Mutation {
   setSiteSetting(key: String!, value: RawMessage!, public: Boolean): SiteSetting!
   reportContent(subjectType: String!, subjectId: String!, reason: String!, note: String): Report!
   quarantineFile(fileId: String!, reason: String!): File!
+  setCoverImage(imageId: String!): Image!
+  deleteImage(imageId: String!): Boolean!
 }
 `, BuiltIn: false},
 }
@@ -2248,6 +2278,34 @@ func (ec *executionContext) field_Mutation_createImageUploads_argsCount(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Mutation_deleteImage_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Mutation_deleteImage_argsImageID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["imageId"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteImage_argsImageID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	if _, ok := rawArgs["imageId"]; !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("imageId"))
+	if tmp, ok := rawArgs["imageId"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Mutation_finalizeImageUploads_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -2467,6 +2525,34 @@ func (ec *executionContext) field_Mutation_reportContent_argsNote(
 	}
 
 	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_setCoverImage_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Mutation_setCoverImage_argsImageID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["imageId"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_setCoverImage_argsImageID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	if _, ok := rawArgs["imageId"]; !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("imageId"))
+	if tmp, ok := rawArgs["imageId"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
 	return zeroVal, nil
 }
 
@@ -5508,6 +5594,132 @@ func (ec *executionContext) fieldContext_Mutation_quarantineFile(ctx context.Con
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_quarantineFile_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_setCoverImage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_setCoverImage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().SetCoverImage(rctx, fc.Args["imageId"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Image)
+	fc.Result = res
+	return ec.marshalNImage2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋentᚐImage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_setCoverImage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Image_id(ctx, field)
+			case "kind":
+				return ec.fieldContext_Image_kind(ctx, field)
+			case "position":
+				return ec.fieldContext_Image_position(ctx, field)
+			case "s3Key":
+				return ec.fieldContext_Image_s3Key(ctx, field)
+			case "width":
+				return ec.fieldContext_Image_width(ctx, field)
+			case "height":
+				return ec.fieldContext_Image_height(ctx, field)
+			case "game":
+				return ec.fieldContext_Image_game(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Image", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_setCoverImage_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteImage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteImage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteImage(rctx, fc.Args["imageId"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteImage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteImage_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -12938,6 +13150,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "setCoverImage":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_setCoverImage(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deleteImage":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteImage(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -13968,6 +14194,10 @@ func (ec *executionContext) marshalNID2ᚕstringᚄ(ctx context.Context, sel ast
 	}
 
 	return ret
+}
+
+func (ec *executionContext) marshalNImage2githubᚗcomᚋdeicodᚋarchivedgamesᚋentᚐImage(ctx context.Context, sel ast.SelectionSet, v ent.Image) graphql.Marshaler {
+	return ec._Image(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNImage2ᚕᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋentᚐImageᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.Image) graphql.Marshaler {

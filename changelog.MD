@@ -20,6 +20,8 @@ Entry template:
   - Add ImageUploader component: calls createImageUploads → PUT → finalizeImageUploads (auth required)
   - Add Report button on file rows (GameDetail) to call `reportContent` (I1)
   - Add basic AdminReports page to list OPEN reports and trigger quarantine action (I2)
+  - Finalize image upload polish: enforce unique cover and max 4 gallery images server-side; add cover/gallery upload widgets in GameDetail
+  - Ingestion improvements (C1–C4): better filename normalization (strip year/lang/disk/side tags), platform filter and dry-run flags, mark `needs_review` for unknown formats; idempotent checks remain via checksum.
   - Frontend: SupportButton reads donations from `publicSiteConfig` (env fallback); sync OIDC access_token to localStorage for API
   - Web upgrades: Relay 20 + React 19.1; add schema merge step for relay-compiler; remove legacy JS relay config
 

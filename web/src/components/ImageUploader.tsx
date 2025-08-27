@@ -13,18 +13,19 @@ const Finalize = graphql`
   }
 `;
 
-export default function ImageUploader({ gameId }: { gameId: string }){
+export default function ImageUploader({ gameId, kind = "GALLERY" as any, allowMultiple = true }: { gameId: string, kind?: "COVER"|"GALLERY", allowMultiple?: boolean }){
   const [commitCreate] = useMutation(Create);
   const [commitFinalize] = useMutation(Finalize);
   const [busy, setBusy] = React.useState(false);
   const onFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+    if (kind === "COVER" && files.length > 1) files.splice(1);
     if (!files.length) return;
     setBusy(true);
     try {
       const presigned = await new Promise<any[]>((resolve, reject) => {
         commitCreate({
-          variables: { gameId, kind: 'GALLERY', count: files.length },
+          variables: { gameId, kind, count: files.length },
           onCompleted: (resp:any) => resolve(resp.createImageUploads || []),
           onError: reject,
         });
@@ -37,7 +38,7 @@ export default function ImageUploader({ gameId }: { gameId: string }){
         uploads.push({ key: ps.key, width: 0, height: 0 });
       }
       await new Promise((resolve, reject) => {
-        commitFinalize({ variables: { gameId, kind: 'GALLERY', items: uploads }, onCompleted: resolve as any, onError: reject });
+        commitFinalize({ variables: { gameId, kind, items: uploads }, onCompleted: resolve as any, onError: reject });
       });
       alert('Uploaded');
       e.target.value = '';
@@ -45,8 +46,8 @@ export default function ImageUploader({ gameId }: { gameId: string }){
   };
   return (
     <div className="space-y-2">
-      <label className="text-sm">Upload images</label>
-      <input type="file" multiple accept="image/*" onChange={onFiles} disabled={busy} />
+      <label className="text-sm">Upload {kind.toLowerCase()} image{allowMultiple? "s":""}</label>
+      <input type="file" multiple={allowMultiple} accept="image/*" onChange={onFiles} disabled={busy} />
     </div>
   );
 }

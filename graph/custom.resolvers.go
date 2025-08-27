@@ -147,6 +147,39 @@ func (r *mutationResolver) QuarantineFile(ctx context.Context, fileID string, re
 	return r.Client.File.Get(ctx, f.ID)
 }
 
+// SetCoverImage is the resolver for the setCoverImage field.
+func (r *mutationResolver) SetCoverImage(ctx context.Context, imageID string) (*ent.Image, error) {
+	if _, err := auth.RequireUser(ctx); err != nil {
+		return nil, err
+	}
+	img, err := r.Client.Image.Get(ctx, imageID)
+	if err != nil {
+		return nil, err
+	}
+	gID, err := r.Client.Image.Query().Where(image.IDEQ(imageID)).QueryGame().OnlyID(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if err := r.Client.Image.Update().Where(image.HasGameWith(game.IDEQ(gID)), image.KindEQ(image.KindCOVER)).SetKind(image.KindGALLERY).Exec(ctx); err != nil {
+		return nil, err
+	}
+	if err := r.Client.Image.UpdateOne(img).SetKind(image.KindCOVER).SetPosition(0).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return r.Client.Image.Get(ctx, imageID)
+}
+
+// DeleteImage is the resolver for the deleteImage field.
+func (r *mutationResolver) DeleteImage(ctx context.Context, imageID string) (bool, error) {
+	if _, err := auth.RequireUser(ctx); err != nil {
+		return false, err
+	}
+	if err := r.Client.Image.DeleteOneID(imageID).Exec(ctx); err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // GetDownloadURL is the resolver for the getDownloadURL field.
 func (r *queryResolver) GetDownloadURL(ctx context.Context, fileID string, ttlSeconds *int) (string, error) {
 	f, err := r.Client.File.Query().Where(file.IDEQ(fileID)).Only(ctx)
