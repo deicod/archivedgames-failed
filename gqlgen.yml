@@ -1,9 +1,9 @@
 schema:
-  - ent.graphql
+  - api/ent.graphql
   - api/custom.graphqls
 exec:
   filename: graph/generated.go
-  package: generated
+  package: graph
 model:
   filename: graph/model/models_gen.go
   package: model
@@ -11,19 +11,50 @@ resolver:
   layout: follow-schema
   dir: graph
   package: graph
-autobind:
-  - github.com/deicod/archivedgames/ent/game
-  - github.com/deicod/archivedgames/ent/file
-  - github.com/deicod/archivedgames/ent/image
-  - github.com/deicod/archivedgames/ent/videolink
-  - github.com/deicod/archivedgames/ent/descriptionversion
-  - github.com/deicod/archivedgames/ent/comment
-  - github.com/deicod/archivedgames/ent/rating
-  - github.com/deicod/archivedgames/ent/reaction
-  - github.com/deicod/archivedgames/ent/favorite
-  - github.com/deicod/archivedgames/ent/collection
-  - github.com/deicod/archivedgames/ent/collectionitem
-  - github.com/deicod/archivedgames/ent/report
-  - github.com/deicod/archivedgames/ent/moderationaction
-  - github.com/deicod/archivedgames/ent/sitesetting
-  - github.com/deicod/archivedgames/ent/usershadow
+autobind: []
+models:
+  Node:
+    model:
+      - github.com/deicod/archivedgames/ent.Noder
+  Cursor:
+    model:
+      - github.com/deicod/archivedgames/internal/gqltypes.Cursor
+  RawMessage:
+    model:
+      - github.com/deicod/archivedgames/internal/gqltypes.RawMessage
+  Game:
+    model:
+      - github.com/deicod/archivedgames/ent.Game
+  File:
+    model:
+      - github.com/deicod/archivedgames/ent.File
+  Image:
+    model:
+      - github.com/deicod/archivedgames/ent.Image
+  GamePlatform:
+    model:
+      - github.com/deicod/archivedgames/ent/game.Platform
+  ImageKind:
+    model:
+      - github.com/deicod/archivedgames/ent/image.Kind
+  FileConnection:
+    model:
+      - github.com/deicod/archivedgames/ent.FileConnection
+  FileEdge:
+    model:
+      - github.com/deicod/archivedgames/ent.FileEdge
+  ImageConnection:
+    model:
+      - github.com/deicod/archivedgames/ent.ImageConnection
+  ImageEdge:
+    model:
+      - github.com/deicod/archivedgames/ent.ImageEdge
+  GameConnection:
+    model:
+      - github.com/deicod/archivedgames/ent.GameConnection
+  GameEdge:
+    model:
+      - github.com/deicod/archivedgames/ent.GameEdge
+  PageInfo:
+    model:
+      - github.com/deicod/archivedgames/ent.PageInfo

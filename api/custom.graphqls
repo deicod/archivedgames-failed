@@ -1,1 +1,4 @@
-# custom operations will be added by the agent for V1
+# Scalars and custom operations will be added by the agent for V1
+
+# JSON passthrough for SiteSetting.value
+scalar RawMessage
