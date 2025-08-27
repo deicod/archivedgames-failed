@@ -11,6 +11,14 @@ import (
 	"github.com/deicod/archivedgames/internal/gqltypes"
 )
 
+type Mutation struct {
+}
+
+type PresignedPut struct {
+	Key string `json:"key"`
+	URL string `json:"url"`
+}
+
 type Query struct {
 }
 
@@ -22,6 +30,12 @@ type SiteSetting struct {
 }
 
 func (SiteSetting) IsNode() {}
+
+type UploadedImageInput struct {
+	Key    string `json:"key"`
+	Width  int    `json:"width"`
+	Height int    `json:"height"`
+}
 
 type UserShadow struct {
 	ID          string  `json:"id"`

@@ -86,3 +86,16 @@ func (c *Client) PresignGet(ctx context.Context, key string, ttl time.Duration) 
     return res.URL, nil
 }
 
+// PresignPut returns a pre-signed PUT URL for the given object key.
+func (c *Client) PresignPut(ctx context.Context, key string, contentType string, ttl time.Duration) (string, error) {
+    if key == "" { return "", errors.New("empty key") }
+    input := &awss3.PutObjectInput{
+        Bucket: aws.String(c.Bucket),
+        Key:    aws.String(key),
+    }
+    if contentType != "" { input.ContentType = aws.String(contentType) }
+    res, err := c.Presign.PresignPutObject(ctx, input, awss3.WithPresignExpires(ttl))
+    if err != nil { return "", err }
+    if _, err := url.Parse(res.URL); err != nil { return "", err }
+    return res.URL, nil
+}

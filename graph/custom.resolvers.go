@@ -7,13 +7,75 @@ package graph
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
+	"github.com/deicod/archivedgames/ent"
 	"github.com/deicod/archivedgames/ent/file"
 	"github.com/deicod/archivedgames/ent/game"
+	"github.com/deicod/archivedgames/ent/image"
+	"github.com/deicod/archivedgames/graph/model"
+	"github.com/deicod/archivedgames/internal/auth"
+	reqctx "github.com/deicod/archivedgames/internal/request"
 	"github.com/deicod/archivedgames/internal/s3client"
 )
+
+// CreateImageUploads is the resolver for the createImageUploads field.
+func (r *mutationResolver) CreateImageUploads(ctx context.Context, gameXid string, kind image.Kind, count int) ([]*model.PresignedPut, error) {
+	if _, err := auth.RequireUser(ctx); err != nil {
+		return nil, err
+	}
+	g, err := r.Client.Game.Query().Where(game.XidEQ(gameXid)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if count <= 0 || count > 10 {
+		count = 1
+	}
+	s3c, err := s3client.New(ctx)
+	if err != nil {
+		return nil, err
+	}
+	now := time.Now().Unix()
+	out := make([]*model.PresignedPut, 0, count)
+	for i := 0; i < count; i++ {
+		key := fmt.Sprintf("images/%s/%d/%d.jpg", g.Xid, now, i)
+		url, err := s3c.PresignPut(ctx, key, "image/jpeg", 10*time.Minute)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, &model.PresignedPut{Key: key, URL: url})
+	}
+	return out, nil
+}
+
+// FinalizeImageUploads is the resolver for the finalizeImageUploads field.
+func (r *mutationResolver) FinalizeImageUploads(ctx context.Context, gameXid string, kind image.Kind, items []*model.UploadedImageInput) ([]*ent.Image, error) {
+	if _, err := auth.RequireUser(ctx); err != nil {
+		return nil, err
+	}
+	g, err := r.Client.Game.Query().Where(game.XidEQ(gameXid)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	created := make([]*ent.Image, 0, len(items))
+	for idx, it := range items {
+		img, err := r.Client.Image.Create().
+			SetGame(g).
+			SetKind(kind).
+			SetPosition(idx).
+			SetS3Key(it.Key).
+			SetWidth(it.Width).
+			SetHeight(it.Height).
+			Save(ctx)
+		if err != nil {
+			return nil, err
+		}
+		created = append(created, img)
+	}
+	return created, nil
+}
 
 // GetDownloadURL is the resolver for the getDownloadURL field.
 func (r *queryResolver) GetDownloadURL(ctx context.Context, fileXid string, ttlSeconds *int) (string, error) {
@@ -30,6 +92,14 @@ func (r *queryResolver) GetDownloadURL(ctx context.Context, fileXid string, ttlS
 	ttl := 120
 	if ttlSeconds != nil && *ttlSeconds > 0 {
 		ttl = *ttlSeconds
+	}
+	// Rate limit by user/IP && data caps.
+	uid, _ := auth.UserID(ctx)
+	ip := reqctx.FromContextIP(ctx)
+	if r.Rate != nil {
+		if err := r.Rate.AllowDownload(uid, ip, f.SizeBytes); err != nil {
+			return "", err
+		}
 	}
 	s3c, err := s3client.New(ctx)
 	if err != nil {
@@ -54,3 +124,8 @@ func (r *queryResolver) OpensearchSuggestions(ctx context.Context, q string, pla
 	}
 	return titles, nil
 }
+
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+
+type mutationResolver struct{ *Resolver }

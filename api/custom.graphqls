@@ -7,3 +7,19 @@ extend type Query {
   getDownloadURL(fileXid: String!, ttlSeconds: Int = 120): String!
   opensearchSuggestions(q: String!, platform: GamePlatform): [String!]!
 }
+
+type PresignedPut {
+  key: String!
+  url: String!
+}
+
+input UploadedImageInput {
+  key: String!
+  width: Int!
+  height: Int!
+}
+
+extend type Mutation {
+  createImageUploads(gameXid: String!, kind: ImageKind!, count: Int!): [PresignedPut!]!
+  finalizeImageUploads(gameXid: String!, kind: ImageKind!, items: [UploadedImageInput!]!): [Image!]!
+}
