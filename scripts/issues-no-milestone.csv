@@ -1,0 +1,33 @@
+title,body
+"A1: Init repo & dev stack","Init repo, Makefile, docker-compose.dev.yml (Postgres+MinIO+app).
+DoD: compose up; no-op server runs."
+"B1: Add ent mixins & core schemas","Implement XIDMixin & TimeMixin (immutable created_at).
+Schemas: Game, File, Image, UserShadow, Report, ModerationAction, SiteSetting.
+DoD: ent generate OK."
+"B2: entgql annotations & ent.graphql","Annotate edges with entgql.RelayConnection. Emit api/ent.graphql.
+DoD: Relay connections exist."
+"C1: GraphQL server & gqlgen","Wire gqlgen with gqlgen.yml; minimal api/custom.graphqls.
+DoD: /query introspection works."
+"D1: S3 client + presign","Generic S3 client; presign GET/PUT; env-driven.
+DoD: curl PUT to MinIO works; GET downloads."
+"E1: Ingestion scan+normalize","Scanner + normalization per Heuristics Pack; compute checksum/size.
+DoD: Fixtures generate Games/Files."
+"E2: Grouping & confidence scoring","Group multi-disk/side and score confidence; idempotent re-runs.
+DoD: Thresholds applied; needs_review tagged."
+"F1: getDownloadURL mutation","Return presigned GET + audit log; respect quarantine.
+DoD: Download works."
+"F2: uploadGameImages flow","Return presigned PUTs then finalize Image rows; max 1 cover + 4 gallery.
+DoD: Uploaded image appears."
+"F3: publicSiteConfig","Expose donations URL; add admin setSiteSetting.
+DoD: Support button reads URL."
+"F4: opensearchSuggestions","Prefix suggestions from Game titles.
+DoD: Returns up to 10 strings."
+"G1: Frontend scaffold","React 19 + Vite + Tailwind + Relay + OIDC; render Home route."
+"G2: Platform list (Relay)","Paginate games by platform.
+DoD: Infinite list works."
+"G3: Game detail & Download","Show cover/gallery/files; Download button uses getDownloadURL."
+"G4: Login & upload UI","OIDC login/logout; show upload widget for logged-in users."
+"H1: SEO endpoints","Serve opensearch.xml/sitemap.xml/robots.txt."
+"I1: Reports & quarantine","reportContent mutation; admin quarantine blocks downloads."
+"J1: Rate limiting","IP+user token buckets; 429 with hint headers."
+"K1: Health/readiness & logs","Structured logs, request IDs, /healthz, /readyz."

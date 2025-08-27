@@ -10,18 +10,42 @@ on:
       dry_run:
         description: 'Dry run (true/false)'
         required: true
-        default: 'false'
+        default: 'true'
+      create_milestone:
+        description: 'Ensure milestone exists before import (true/false)'
+        required: true
+        default: 'true'
+      milestone_title:
+        description: 'Milestone title to ensure (used only when create_milestone=true)'
+        required: true
+        default: 'V1-MVP'
 
 permissions:
   contents: read
   issues: write
-  metadata: read
 
 jobs:
   import:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Ensure milestone exists
+        if: ${{ github.event.inputs.create_milestone == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TITLE: ${{ github.event.inputs.milestone_title }}
+        run: |
+          set -euo pipefail
+          REPO="${GITHUB_REPOSITORY}"
+          # Look for milestone by title; create if missing
+          FOUND=$(gh api "repos/${REPO}/milestones" --jq '.[] | select(.title==env.TITLE) | .number' || true)
+          if [ -z "$FOUND" ]; then
+            gh api -X POST "repos/${REPO}/milestones" -f title="$TITLE" >/dev/null
+            echo "Created milestone: $TITLE"
+          else
+            echo "Milestone exists: $TITLE (id $FOUND)"
+          fi
 
       - name: Import issues
         uses: dsanchezcr/issue-importer-action@v1.0.0
