@@ -1,19 +1,32 @@
 name: Import Issues from CSV
+
 on:
   workflow_dispatch:
     inputs:
       file_path:
-        description: Path to CSV
+        description: Path to CSV file
         required: true
         default: scripts/issues.csv
+      dry_run:
+        description: 'Dry run (true/false)'
+        required: true
+        default: 'false'
+
+permissions:
+  contents: read
+  issues: write
+  metadata: read
+
 jobs:
   import:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Import issues
         uses: dsanchezcr/issue-importer-action@v1.0.0
         with:
           file-path: ${{ github.event.inputs.file_path }}
           file-format: csv
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          dry-run: ${{ github.event.inputs.dry_run }}

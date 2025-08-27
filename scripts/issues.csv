@@ -1,20 +1,33 @@
-Title,Body,Labels,Milestone
-A1: Init repo & dev stack,"Init repo, Makefile, docker-compose.dev.yml (Postgres+MinIO+app). DoD: compose up; no-op server runs.","backend,tooling",V1 – MVP
-B1: Add ent mixins & core schemas,"Implement XIDMixin & TimeMixin (immutable created_at). Schemas: Game, File, Image, UserShadow, Report, ModerationAction, SiteSetting. DoD: ent generate OK.","backend,ent,graph",V1 – MVP
-B2: entgql annotations & ent.graphql,Annotate edges with entgql.RelayConnection. Emit api/ent.graphql. DoD: Relay connections exist.,"backend,entgql,graph",V1 – MVP
-C1: GraphQL server & gqlgen,Wire gqlgen with gqlgen.yml. Add minimal custom.graphqls. DoD: /query introspection works.,"backend,gqlgen,graph",V1 – MVP
-D1: S3 client + presign,Generic S3 client; presign GET/PUT; env driven. DoD: curl PUT to MinIO works; GET downloads.,"backend,s3,storage",V1 – MVP
-E1: Ingestion scan+normalize,Scanner + normalization per Heuristics Pack; compute checksum/size. DoD: Fixtures generate Games/Files.,"backend,ingest",V1 – MVP
-E2: Grouping & confidence scoring,Group multi-disk/side and score confidence; idempotent re-runs. DoD: Thresholds applied; needs_review tagged.,"backend,ingest",V1 – MVP
-F1: getDownloadURL mutation,Return presigned GET + audit log; respect quarantine. DoD: Download works.,"backend,graph,storage",V1 – MVP
-F2: uploadGameImages flow,Return presigned PUTs then finalize Image rows; max 1 cover + 4 gallery. DoD: Uploaded image appears.,"backend,graph,storage",V1 – MVP
-F3: publicSiteConfig,Expose donations URL; add admin setSiteSetting. DoD: Support button reads URL.,"backend,graph,settings",V1 – MVP
-F4: opensearchSuggestions,Prefix suggestions from Game titles. DoD: Returns up to 10 strings.,"backend,graph,search",V1 – MVP
-G1: Frontend scaffold,React19+Vite+Tailwind+Relay+OIDC; render Home route.,"frontend,scaffold",V1 – MVP
-G2: Platform list (Relay),Paginate games by platform. DoD: Infinite list works.,"frontend,relay",V1 – MVP
-G3: Game detail & Download,Show cover/gallery/files; Download button uses getDownloadURL.,"frontend,relay",V1 – MVP
-G4: Login & upload UI,OIDC login/logout; show upload widget for logged-in users.,"frontend,auth,upload",V1 – MVP
-H1: SEO endpoints,Serve opensearch.xml/sitemap.xml/robots.txt.,"backend,seo",V1 – MVP
-I1: Reports & quarantine,reportContent mutation; admin quarantine blocks downloads.,"backend,moderation",V1 – MVP
-J1: Rate limiting,IP+user token buckets; 429s with hint headers.,"backend,security",V1 – MVP
-K1: Health/readiness & logs,"Structured logs, request IDs, /healthz, /readyz.","backend,ops",V1 – MVP
+title,body,labels,milestone
+"A1: Init repo & dev stack","Init repo, Makefile, docker-compose.dev.yml (Postgres+MinIO+app).
+**DoD:** compose up; no-op server runs.","backend;tooling","V1 – MVP"
+"B1: Add ent mixins & core schemas","Implement XIDMixin & TimeMixin (immutable created_at).
+Schemas: Game, File, Image, UserShadow, Report, ModerationAction, SiteSetting.
+**DoD:** ent generate OK.","backend;ent;graph","V1 – MVP"
+"B2: entgql annotations & ent.graphql","Annotate edges with entgql.RelayConnection. Emit api/ent.graphql.
+**DoD:** Relay connections exist.","backend;entgql;graph","V1 – MVP"
+"C1: GraphQL server & gqlgen","Wire gqlgen with gqlgen.yml; minimal api/custom.graphqls.
+**DoD:** /query introspection works.","backend;gqlgen;graph","V1 – MVP"
+"D1: S3 client + presign","Generic S3 client; presign GET/PUT; env-driven.
+**DoD:** curl PUT to MinIO works; GET downloads.","backend;s3;storage","V1 – MVP"
+"E1: Ingestion scan+normalize","Scanner + normalization per Heuristics Pack; compute checksum/size.
+**DoD:** Fixtures generate Games/Files.","backend;ingest","V1 – MVP"
+"E2: Grouping & confidence scoring","Group multi-disk/side and score confidence; idempotent re-runs.
+**DoD:** Thresholds applied; needs_review tagged.","backend;ingest","V1 – MVP"
+"F1: getDownloadURL mutation","Return presigned GET + audit log; respect quarantine.
+**DoD:** Download works.","backend;graph;storage","V1 – MVP"
+"F2: uploadGameImages flow","Return presigned PUTs then finalize Image rows; max 1 cover + 4 gallery.
+**DoD:** Uploaded image appears.","backend;graph;storage","V1 – MVP"
+"F3: publicSiteConfig","Expose donations URL; add admin setSiteSetting.
+**DoD:** Support button reads URL.","backend;graph;settings","V1 – MVP"
+"F4: opensearchSuggestions","Prefix suggestions from Game titles.
+**DoD:** Returns up to 10 strings.","backend;graph;search","V1 – MVP"
+"G1: Frontend scaffold","React19+Vite+Tailwind+Relay+OIDC; render Home route.","frontend;scaffold","V1 – MVP"
+"G2: Platform list (Relay)","Paginate games by platform.
+**DoD:** Infinite list works.","frontend;relay","V1 – MVP"
+"G3: Game detail & Download","Show cover/gallery/files; Download button uses getDownloadURL.","frontend;relay","V1 – MVP"
+"G4: Login & upload UI","OIDC login/logout; show upload widget for logged-in users.","frontend;auth;upload","V1 – MVP"
+"H1: SEO endpoints","Serve opensearch.xml/sitemap.xml/robots.txt.","backend;seo","V1 – MVP"
+"I1: Reports & quarantine","reportContent mutation; admin quarantine blocks downloads.","backend;moderation","V1 – MVP"
+"J1: Rate limiting","IP+user token buckets; 429s with hint headers.","backend;security","V1 – MVP"
+"K1: Health/readiness & logs","Structured logs, request IDs, /healthz, /readyz.","backend;ops","V1 – MVP"
