@@ -21,20 +21,6 @@ type GameCreate struct {
 	hooks    []Hook
 }
 
-// SetXid sets the "xid" field.
-func (gc *GameCreate) SetXid(s string) *GameCreate {
-	gc.mutation.SetXid(s)
-	return gc
-}
-
-// SetNillableXid sets the "xid" field if the given value is not nil.
-func (gc *GameCreate) SetNillableXid(s *string) *GameCreate {
-	if s != nil {
-		gc.SetXid(*s)
-	}
-	return gc
-}
-
 // SetSlug sets the "slug" field.
 func (gc *GameCreate) SetSlug(s string) *GameCreate {
 	gc.mutation.SetSlug(s)
@@ -95,15 +81,29 @@ func (gc *GameCreate) SetNillableDeveloper(s *string) *GameCreate {
 	return gc
 }
 
+// SetID sets the "id" field.
+func (gc *GameCreate) SetID(s string) *GameCreate {
+	gc.mutation.SetID(s)
+	return gc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (gc *GameCreate) SetNillableID(s *string) *GameCreate {
+	if s != nil {
+		gc.SetID(*s)
+	}
+	return gc
+}
+
 // AddFileIDs adds the "files" edge to the File entity by IDs.
-func (gc *GameCreate) AddFileIDs(ids ...int) *GameCreate {
+func (gc *GameCreate) AddFileIDs(ids ...string) *GameCreate {
 	gc.mutation.AddFileIDs(ids...)
 	return gc
 }
 
 // AddFiles adds the "files" edges to the File entity.
 func (gc *GameCreate) AddFiles(f ...*File) *GameCreate {
-	ids := make([]int, len(f))
+	ids := make([]string, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -111,14 +111,14 @@ func (gc *GameCreate) AddFiles(f ...*File) *GameCreate {
 }
 
 // AddImageIDs adds the "images" edge to the Image entity by IDs.
-func (gc *GameCreate) AddImageIDs(ids ...int) *GameCreate {
+func (gc *GameCreate) AddImageIDs(ids ...string) *GameCreate {
 	gc.mutation.AddImageIDs(ids...)
 	return gc
 }
 
 // AddImages adds the "images" edges to the Image entity.
 func (gc *GameCreate) AddImages(i ...*Image) *GameCreate {
-	ids := make([]int, len(i))
+	ids := make([]string, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -160,17 +160,14 @@ func (gc *GameCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (gc *GameCreate) defaults() {
-	if _, ok := gc.mutation.Xid(); !ok {
-		v := game.DefaultXid()
-		gc.mutation.SetXid(v)
+	if _, ok := gc.mutation.ID(); !ok {
+		v := game.DefaultID()
+		gc.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (gc *GameCreate) check() error {
-	if _, ok := gc.mutation.Xid(); !ok {
-		return &ValidationError{Name: "xid", err: errors.New(`ent: missing required field "Game.xid"`)}
-	}
 	if _, ok := gc.mutation.Slug(); !ok {
 		return &ValidationError{Name: "slug", err: errors.New(`ent: missing required field "Game.slug"`)}
 	}
@@ -199,8 +196,13 @@ func (gc *GameCreate) sqlSave(ctx context.Context) (*Game, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(string); ok {
+			_node.ID = id
+		} else {
+			return nil, fmt.Errorf("unexpected Game.ID type: %T", _spec.ID.Value)
+		}
+	}
 	gc.mutation.id = &_node.ID
 	gc.mutation.done = true
 	return _node, nil
@@ -209,11 +211,11 @@ func (gc *GameCreate) sqlSave(ctx context.Context) (*Game, error) {
 func (gc *GameCreate) createSpec() (*Game, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Game{config: gc.config}
-		_spec = sqlgraph.NewCreateSpec(game.Table, sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(game.Table, sqlgraph.NewFieldSpec(game.FieldID, field.TypeString))
 	)
-	if value, ok := gc.mutation.Xid(); ok {
-		_spec.SetField(game.FieldXid, field.TypeString, value)
-		_node.Xid = value
+	if id, ok := gc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := gc.mutation.Slug(); ok {
 		_spec.SetField(game.FieldSlug, field.TypeString, value)
@@ -247,7 +249,7 @@ func (gc *GameCreate) createSpec() (*Game, *sqlgraph.CreateSpec) {
 			Columns: []string{game.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -263,7 +265,7 @@ func (gc *GameCreate) createSpec() (*Game, *sqlgraph.CreateSpec) {
 			Columns: []string{game.ImagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -319,10 +321,6 @@ func (gcb *GameCreateBulk) Save(ctx context.Context) ([]*Game, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
-				}
 				mutation.done = true
 				return nodes[i], nil
 			})

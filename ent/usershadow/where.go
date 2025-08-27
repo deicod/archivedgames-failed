@@ -8,53 +8,58 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.UserShadow {
+func ID(id string) predicate.UserShadow {
 	return predicate.UserShadow(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.UserShadow {
+func IDEQ(id string) predicate.UserShadow {
 	return predicate.UserShadow(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.UserShadow {
+func IDNEQ(id string) predicate.UserShadow {
 	return predicate.UserShadow(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.UserShadow {
+func IDIn(ids ...string) predicate.UserShadow {
 	return predicate.UserShadow(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.UserShadow {
+func IDNotIn(ids ...string) predicate.UserShadow {
 	return predicate.UserShadow(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.UserShadow {
+func IDGT(id string) predicate.UserShadow {
 	return predicate.UserShadow(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.UserShadow {
+func IDGTE(id string) predicate.UserShadow {
 	return predicate.UserShadow(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.UserShadow {
+func IDLT(id string) predicate.UserShadow {
 	return predicate.UserShadow(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.UserShadow {
+func IDLTE(id string) predicate.UserShadow {
 	return predicate.UserShadow(sql.FieldLTE(FieldID, id))
 }
 
-// Xid applies equality check predicate on the "xid" field. It's identical to XidEQ.
-func Xid(v string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldEQ(FieldXid, v))
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.UserShadow {
+	return predicate.UserShadow(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.UserShadow {
+	return predicate.UserShadow(sql.FieldContainsFold(FieldID, id))
 }
 
 // KeycloakSub applies equality check predicate on the "keycloak_sub" field. It's identical to KeycloakSubEQ.
@@ -70,71 +75,6 @@ func Handle(v string) predicate.UserShadow {
 // DisplayName applies equality check predicate on the "display_name" field. It's identical to DisplayNameEQ.
 func DisplayName(v string) predicate.UserShadow {
 	return predicate.UserShadow(sql.FieldEQ(FieldDisplayName, v))
-}
-
-// XidEQ applies the EQ predicate on the "xid" field.
-func XidEQ(v string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldEQ(FieldXid, v))
-}
-
-// XidNEQ applies the NEQ predicate on the "xid" field.
-func XidNEQ(v string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldNEQ(FieldXid, v))
-}
-
-// XidIn applies the In predicate on the "xid" field.
-func XidIn(vs ...string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldIn(FieldXid, vs...))
-}
-
-// XidNotIn applies the NotIn predicate on the "xid" field.
-func XidNotIn(vs ...string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldNotIn(FieldXid, vs...))
-}
-
-// XidGT applies the GT predicate on the "xid" field.
-func XidGT(v string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldGT(FieldXid, v))
-}
-
-// XidGTE applies the GTE predicate on the "xid" field.
-func XidGTE(v string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldGTE(FieldXid, v))
-}
-
-// XidLT applies the LT predicate on the "xid" field.
-func XidLT(v string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldLT(FieldXid, v))
-}
-
-// XidLTE applies the LTE predicate on the "xid" field.
-func XidLTE(v string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldLTE(FieldXid, v))
-}
-
-// XidContains applies the Contains predicate on the "xid" field.
-func XidContains(v string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldContains(FieldXid, v))
-}
-
-// XidHasPrefix applies the HasPrefix predicate on the "xid" field.
-func XidHasPrefix(v string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldHasPrefix(FieldXid, v))
-}
-
-// XidHasSuffix applies the HasSuffix predicate on the "xid" field.
-func XidHasSuffix(v string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldHasSuffix(FieldXid, v))
-}
-
-// XidEqualFold applies the EqualFold predicate on the "xid" field.
-func XidEqualFold(v string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldEqualFold(FieldXid, v))
-}
-
-// XidContainsFold applies the ContainsFold predicate on the "xid" field.
-func XidContainsFold(v string) predicate.UserShadow {
-	return predicate.UserShadow(sql.FieldContainsFold(FieldXid, v))
 }
 
 // KeycloakSubEQ applies the EQ predicate on the "keycloak_sub" field.

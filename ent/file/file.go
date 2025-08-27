@@ -12,8 +12,6 @@ const (
 	Label = "file"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldXid holds the string denoting the xid field in the database.
-	FieldXid = "xid"
 	// FieldPath holds the string denoting the path field in the database.
 	FieldPath = "path"
 	// FieldOriginalName holds the string denoting the original_name field in the database.
@@ -50,7 +48,6 @@ const (
 // Columns holds all SQL columns for file fields.
 var Columns = []string{
 	FieldID,
-	FieldXid,
 	FieldPath,
 	FieldOriginalName,
 	FieldNormalizedName,
@@ -85,12 +82,12 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultXid holds the default value on creation for the "xid" field.
-	DefaultXid func() string
 	// DefaultQuarantine holds the default value on creation for the "quarantine" field.
 	DefaultQuarantine bool
 	// DefaultNeedsReview holds the default value on creation for the "needs_review" field.
 	DefaultNeedsReview bool
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() string
 )
 
 // OrderOption defines the ordering options for the File queries.
@@ -99,11 +96,6 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
-}
-
-// ByXid orders the results by the xid field.
-func ByXid(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldXid, opts...).ToFunc()
 }
 
 // ByPath orders the results by the path field.

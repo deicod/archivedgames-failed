@@ -4,7 +4,7 @@
 scalar RawMessage
 
 extend type Query {
-  getDownloadURL(fileXid: String!, ttlSeconds: Int = 120): String!
+  getDownloadURL(fileId: String!, ttlSeconds: Int = 120): String!
   opensearchSuggestions(q: String!, platform: GamePlatform): [String!]!
   publicSiteConfig: RawMessage!
 }
@@ -21,9 +21,9 @@ input UploadedImageInput {
 }
 
 extend type Mutation {
-  createImageUploads(gameXid: String!, kind: ImageKind!, count: Int!): [PresignedPut!]!
-  finalizeImageUploads(gameXid: String!, kind: ImageKind!, items: [UploadedImageInput!]!): [Image!]!
+  createImageUploads(gameId: String!, kind: ImageKind!, count: Int!): [PresignedPut!]!
+  finalizeImageUploads(gameId: String!, kind: ImageKind!, items: [UploadedImageInput!]!): [Image!]!
   setSiteSetting(key: String!, value: RawMessage!, public: Boolean): SiteSetting!
-  reportContent(subjectType: String!, subjectXid: String!, reason: String!, note: String): Report!
-  quarantineFile(fileXid: String!, reason: String!): File!
+  reportContent(subjectType: String!, subjectId: String!, reason: String!, note: String): Report!
+  quarantineFile(fileId: String!, reason: String!): File!
 }

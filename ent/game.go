@@ -15,9 +15,7 @@ import (
 type Game struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// Xid holds the value of the "xid" field.
-	Xid string `json:"xid,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Slug holds the value of the "slug" field.
 	Slug string `json:"slug,omitempty"`
 	// Platform holds the value of the "platform" field.
@@ -75,9 +73,9 @@ func (*Game) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case game.FieldID, game.FieldYear:
+		case game.FieldYear:
 			values[i] = new(sql.NullInt64)
-		case game.FieldXid, game.FieldSlug, game.FieldPlatform, game.FieldTitle, game.FieldPublisher, game.FieldDeveloper:
+		case game.FieldID, game.FieldSlug, game.FieldPlatform, game.FieldTitle, game.FieldPublisher, game.FieldDeveloper:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -95,16 +93,10 @@ func (ga *Game) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case game.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
-			}
-			ga.ID = int(value.Int64)
-		case game.FieldXid:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field xid", values[i])
+				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				ga.Xid = value.String
+				ga.ID = value.String
 			}
 		case game.FieldSlug:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -189,9 +181,6 @@ func (ga *Game) String() string {
 	var builder strings.Builder
 	builder.WriteString("Game(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", ga.ID))
-	builder.WriteString("xid=")
-	builder.WriteString(ga.Xid)
-	builder.WriteString(", ")
 	builder.WriteString("slug=")
 	builder.WriteString(ga.Slug)
 	builder.WriteString(", ")

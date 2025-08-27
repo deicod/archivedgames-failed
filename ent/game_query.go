@@ -135,8 +135,8 @@ func (gq *GameQuery) FirstX(ctx context.Context) *Game {
 
 // FirstID returns the first Game ID from the query.
 // Returns a *NotFoundError when no Game ID was found.
-func (gq *GameQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (gq *GameQuery) FirstID(ctx context.Context) (id string, err error) {
+	var ids []string
 	if ids, err = gq.Limit(1).IDs(setContextOp(ctx, gq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -148,7 +148,7 @@ func (gq *GameQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (gq *GameQuery) FirstIDX(ctx context.Context) int {
+func (gq *GameQuery) FirstIDX(ctx context.Context) string {
 	id, err := gq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -186,8 +186,8 @@ func (gq *GameQuery) OnlyX(ctx context.Context) *Game {
 // OnlyID is like Only, but returns the only Game ID in the query.
 // Returns a *NotSingularError when more than one Game ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (gq *GameQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (gq *GameQuery) OnlyID(ctx context.Context) (id string, err error) {
+	var ids []string
 	if ids, err = gq.Limit(2).IDs(setContextOp(ctx, gq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -203,7 +203,7 @@ func (gq *GameQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (gq *GameQuery) OnlyIDX(ctx context.Context) int {
+func (gq *GameQuery) OnlyIDX(ctx context.Context) string {
 	id, err := gq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -231,7 +231,7 @@ func (gq *GameQuery) AllX(ctx context.Context) []*Game {
 }
 
 // IDs executes the query and returns a list of Game IDs.
-func (gq *GameQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (gq *GameQuery) IDs(ctx context.Context) (ids []string, err error) {
 	if gq.ctx.Unique == nil && gq.path != nil {
 		gq.Unique(true)
 	}
@@ -243,7 +243,7 @@ func (gq *GameQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (gq *GameQuery) IDsX(ctx context.Context) []int {
+func (gq *GameQuery) IDsX(ctx context.Context) []string {
 	ids, err := gq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -339,12 +339,12 @@ func (gq *GameQuery) WithImages(opts ...func(*ImageQuery)) *GameQuery {
 // Example:
 //
 //	var v []struct {
-//		Xid string `json:"xid,omitempty"`
+//		Slug string `json:"slug,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Game.Query().
-//		GroupBy(game.FieldXid).
+//		GroupBy(game.FieldSlug).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (gq *GameQuery) GroupBy(field string, fields ...string) *GameGroupBy {
@@ -362,11 +362,11 @@ func (gq *GameQuery) GroupBy(field string, fields ...string) *GameGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Xid string `json:"xid,omitempty"`
+//		Slug string `json:"slug,omitempty"`
 //	}
 //
 //	client.Game.Query().
-//		Select(game.FieldXid).
+//		Select(game.FieldSlug).
 //		Scan(ctx, &v)
 func (gq *GameQuery) Select(fields ...string) *GameSelect {
 	gq.ctx.Fields = append(gq.ctx.Fields, fields...)
@@ -475,7 +475,7 @@ func (gq *GameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Game, e
 
 func (gq *GameQuery) loadFiles(ctx context.Context, query *FileQuery, nodes []*Game, init func(*Game), assign func(*Game, *File)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Game)
+	nodeids := make(map[string]*Game)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -506,7 +506,7 @@ func (gq *GameQuery) loadFiles(ctx context.Context, query *FileQuery, nodes []*G
 }
 func (gq *GameQuery) loadImages(ctx context.Context, query *ImageQuery, nodes []*Game, init func(*Game), assign func(*Game, *Image)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Game)
+	nodeids := make(map[string]*Game)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -549,7 +549,7 @@ func (gq *GameQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (gq *GameQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(game.Table, game.Columns, sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(game.Table, game.Columns, sqlgraph.NewFieldSpec(game.FieldID, field.TypeString))
 	_spec.From = gq.sql
 	if unique := gq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

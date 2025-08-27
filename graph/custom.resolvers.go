@@ -25,11 +25,11 @@ import (
 )
 
 // CreateImageUploads is the resolver for the createImageUploads field.
-func (r *mutationResolver) CreateImageUploads(ctx context.Context, gameXid string, kind image.Kind, count int) ([]*model.PresignedPut, error) {
+func (r *mutationResolver) CreateImageUploads(ctx context.Context, gameID string, kind image.Kind, count int) ([]*model.PresignedPut, error) {
 	if _, err := auth.RequireUser(ctx); err != nil {
 		return nil, err
 	}
-	g, err := r.Client.Game.Query().Where(game.XidEQ(gameXid)).Only(ctx)
+	g, err := r.Client.Game.Query().Where(game.IDEQ(gameID)).Only(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (r *mutationResolver) CreateImageUploads(ctx context.Context, gameXid strin
 	now := time.Now().Unix()
 	out := make([]*model.PresignedPut, 0, count)
 	for i := 0; i < count; i++ {
-		key := fmt.Sprintf("images/%s/%d/%d.jpg", g.Xid, now, i)
+		key := fmt.Sprintf("images/%s/%d/%d.jpg", g.ID, now, i)
 		url, err := s3c.PresignPut(ctx, key, "image/jpeg", 10*time.Minute)
 		if err != nil {
 			return nil, err
@@ -54,11 +54,11 @@ func (r *mutationResolver) CreateImageUploads(ctx context.Context, gameXid strin
 }
 
 // FinalizeImageUploads is the resolver for the finalizeImageUploads field.
-func (r *mutationResolver) FinalizeImageUploads(ctx context.Context, gameXid string, kind image.Kind, items []*model.UploadedImageInput) ([]*ent.Image, error) {
+func (r *mutationResolver) FinalizeImageUploads(ctx context.Context, gameID string, kind image.Kind, items []*model.UploadedImageInput) ([]*ent.Image, error) {
 	if _, err := auth.RequireUser(ctx); err != nil {
 		return nil, err
 	}
-	g, err := r.Client.Game.Query().Where(game.XidEQ(gameXid)).Only(ctx)
+	g, err := r.Client.Game.Query().Where(game.IDEQ(gameID)).Only(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -110,30 +110,45 @@ func (r *mutationResolver) SetSiteSetting(ctx context.Context, key string, value
 }
 
 // ReportContent is the resolver for the reportContent field.
-func (r *mutationResolver) ReportContent(ctx context.Context, subjectType string, subjectXid string, reason string, note *string) (*ent.Report, error) {
-    rid, _ := auth.UserID(ctx)
-    create := r.Client.Report.Create().SetSubjectType(subjectType).SetSubjectXid(subjectXid).SetReason(reason)
-    if rid != "" { create = create.SetReporterID(rid) }
-    if note != nil { create = create.SetNote(*note) }
-    return create.Save(ctx)
+func (r *mutationResolver) ReportContent(ctx context.Context, subjectType string, subjectID string, reason string, note *string) (*ent.Report, error) {
+	rid, _ := auth.UserID(ctx)
+	create := r.Client.Report.Create().SetSubjectType(subjectType).SetSubjectID(subjectID).SetReason(reason)
+	if rid != "" {
+		create = create.SetReporterID(rid)
+	}
+	if note != nil {
+		create = create.SetNote(*note)
+	}
+	return create.Save(ctx)
 }
 
 // QuarantineFile is the resolver for the quarantineFile field.
-func (r *mutationResolver) QuarantineFile(ctx context.Context, fileXid string, reason string) (*ent.File, error) {
-    isAdmin := false
-    for _, ro := range auth.Roles(ctx) { if ro == "admin" { isAdmin = true; break } }
-    if !isAdmin { return nil, errors.New("forbidden") }
-    f, err := r.Client.File.Query().Where(file.XidEQ(fileXid)).Only(ctx)
-    if err != nil { return nil, err }
-    if err := r.Client.File.UpdateOne(f).SetQuarantine(true).Exec(ctx); err != nil { return nil, err }
-    // audit as report actioned
-    _, _ = r.Client.Report.Create().SetSubjectType("file").SetSubjectXid(fileXid).SetReason("quarantine").SetNote(reason).SetStatus("ACTIONED").Save(ctx)
-    return r.Client.File.Get(ctx, f.ID)
+func (r *mutationResolver) QuarantineFile(ctx context.Context, fileID string, reason string) (*ent.File, error) {
+	isAdmin := false
+	for _, ro := range auth.Roles(ctx) {
+		if ro == "admin" {
+			isAdmin = true
+			break
+		}
+	}
+	if !isAdmin {
+		return nil, errors.New("forbidden")
+	}
+	f, err := r.Client.File.Query().Where(file.IDEQ(fileID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if err := r.Client.File.UpdateOne(f).SetQuarantine(true).Exec(ctx); err != nil {
+		return nil, err
+	}
+	// audit as report actioned
+	_, _ = r.Client.Report.Create().SetSubjectType("file").SetSubjectID(fileID).SetReason("quarantine").SetNote(reason).SetStatus("ACTIONED").Save(ctx)
+	return r.Client.File.Get(ctx, f.ID)
 }
 
 // GetDownloadURL is the resolver for the getDownloadURL field.
-func (r *queryResolver) GetDownloadURL(ctx context.Context, fileXid string, ttlSeconds *int) (string, error) {
-	f, err := r.Client.File.Query().Where(file.XidEQ(fileXid)).Only(ctx)
+func (r *queryResolver) GetDownloadURL(ctx context.Context, fileID string, ttlSeconds *int) (string, error) {
+	f, err := r.Client.File.Query().Where(file.IDEQ(fileID)).Only(ctx)
 	if err != nil {
 		return "", err
 	}

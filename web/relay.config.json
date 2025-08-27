@@ -1,0 +1,5 @@
+{
+  "src": "./src",
+  "schema": "../api/combined.graphql",
+  "language": "typescript"
+}

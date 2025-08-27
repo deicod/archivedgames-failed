@@ -40,7 +40,7 @@ func (ssd *SiteSettingDelete) ExecX(ctx context.Context) int {
 }
 
 func (ssd *SiteSettingDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(sitesetting.Table, sqlgraph.NewFieldSpec(sitesetting.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(sitesetting.Table, sqlgraph.NewFieldSpec(sitesetting.FieldID, field.TypeString))
 	if ps := ssd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

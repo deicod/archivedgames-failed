@@ -16,9 +16,7 @@ import (
 type Image struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// Xid holds the value of the "xid" field.
-	Xid string `json:"xid,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Kind holds the value of the "kind" field.
 	Kind image.Kind `json:"kind,omitempty"`
 	// Position holds the value of the "position" field.
@@ -32,7 +30,7 @@ type Image struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ImageQuery when eager-loading is set.
 	Edges        ImageEdges `json:"edges"`
-	game_images  *int
+	game_images  *string
 	selectValues sql.SelectValues
 }
 
@@ -63,12 +61,12 @@ func (*Image) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case image.FieldID, image.FieldPosition, image.FieldWidth, image.FieldHeight:
+		case image.FieldPosition, image.FieldWidth, image.FieldHeight:
 			values[i] = new(sql.NullInt64)
-		case image.FieldXid, image.FieldKind, image.FieldS3Key:
+		case image.FieldID, image.FieldKind, image.FieldS3Key:
 			values[i] = new(sql.NullString)
 		case image.ForeignKeys[0]: // game_images
-			values[i] = new(sql.NullInt64)
+			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -85,16 +83,10 @@ func (i *Image) assignValues(columns []string, values []any) error {
 	for j := range columns {
 		switch columns[j] {
 		case image.FieldID:
-			value, ok := values[j].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
-			}
-			i.ID = int(value.Int64)
-		case image.FieldXid:
 			if value, ok := values[j].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field xid", values[j])
+				return fmt.Errorf("unexpected type %T for field id", values[j])
 			} else if value.Valid {
-				i.Xid = value.String
+				i.ID = value.String
 			}
 		case image.FieldKind:
 			if value, ok := values[j].(*sql.NullString); !ok {
@@ -127,11 +119,11 @@ func (i *Image) assignValues(columns []string, values []any) error {
 				i.Height = int(value.Int64)
 			}
 		case image.ForeignKeys[0]:
-			if value, ok := values[j].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field game_images", value)
+			if value, ok := values[j].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field game_images", values[j])
 			} else if value.Valid {
-				i.game_images = new(int)
-				*i.game_images = int(value.Int64)
+				i.game_images = new(string)
+				*i.game_images = value.String
 			}
 		default:
 			i.selectValues.Set(columns[j], values[j])
@@ -174,9 +166,6 @@ func (i *Image) String() string {
 	var builder strings.Builder
 	builder.WriteString("Image(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", i.ID))
-	builder.WriteString("xid=")
-	builder.WriteString(i.Xid)
-	builder.WriteString(", ")
 	builder.WriteString("kind=")
 	builder.WriteString(fmt.Sprintf("%v", i.Kind))
 	builder.WriteString(", ")

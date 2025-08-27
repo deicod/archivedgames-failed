@@ -108,7 +108,7 @@ func (ssu *SiteSettingUpdate) ExecX(ctx context.Context) {
 }
 
 func (ssu *SiteSettingUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(sitesetting.Table, sitesetting.Columns, sqlgraph.NewFieldSpec(sitesetting.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sitesetting.Table, sitesetting.Columns, sqlgraph.NewFieldSpec(sitesetting.FieldID, field.TypeString))
 	if ps := ssu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -245,7 +245,7 @@ func (ssuo *SiteSettingUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (ssuo *SiteSettingUpdateOne) sqlSave(ctx context.Context) (_node *SiteSetting, err error) {
-	_spec := sqlgraph.NewUpdateSpec(sitesetting.Table, sitesetting.Columns, sqlgraph.NewFieldSpec(sitesetting.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sitesetting.Table, sitesetting.Columns, sqlgraph.NewFieldSpec(sitesetting.FieldID, field.TypeString))
 	id, ok := ssuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SiteSetting.id" for update`)}

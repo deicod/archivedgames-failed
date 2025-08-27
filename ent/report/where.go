@@ -8,48 +8,58 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.Report {
+func ID(id string) predicate.Report {
 	return predicate.Report(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.Report {
+func IDEQ(id string) predicate.Report {
 	return predicate.Report(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.Report {
+func IDNEQ(id string) predicate.Report {
 	return predicate.Report(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.Report {
+func IDIn(ids ...string) predicate.Report {
 	return predicate.Report(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.Report {
+func IDNotIn(ids ...string) predicate.Report {
 	return predicate.Report(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.Report {
+func IDGT(id string) predicate.Report {
 	return predicate.Report(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.Report {
+func IDGTE(id string) predicate.Report {
 	return predicate.Report(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.Report {
+func IDLT(id string) predicate.Report {
 	return predicate.Report(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.Report {
+func IDLTE(id string) predicate.Report {
 	return predicate.Report(sql.FieldLTE(FieldID, id))
+}
+
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.Report {
+	return predicate.Report(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.Report {
+	return predicate.Report(sql.FieldContainsFold(FieldID, id))
 }
 
 // SubjectType applies equality check predicate on the "subject_type" field. It's identical to SubjectTypeEQ.
@@ -57,9 +67,9 @@ func SubjectType(v string) predicate.Report {
 	return predicate.Report(sql.FieldEQ(FieldSubjectType, v))
 }
 
-// SubjectXid applies equality check predicate on the "subject_xid" field. It's identical to SubjectXidEQ.
-func SubjectXid(v string) predicate.Report {
-	return predicate.Report(sql.FieldEQ(FieldSubjectXid, v))
+// SubjectID applies equality check predicate on the "subject_id" field. It's identical to SubjectIDEQ.
+func SubjectID(v string) predicate.Report {
+	return predicate.Report(sql.FieldEQ(FieldSubjectID, v))
 }
 
 // ReporterID applies equality check predicate on the "reporter_id" field. It's identical to ReporterIDEQ.
@@ -142,69 +152,69 @@ func SubjectTypeContainsFold(v string) predicate.Report {
 	return predicate.Report(sql.FieldContainsFold(FieldSubjectType, v))
 }
 
-// SubjectXidEQ applies the EQ predicate on the "subject_xid" field.
-func SubjectXidEQ(v string) predicate.Report {
-	return predicate.Report(sql.FieldEQ(FieldSubjectXid, v))
+// SubjectIDEQ applies the EQ predicate on the "subject_id" field.
+func SubjectIDEQ(v string) predicate.Report {
+	return predicate.Report(sql.FieldEQ(FieldSubjectID, v))
 }
 
-// SubjectXidNEQ applies the NEQ predicate on the "subject_xid" field.
-func SubjectXidNEQ(v string) predicate.Report {
-	return predicate.Report(sql.FieldNEQ(FieldSubjectXid, v))
+// SubjectIDNEQ applies the NEQ predicate on the "subject_id" field.
+func SubjectIDNEQ(v string) predicate.Report {
+	return predicate.Report(sql.FieldNEQ(FieldSubjectID, v))
 }
 
-// SubjectXidIn applies the In predicate on the "subject_xid" field.
-func SubjectXidIn(vs ...string) predicate.Report {
-	return predicate.Report(sql.FieldIn(FieldSubjectXid, vs...))
+// SubjectIDIn applies the In predicate on the "subject_id" field.
+func SubjectIDIn(vs ...string) predicate.Report {
+	return predicate.Report(sql.FieldIn(FieldSubjectID, vs...))
 }
 
-// SubjectXidNotIn applies the NotIn predicate on the "subject_xid" field.
-func SubjectXidNotIn(vs ...string) predicate.Report {
-	return predicate.Report(sql.FieldNotIn(FieldSubjectXid, vs...))
+// SubjectIDNotIn applies the NotIn predicate on the "subject_id" field.
+func SubjectIDNotIn(vs ...string) predicate.Report {
+	return predicate.Report(sql.FieldNotIn(FieldSubjectID, vs...))
 }
 
-// SubjectXidGT applies the GT predicate on the "subject_xid" field.
-func SubjectXidGT(v string) predicate.Report {
-	return predicate.Report(sql.FieldGT(FieldSubjectXid, v))
+// SubjectIDGT applies the GT predicate on the "subject_id" field.
+func SubjectIDGT(v string) predicate.Report {
+	return predicate.Report(sql.FieldGT(FieldSubjectID, v))
 }
 
-// SubjectXidGTE applies the GTE predicate on the "subject_xid" field.
-func SubjectXidGTE(v string) predicate.Report {
-	return predicate.Report(sql.FieldGTE(FieldSubjectXid, v))
+// SubjectIDGTE applies the GTE predicate on the "subject_id" field.
+func SubjectIDGTE(v string) predicate.Report {
+	return predicate.Report(sql.FieldGTE(FieldSubjectID, v))
 }
 
-// SubjectXidLT applies the LT predicate on the "subject_xid" field.
-func SubjectXidLT(v string) predicate.Report {
-	return predicate.Report(sql.FieldLT(FieldSubjectXid, v))
+// SubjectIDLT applies the LT predicate on the "subject_id" field.
+func SubjectIDLT(v string) predicate.Report {
+	return predicate.Report(sql.FieldLT(FieldSubjectID, v))
 }
 
-// SubjectXidLTE applies the LTE predicate on the "subject_xid" field.
-func SubjectXidLTE(v string) predicate.Report {
-	return predicate.Report(sql.FieldLTE(FieldSubjectXid, v))
+// SubjectIDLTE applies the LTE predicate on the "subject_id" field.
+func SubjectIDLTE(v string) predicate.Report {
+	return predicate.Report(sql.FieldLTE(FieldSubjectID, v))
 }
 
-// SubjectXidContains applies the Contains predicate on the "subject_xid" field.
-func SubjectXidContains(v string) predicate.Report {
-	return predicate.Report(sql.FieldContains(FieldSubjectXid, v))
+// SubjectIDContains applies the Contains predicate on the "subject_id" field.
+func SubjectIDContains(v string) predicate.Report {
+	return predicate.Report(sql.FieldContains(FieldSubjectID, v))
 }
 
-// SubjectXidHasPrefix applies the HasPrefix predicate on the "subject_xid" field.
-func SubjectXidHasPrefix(v string) predicate.Report {
-	return predicate.Report(sql.FieldHasPrefix(FieldSubjectXid, v))
+// SubjectIDHasPrefix applies the HasPrefix predicate on the "subject_id" field.
+func SubjectIDHasPrefix(v string) predicate.Report {
+	return predicate.Report(sql.FieldHasPrefix(FieldSubjectID, v))
 }
 
-// SubjectXidHasSuffix applies the HasSuffix predicate on the "subject_xid" field.
-func SubjectXidHasSuffix(v string) predicate.Report {
-	return predicate.Report(sql.FieldHasSuffix(FieldSubjectXid, v))
+// SubjectIDHasSuffix applies the HasSuffix predicate on the "subject_id" field.
+func SubjectIDHasSuffix(v string) predicate.Report {
+	return predicate.Report(sql.FieldHasSuffix(FieldSubjectID, v))
 }
 
-// SubjectXidEqualFold applies the EqualFold predicate on the "subject_xid" field.
-func SubjectXidEqualFold(v string) predicate.Report {
-	return predicate.Report(sql.FieldEqualFold(FieldSubjectXid, v))
+// SubjectIDEqualFold applies the EqualFold predicate on the "subject_id" field.
+func SubjectIDEqualFold(v string) predicate.Report {
+	return predicate.Report(sql.FieldEqualFold(FieldSubjectID, v))
 }
 
-// SubjectXidContainsFold applies the ContainsFold predicate on the "subject_xid" field.
-func SubjectXidContainsFold(v string) predicate.Report {
-	return predicate.Report(sql.FieldContainsFold(FieldSubjectXid, v))
+// SubjectIDContainsFold applies the ContainsFold predicate on the "subject_id" field.
+func SubjectIDContainsFold(v string) predicate.Report {
+	return predicate.Report(sql.FieldContainsFold(FieldSubjectID, v))
 }
 
 // ReporterIDEQ applies the EQ predicate on the "reporter_id" field.

@@ -6,8 +6,7 @@ import (
     "entgo.io/ent/schema/edge"
     "entgo.io/ent/schema/field"
     "entgo.io/ent/schema"
-
-    xidmixin "github.com/deicod/archivedgames/internal/xidmixin"
+    "github.com/rs/xid"
 )
 
 // Game holds the schema definition for the Game entity.
@@ -21,17 +20,15 @@ func (Game) Annotations() []schema.Annotation {
 }
 
 func (Game) Fields() []ent.Field {
-    return append(
-        append([]ent.Field{}, xidmixin.XIDMixin{}.Fields()...),
-        []ent.Field{
-            field.String("slug").Unique(),
-            field.Enum("platform").Values("C64", "AMIGA", "DOS"),
-            field.String("title"),
-            field.Int("year").Optional().Nillable(),
-            field.String("publisher").Optional(),
-            field.String("developer").Optional(),
-        }...,
-    )
+    return []ent.Field{
+        field.String("id").Immutable().Unique().DefaultFunc(func() string { return xid.New().String() }),
+        field.String("slug").Unique(),
+        field.Enum("platform").Values("C64", "AMIGA", "DOS"),
+        field.String("title"),
+        field.Int("year").Optional().Nillable(),
+        field.String("publisher").Optional(),
+        field.String("developer").Optional(),
+    }
 }
 
 func (Game) Edges() []ent.Edge {

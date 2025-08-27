@@ -9,53 +9,58 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.Image {
+func ID(id string) predicate.Image {
 	return predicate.Image(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.Image {
+func IDEQ(id string) predicate.Image {
 	return predicate.Image(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.Image {
+func IDNEQ(id string) predicate.Image {
 	return predicate.Image(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.Image {
+func IDIn(ids ...string) predicate.Image {
 	return predicate.Image(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.Image {
+func IDNotIn(ids ...string) predicate.Image {
 	return predicate.Image(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.Image {
+func IDGT(id string) predicate.Image {
 	return predicate.Image(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.Image {
+func IDGTE(id string) predicate.Image {
 	return predicate.Image(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.Image {
+func IDLT(id string) predicate.Image {
 	return predicate.Image(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.Image {
+func IDLTE(id string) predicate.Image {
 	return predicate.Image(sql.FieldLTE(FieldID, id))
 }
 
-// Xid applies equality check predicate on the "xid" field. It's identical to XidEQ.
-func Xid(v string) predicate.Image {
-	return predicate.Image(sql.FieldEQ(FieldXid, v))
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.Image {
+	return predicate.Image(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.Image {
+	return predicate.Image(sql.FieldContainsFold(FieldID, id))
 }
 
 // Position applies equality check predicate on the "position" field. It's identical to PositionEQ.
@@ -76,71 +81,6 @@ func Width(v int) predicate.Image {
 // Height applies equality check predicate on the "height" field. It's identical to HeightEQ.
 func Height(v int) predicate.Image {
 	return predicate.Image(sql.FieldEQ(FieldHeight, v))
-}
-
-// XidEQ applies the EQ predicate on the "xid" field.
-func XidEQ(v string) predicate.Image {
-	return predicate.Image(sql.FieldEQ(FieldXid, v))
-}
-
-// XidNEQ applies the NEQ predicate on the "xid" field.
-func XidNEQ(v string) predicate.Image {
-	return predicate.Image(sql.FieldNEQ(FieldXid, v))
-}
-
-// XidIn applies the In predicate on the "xid" field.
-func XidIn(vs ...string) predicate.Image {
-	return predicate.Image(sql.FieldIn(FieldXid, vs...))
-}
-
-// XidNotIn applies the NotIn predicate on the "xid" field.
-func XidNotIn(vs ...string) predicate.Image {
-	return predicate.Image(sql.FieldNotIn(FieldXid, vs...))
-}
-
-// XidGT applies the GT predicate on the "xid" field.
-func XidGT(v string) predicate.Image {
-	return predicate.Image(sql.FieldGT(FieldXid, v))
-}
-
-// XidGTE applies the GTE predicate on the "xid" field.
-func XidGTE(v string) predicate.Image {
-	return predicate.Image(sql.FieldGTE(FieldXid, v))
-}
-
-// XidLT applies the LT predicate on the "xid" field.
-func XidLT(v string) predicate.Image {
-	return predicate.Image(sql.FieldLT(FieldXid, v))
-}
-
-// XidLTE applies the LTE predicate on the "xid" field.
-func XidLTE(v string) predicate.Image {
-	return predicate.Image(sql.FieldLTE(FieldXid, v))
-}
-
-// XidContains applies the Contains predicate on the "xid" field.
-func XidContains(v string) predicate.Image {
-	return predicate.Image(sql.FieldContains(FieldXid, v))
-}
-
-// XidHasPrefix applies the HasPrefix predicate on the "xid" field.
-func XidHasPrefix(v string) predicate.Image {
-	return predicate.Image(sql.FieldHasPrefix(FieldXid, v))
-}
-
-// XidHasSuffix applies the HasSuffix predicate on the "xid" field.
-func XidHasSuffix(v string) predicate.Image {
-	return predicate.Image(sql.FieldHasSuffix(FieldXid, v))
-}
-
-// XidEqualFold applies the EqualFold predicate on the "xid" field.
-func XidEqualFold(v string) predicate.Image {
-	return predicate.Image(sql.FieldEqualFold(FieldXid, v))
-}
-
-// XidContainsFold applies the ContainsFold predicate on the "xid" field.
-func XidContainsFold(v string) predicate.Image {
-	return predicate.Image(sql.FieldContainsFold(FieldXid, v))
 }
 
 // KindEQ applies the EQ predicate on the "kind" field.

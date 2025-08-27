@@ -42,8 +42,7 @@ type FileMutation struct {
 	config
 	op              Op
 	typ             string
-	id              *int
-	xid             *string
+	id              *string
 	_path           *string
 	original_name   *string
 	normalized_name *string
@@ -56,7 +55,7 @@ type FileMutation struct {
 	quarantine      *bool
 	needs_review    *bool
 	clearedFields   map[string]struct{}
-	game            *int
+	game            *string
 	clearedgame     bool
 	done            bool
 	oldValue        func(context.Context) (*File, error)
@@ -83,7 +82,7 @@ func newFileMutation(c config, op Op, opts ...fileOption) *FileMutation {
 }
 
 // withFileID sets the ID field of the mutation.
-func withFileID(id int) fileOption {
+func withFileID(id string) fileOption {
 	return func(m *FileMutation) {
 		var (
 			err   error
@@ -133,9 +132,15 @@ func (m FileMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of File entities.
+func (m *FileMutation) SetID(id string) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *FileMutation) ID() (id int, exists bool) {
+func (m *FileMutation) ID() (id string, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -146,12 +151,12 @@ func (m *FileMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *FileMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *FileMutation) IDs(ctx context.Context) ([]string, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []string{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -159,42 +164,6 @@ func (m *FileMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetXid sets the "xid" field.
-func (m *FileMutation) SetXid(s string) {
-	m.xid = &s
-}
-
-// Xid returns the value of the "xid" field in the mutation.
-func (m *FileMutation) Xid() (r string, exists bool) {
-	v := m.xid
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldXid returns the old "xid" field's value of the File entity.
-// If the File object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FileMutation) OldXid(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldXid is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldXid requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldXid: %w", err)
-	}
-	return oldValue.Xid, nil
-}
-
-// ResetXid resets all changes to the "xid" field.
-func (m *FileMutation) ResetXid() {
-	m.xid = nil
 }
 
 // SetPath sets the "path" field.
@@ -604,7 +573,7 @@ func (m *FileMutation) ResetNeedsReview() {
 }
 
 // SetGameID sets the "game" edge to the Game entity by id.
-func (m *FileMutation) SetGameID(id int) {
+func (m *FileMutation) SetGameID(id string) {
 	m.game = &id
 }
 
@@ -619,7 +588,7 @@ func (m *FileMutation) GameCleared() bool {
 }
 
 // GameID returns the "game" edge ID in the mutation.
-func (m *FileMutation) GameID() (id int, exists bool) {
+func (m *FileMutation) GameID() (id string, exists bool) {
 	if m.game != nil {
 		return *m.game, true
 	}
@@ -629,7 +598,7 @@ func (m *FileMutation) GameID() (id int, exists bool) {
 // GameIDs returns the "game" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // GameID instead. It exists only for internal usage by the builders.
-func (m *FileMutation) GameIDs() (ids []int) {
+func (m *FileMutation) GameIDs() (ids []string) {
 	if id := m.game; id != nil {
 		ids = append(ids, *id)
 	}
@@ -676,10 +645,7 @@ func (m *FileMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FileMutation) Fields() []string {
-	fields := make([]string, 0, 11)
-	if m.xid != nil {
-		fields = append(fields, file.FieldXid)
-	}
+	fields := make([]string, 0, 10)
 	if m._path != nil {
 		fields = append(fields, file.FieldPath)
 	}
@@ -718,8 +684,6 @@ func (m *FileMutation) Fields() []string {
 // schema.
 func (m *FileMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case file.FieldXid:
-		return m.Xid()
 	case file.FieldPath:
 		return m.Path()
 	case file.FieldOriginalName:
@@ -749,8 +713,6 @@ func (m *FileMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *FileMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case file.FieldXid:
-		return m.OldXid(ctx)
 	case file.FieldPath:
 		return m.OldPath(ctx)
 	case file.FieldOriginalName:
@@ -780,13 +742,6 @@ func (m *FileMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *FileMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case file.FieldXid:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetXid(v)
-		return nil
 	case file.FieldPath:
 		v, ok := value.(string)
 		if !ok {
@@ -936,9 +891,6 @@ func (m *FileMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *FileMutation) ResetField(name string) error {
 	switch name {
-	case file.FieldXid:
-		m.ResetXid()
-		return nil
 	case file.FieldPath:
 		m.ResetPath()
 		return nil
@@ -1052,8 +1004,7 @@ type GameMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *int
-	xid           *string
+	id            *string
 	slug          *string
 	platform      *game.Platform
 	title         *string
@@ -1062,11 +1013,11 @@ type GameMutation struct {
 	publisher     *string
 	developer     *string
 	clearedFields map[string]struct{}
-	files         map[int]struct{}
-	removedfiles  map[int]struct{}
+	files         map[string]struct{}
+	removedfiles  map[string]struct{}
 	clearedfiles  bool
-	images        map[int]struct{}
-	removedimages map[int]struct{}
+	images        map[string]struct{}
+	removedimages map[string]struct{}
 	clearedimages bool
 	done          bool
 	oldValue      func(context.Context) (*Game, error)
@@ -1093,7 +1044,7 @@ func newGameMutation(c config, op Op, opts ...gameOption) *GameMutation {
 }
 
 // withGameID sets the ID field of the mutation.
-func withGameID(id int) gameOption {
+func withGameID(id string) gameOption {
 	return func(m *GameMutation) {
 		var (
 			err   error
@@ -1143,9 +1094,15 @@ func (m GameMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Game entities.
+func (m *GameMutation) SetID(id string) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *GameMutation) ID() (id int, exists bool) {
+func (m *GameMutation) ID() (id string, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -1156,12 +1113,12 @@ func (m *GameMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *GameMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *GameMutation) IDs(ctx context.Context) ([]string, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []string{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -1169,42 +1126,6 @@ func (m *GameMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetXid sets the "xid" field.
-func (m *GameMutation) SetXid(s string) {
-	m.xid = &s
-}
-
-// Xid returns the value of the "xid" field in the mutation.
-func (m *GameMutation) Xid() (r string, exists bool) {
-	v := m.xid
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldXid returns the old "xid" field's value of the Game entity.
-// If the Game object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GameMutation) OldXid(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldXid is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldXid requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldXid: %w", err)
-	}
-	return oldValue.Xid, nil
-}
-
-// ResetXid resets all changes to the "xid" field.
-func (m *GameMutation) ResetXid() {
-	m.xid = nil
 }
 
 // SetSlug sets the "slug" field.
@@ -1484,9 +1405,9 @@ func (m *GameMutation) ResetDeveloper() {
 }
 
 // AddFileIDs adds the "files" edge to the File entity by ids.
-func (m *GameMutation) AddFileIDs(ids ...int) {
+func (m *GameMutation) AddFileIDs(ids ...string) {
 	if m.files == nil {
-		m.files = make(map[int]struct{})
+		m.files = make(map[string]struct{})
 	}
 	for i := range ids {
 		m.files[ids[i]] = struct{}{}
@@ -1504,9 +1425,9 @@ func (m *GameMutation) FilesCleared() bool {
 }
 
 // RemoveFileIDs removes the "files" edge to the File entity by IDs.
-func (m *GameMutation) RemoveFileIDs(ids ...int) {
+func (m *GameMutation) RemoveFileIDs(ids ...string) {
 	if m.removedfiles == nil {
-		m.removedfiles = make(map[int]struct{})
+		m.removedfiles = make(map[string]struct{})
 	}
 	for i := range ids {
 		delete(m.files, ids[i])
@@ -1515,7 +1436,7 @@ func (m *GameMutation) RemoveFileIDs(ids ...int) {
 }
 
 // RemovedFiles returns the removed IDs of the "files" edge to the File entity.
-func (m *GameMutation) RemovedFilesIDs() (ids []int) {
+func (m *GameMutation) RemovedFilesIDs() (ids []string) {
 	for id := range m.removedfiles {
 		ids = append(ids, id)
 	}
@@ -1523,7 +1444,7 @@ func (m *GameMutation) RemovedFilesIDs() (ids []int) {
 }
 
 // FilesIDs returns the "files" edge IDs in the mutation.
-func (m *GameMutation) FilesIDs() (ids []int) {
+func (m *GameMutation) FilesIDs() (ids []string) {
 	for id := range m.files {
 		ids = append(ids, id)
 	}
@@ -1538,9 +1459,9 @@ func (m *GameMutation) ResetFiles() {
 }
 
 // AddImageIDs adds the "images" edge to the Image entity by ids.
-func (m *GameMutation) AddImageIDs(ids ...int) {
+func (m *GameMutation) AddImageIDs(ids ...string) {
 	if m.images == nil {
-		m.images = make(map[int]struct{})
+		m.images = make(map[string]struct{})
 	}
 	for i := range ids {
 		m.images[ids[i]] = struct{}{}
@@ -1558,9 +1479,9 @@ func (m *GameMutation) ImagesCleared() bool {
 }
 
 // RemoveImageIDs removes the "images" edge to the Image entity by IDs.
-func (m *GameMutation) RemoveImageIDs(ids ...int) {
+func (m *GameMutation) RemoveImageIDs(ids ...string) {
 	if m.removedimages == nil {
-		m.removedimages = make(map[int]struct{})
+		m.removedimages = make(map[string]struct{})
 	}
 	for i := range ids {
 		delete(m.images, ids[i])
@@ -1569,7 +1490,7 @@ func (m *GameMutation) RemoveImageIDs(ids ...int) {
 }
 
 // RemovedImages returns the removed IDs of the "images" edge to the Image entity.
-func (m *GameMutation) RemovedImagesIDs() (ids []int) {
+func (m *GameMutation) RemovedImagesIDs() (ids []string) {
 	for id := range m.removedimages {
 		ids = append(ids, id)
 	}
@@ -1577,7 +1498,7 @@ func (m *GameMutation) RemovedImagesIDs() (ids []int) {
 }
 
 // ImagesIDs returns the "images" edge IDs in the mutation.
-func (m *GameMutation) ImagesIDs() (ids []int) {
+func (m *GameMutation) ImagesIDs() (ids []string) {
 	for id := range m.images {
 		ids = append(ids, id)
 	}
@@ -1625,10 +1546,7 @@ func (m *GameMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GameMutation) Fields() []string {
-	fields := make([]string, 0, 7)
-	if m.xid != nil {
-		fields = append(fields, game.FieldXid)
-	}
+	fields := make([]string, 0, 6)
 	if m.slug != nil {
 		fields = append(fields, game.FieldSlug)
 	}
@@ -1655,8 +1573,6 @@ func (m *GameMutation) Fields() []string {
 // schema.
 func (m *GameMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case game.FieldXid:
-		return m.Xid()
 	case game.FieldSlug:
 		return m.Slug()
 	case game.FieldPlatform:
@@ -1678,8 +1594,6 @@ func (m *GameMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *GameMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case game.FieldXid:
-		return m.OldXid(ctx)
 	case game.FieldSlug:
 		return m.OldSlug(ctx)
 	case game.FieldPlatform:
@@ -1701,13 +1615,6 @@ func (m *GameMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *GameMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case game.FieldXid:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetXid(v)
-		return nil
 	case game.FieldSlug:
 		v, ok := value.(string)
 		if !ok {
@@ -1835,9 +1742,6 @@ func (m *GameMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *GameMutation) ResetField(name string) error {
 	switch name {
-	case game.FieldXid:
-		m.ResetXid()
-		return nil
 	case game.FieldSlug:
 		m.ResetSlug()
 		return nil
@@ -1975,8 +1879,7 @@ type ImageMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *int
-	xid           *string
+	id            *string
 	kind          *image.Kind
 	position      *int
 	addposition   *int
@@ -1986,7 +1889,7 @@ type ImageMutation struct {
 	height        *int
 	addheight     *int
 	clearedFields map[string]struct{}
-	game          *int
+	game          *string
 	clearedgame   bool
 	done          bool
 	oldValue      func(context.Context) (*Image, error)
@@ -2013,7 +1916,7 @@ func newImageMutation(c config, op Op, opts ...imageOption) *ImageMutation {
 }
 
 // withImageID sets the ID field of the mutation.
-func withImageID(id int) imageOption {
+func withImageID(id string) imageOption {
 	return func(m *ImageMutation) {
 		var (
 			err   error
@@ -2063,9 +1966,15 @@ func (m ImageMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Image entities.
+func (m *ImageMutation) SetID(id string) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ImageMutation) ID() (id int, exists bool) {
+func (m *ImageMutation) ID() (id string, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2076,12 +1985,12 @@ func (m *ImageMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ImageMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *ImageMutation) IDs(ctx context.Context) ([]string, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []string{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -2089,42 +1998,6 @@ func (m *ImageMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetXid sets the "xid" field.
-func (m *ImageMutation) SetXid(s string) {
-	m.xid = &s
-}
-
-// Xid returns the value of the "xid" field in the mutation.
-func (m *ImageMutation) Xid() (r string, exists bool) {
-	v := m.xid
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldXid returns the old "xid" field's value of the Image entity.
-// If the Image object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ImageMutation) OldXid(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldXid is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldXid requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldXid: %w", err)
-	}
-	return oldValue.Xid, nil
-}
-
-// ResetXid resets all changes to the "xid" field.
-func (m *ImageMutation) ResetXid() {
-	m.xid = nil
 }
 
 // SetKind sets the "kind" field.
@@ -2368,7 +2241,7 @@ func (m *ImageMutation) ResetHeight() {
 }
 
 // SetGameID sets the "game" edge to the Game entity by id.
-func (m *ImageMutation) SetGameID(id int) {
+func (m *ImageMutation) SetGameID(id string) {
 	m.game = &id
 }
 
@@ -2383,7 +2256,7 @@ func (m *ImageMutation) GameCleared() bool {
 }
 
 // GameID returns the "game" edge ID in the mutation.
-func (m *ImageMutation) GameID() (id int, exists bool) {
+func (m *ImageMutation) GameID() (id string, exists bool) {
 	if m.game != nil {
 		return *m.game, true
 	}
@@ -2393,7 +2266,7 @@ func (m *ImageMutation) GameID() (id int, exists bool) {
 // GameIDs returns the "game" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // GameID instead. It exists only for internal usage by the builders.
-func (m *ImageMutation) GameIDs() (ids []int) {
+func (m *ImageMutation) GameIDs() (ids []string) {
 	if id := m.game; id != nil {
 		ids = append(ids, *id)
 	}
@@ -2440,10 +2313,7 @@ func (m *ImageMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ImageMutation) Fields() []string {
-	fields := make([]string, 0, 6)
-	if m.xid != nil {
-		fields = append(fields, image.FieldXid)
-	}
+	fields := make([]string, 0, 5)
 	if m.kind != nil {
 		fields = append(fields, image.FieldKind)
 	}
@@ -2467,8 +2337,6 @@ func (m *ImageMutation) Fields() []string {
 // schema.
 func (m *ImageMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case image.FieldXid:
-		return m.Xid()
 	case image.FieldKind:
 		return m.Kind()
 	case image.FieldPosition:
@@ -2488,8 +2356,6 @@ func (m *ImageMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ImageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case image.FieldXid:
-		return m.OldXid(ctx)
 	case image.FieldKind:
 		return m.OldKind(ctx)
 	case image.FieldPosition:
@@ -2509,13 +2375,6 @@ func (m *ImageMutation) OldField(ctx context.Context, name string) (ent.Value, e
 // type.
 func (m *ImageMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case image.FieldXid:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetXid(v)
-		return nil
 	case image.FieldKind:
 		v, ok := value.(image.Kind)
 		if !ok {
@@ -2639,9 +2498,6 @@ func (m *ImageMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ImageMutation) ResetField(name string) error {
 	switch name {
-	case image.FieldXid:
-		m.ResetXid()
-		return nil
 	case image.FieldKind:
 		m.ResetKind()
 		return nil
@@ -2740,9 +2596,9 @@ type ReportMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *int
+	id            *string
 	subject_type  *string
-	subject_xid   *string
+	subject_id    *string
 	reporter_id   *string
 	reason        *string
 	note          *string
@@ -2773,7 +2629,7 @@ func newReportMutation(c config, op Op, opts ...reportOption) *ReportMutation {
 }
 
 // withReportID sets the ID field of the mutation.
-func withReportID(id int) reportOption {
+func withReportID(id string) reportOption {
 	return func(m *ReportMutation) {
 		var (
 			err   error
@@ -2823,9 +2679,15 @@ func (m ReportMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Report entities.
+func (m *ReportMutation) SetID(id string) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ReportMutation) ID() (id int, exists bool) {
+func (m *ReportMutation) ID() (id string, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2836,12 +2698,12 @@ func (m *ReportMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ReportMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *ReportMutation) IDs(ctx context.Context) ([]string, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []string{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -2887,40 +2749,40 @@ func (m *ReportMutation) ResetSubjectType() {
 	m.subject_type = nil
 }
 
-// SetSubjectXid sets the "subject_xid" field.
-func (m *ReportMutation) SetSubjectXid(s string) {
-	m.subject_xid = &s
+// SetSubjectID sets the "subject_id" field.
+func (m *ReportMutation) SetSubjectID(s string) {
+	m.subject_id = &s
 }
 
-// SubjectXid returns the value of the "subject_xid" field in the mutation.
-func (m *ReportMutation) SubjectXid() (r string, exists bool) {
-	v := m.subject_xid
+// SubjectID returns the value of the "subject_id" field in the mutation.
+func (m *ReportMutation) SubjectID() (r string, exists bool) {
+	v := m.subject_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldSubjectXid returns the old "subject_xid" field's value of the Report entity.
+// OldSubjectID returns the old "subject_id" field's value of the Report entity.
 // If the Report object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ReportMutation) OldSubjectXid(ctx context.Context) (v string, err error) {
+func (m *ReportMutation) OldSubjectID(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSubjectXid is only allowed on UpdateOne operations")
+		return v, errors.New("OldSubjectID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSubjectXid requires an ID field in the mutation")
+		return v, errors.New("OldSubjectID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSubjectXid: %w", err)
+		return v, fmt.Errorf("querying old value for OldSubjectID: %w", err)
 	}
-	return oldValue.SubjectXid, nil
+	return oldValue.SubjectID, nil
 }
 
-// ResetSubjectXid resets all changes to the "subject_xid" field.
-func (m *ReportMutation) ResetSubjectXid() {
-	m.subject_xid = nil
+// ResetSubjectID resets all changes to the "subject_id" field.
+func (m *ReportMutation) ResetSubjectID() {
+	m.subject_id = nil
 }
 
 // SetReporterID sets the "reporter_id" field.
@@ -3131,8 +2993,8 @@ func (m *ReportMutation) Fields() []string {
 	if m.subject_type != nil {
 		fields = append(fields, report.FieldSubjectType)
 	}
-	if m.subject_xid != nil {
-		fields = append(fields, report.FieldSubjectXid)
+	if m.subject_id != nil {
+		fields = append(fields, report.FieldSubjectID)
 	}
 	if m.reporter_id != nil {
 		fields = append(fields, report.FieldReporterID)
@@ -3156,8 +3018,8 @@ func (m *ReportMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case report.FieldSubjectType:
 		return m.SubjectType()
-	case report.FieldSubjectXid:
-		return m.SubjectXid()
+	case report.FieldSubjectID:
+		return m.SubjectID()
 	case report.FieldReporterID:
 		return m.ReporterID()
 	case report.FieldReason:
@@ -3177,8 +3039,8 @@ func (m *ReportMutation) OldField(ctx context.Context, name string) (ent.Value, 
 	switch name {
 	case report.FieldSubjectType:
 		return m.OldSubjectType(ctx)
-	case report.FieldSubjectXid:
-		return m.OldSubjectXid(ctx)
+	case report.FieldSubjectID:
+		return m.OldSubjectID(ctx)
 	case report.FieldReporterID:
 		return m.OldReporterID(ctx)
 	case report.FieldReason:
@@ -3203,12 +3065,12 @@ func (m *ReportMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetSubjectType(v)
 		return nil
-	case report.FieldSubjectXid:
+	case report.FieldSubjectID:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetSubjectXid(v)
+		m.SetSubjectID(v)
 		return nil
 	case report.FieldReporterID:
 		v, ok := value.(string)
@@ -3305,8 +3167,8 @@ func (m *ReportMutation) ResetField(name string) error {
 	case report.FieldSubjectType:
 		m.ResetSubjectType()
 		return nil
-	case report.FieldSubjectXid:
-		m.ResetSubjectXid()
+	case report.FieldSubjectID:
+		m.ResetSubjectID()
 		return nil
 	case report.FieldReporterID:
 		m.ResetReporterID()
@@ -3377,7 +3239,7 @@ type SiteSettingMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *int
+	id            *string
 	key           *string
 	value         *json.RawMessage
 	appendvalue   json.RawMessage
@@ -3408,7 +3270,7 @@ func newSiteSettingMutation(c config, op Op, opts ...sitesettingOption) *SiteSet
 }
 
 // withSiteSettingID sets the ID field of the mutation.
-func withSiteSettingID(id int) sitesettingOption {
+func withSiteSettingID(id string) sitesettingOption {
 	return func(m *SiteSettingMutation) {
 		var (
 			err   error
@@ -3458,9 +3320,15 @@ func (m SiteSettingMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of SiteSetting entities.
+func (m *SiteSettingMutation) SetID(id string) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *SiteSettingMutation) ID() (id int, exists bool) {
+func (m *SiteSettingMutation) ID() (id string, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -3471,12 +3339,12 @@ func (m *SiteSettingMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *SiteSettingMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *SiteSettingMutation) IDs(ctx context.Context) ([]string, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []string{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -3850,8 +3718,7 @@ type UserShadowMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *int
-	xid           *string
+	id            *string
 	keycloak_sub  *string
 	handle        *string
 	display_name  *string
@@ -3881,7 +3748,7 @@ func newUserShadowMutation(c config, op Op, opts ...usershadowOption) *UserShado
 }
 
 // withUserShadowID sets the ID field of the mutation.
-func withUserShadowID(id int) usershadowOption {
+func withUserShadowID(id string) usershadowOption {
 	return func(m *UserShadowMutation) {
 		var (
 			err   error
@@ -3931,9 +3798,15 @@ func (m UserShadowMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of UserShadow entities.
+func (m *UserShadowMutation) SetID(id string) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *UserShadowMutation) ID() (id int, exists bool) {
+func (m *UserShadowMutation) ID() (id string, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -3944,12 +3817,12 @@ func (m *UserShadowMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *UserShadowMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *UserShadowMutation) IDs(ctx context.Context) ([]string, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []string{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -3957,42 +3830,6 @@ func (m *UserShadowMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetXid sets the "xid" field.
-func (m *UserShadowMutation) SetXid(s string) {
-	m.xid = &s
-}
-
-// Xid returns the value of the "xid" field in the mutation.
-func (m *UserShadowMutation) Xid() (r string, exists bool) {
-	v := m.xid
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldXid returns the old "xid" field's value of the UserShadow entity.
-// If the UserShadow object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserShadowMutation) OldXid(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldXid is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldXid requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldXid: %w", err)
-	}
-	return oldValue.Xid, nil
-}
-
-// ResetXid resets all changes to the "xid" field.
-func (m *UserShadowMutation) ResetXid() {
-	m.xid = nil
 }
 
 // SetKeycloakSub sets the "keycloak_sub" field.
@@ -4163,10 +4000,7 @@ func (m *UserShadowMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserShadowMutation) Fields() []string {
-	fields := make([]string, 0, 4)
-	if m.xid != nil {
-		fields = append(fields, usershadow.FieldXid)
-	}
+	fields := make([]string, 0, 3)
 	if m.keycloak_sub != nil {
 		fields = append(fields, usershadow.FieldKeycloakSub)
 	}
@@ -4184,8 +4018,6 @@ func (m *UserShadowMutation) Fields() []string {
 // schema.
 func (m *UserShadowMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case usershadow.FieldXid:
-		return m.Xid()
 	case usershadow.FieldKeycloakSub:
 		return m.KeycloakSub()
 	case usershadow.FieldHandle:
@@ -4201,8 +4033,6 @@ func (m *UserShadowMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *UserShadowMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case usershadow.FieldXid:
-		return m.OldXid(ctx)
 	case usershadow.FieldKeycloakSub:
 		return m.OldKeycloakSub(ctx)
 	case usershadow.FieldHandle:
@@ -4218,13 +4048,6 @@ func (m *UserShadowMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *UserShadowMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case usershadow.FieldXid:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetXid(v)
-		return nil
 	case usershadow.FieldKeycloakSub:
 		v, ok := value.(string)
 		if !ok {
@@ -4310,9 +4133,6 @@ func (m *UserShadowMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *UserShadowMutation) ResetField(name string) error {
 	switch name {
-	case usershadow.FieldXid:
-		m.ResetXid()
-		return nil
 	case usershadow.FieldKeycloakSub:
 		m.ResetKeycloakSub()
 		return nil

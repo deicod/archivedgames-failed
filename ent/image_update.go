@@ -120,7 +120,7 @@ func (iu *ImageUpdate) AddHeight(i int) *ImageUpdate {
 }
 
 // SetGameID sets the "game" edge to the Game entity by ID.
-func (iu *ImageUpdate) SetGameID(id int) *ImageUpdate {
+func (iu *ImageUpdate) SetGameID(id string) *ImageUpdate {
 	iu.mutation.SetGameID(id)
 	return iu
 }
@@ -185,7 +185,7 @@ func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := iu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(image.Table, image.Columns, sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(image.Table, image.Columns, sqlgraph.NewFieldSpec(image.FieldID, field.TypeString))
 	if ps := iu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -225,7 +225,7 @@ func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{image.GameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -238,7 +238,7 @@ func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{image.GameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -358,7 +358,7 @@ func (iuo *ImageUpdateOne) AddHeight(i int) *ImageUpdateOne {
 }
 
 // SetGameID sets the "game" edge to the Game entity by ID.
-func (iuo *ImageUpdateOne) SetGameID(id int) *ImageUpdateOne {
+func (iuo *ImageUpdateOne) SetGameID(id string) *ImageUpdateOne {
 	iuo.mutation.SetGameID(id)
 	return iuo
 }
@@ -436,7 +436,7 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 	if err := iuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(image.Table, image.Columns, sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(image.Table, image.Columns, sqlgraph.NewFieldSpec(image.FieldID, field.TypeString))
 	id, ok := iuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Image.id" for update`)}
@@ -493,7 +493,7 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 			Columns: []string{image.GameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -506,7 +506,7 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 			Columns: []string{image.GameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

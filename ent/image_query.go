@@ -109,8 +109,8 @@ func (iq *ImageQuery) FirstX(ctx context.Context) *Image {
 
 // FirstID returns the first Image ID from the query.
 // Returns a *NotFoundError when no Image ID was found.
-func (iq *ImageQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (iq *ImageQuery) FirstID(ctx context.Context) (id string, err error) {
+	var ids []string
 	if ids, err = iq.Limit(1).IDs(setContextOp(ctx, iq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (iq *ImageQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (iq *ImageQuery) FirstIDX(ctx context.Context) int {
+func (iq *ImageQuery) FirstIDX(ctx context.Context) string {
 	id, err := iq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (iq *ImageQuery) OnlyX(ctx context.Context) *Image {
 // OnlyID is like Only, but returns the only Image ID in the query.
 // Returns a *NotSingularError when more than one Image ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (iq *ImageQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (iq *ImageQuery) OnlyID(ctx context.Context) (id string, err error) {
+	var ids []string
 	if ids, err = iq.Limit(2).IDs(setContextOp(ctx, iq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (iq *ImageQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (iq *ImageQuery) OnlyIDX(ctx context.Context) int {
+func (iq *ImageQuery) OnlyIDX(ctx context.Context) string {
 	id, err := iq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (iq *ImageQuery) AllX(ctx context.Context) []*Image {
 }
 
 // IDs executes the query and returns a list of Image IDs.
-func (iq *ImageQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (iq *ImageQuery) IDs(ctx context.Context) (ids []string, err error) {
 	if iq.ctx.Unique == nil && iq.path != nil {
 		iq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (iq *ImageQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (iq *ImageQuery) IDsX(ctx context.Context) []int {
+func (iq *ImageQuery) IDsX(ctx context.Context) []string {
 	ids, err := iq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -301,12 +301,12 @@ func (iq *ImageQuery) WithGame(opts ...func(*GameQuery)) *ImageQuery {
 // Example:
 //
 //	var v []struct {
-//		Xid string `json:"xid,omitempty"`
+//		Kind image.Kind `json:"kind,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Image.Query().
-//		GroupBy(image.FieldXid).
+//		GroupBy(image.FieldKind).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (iq *ImageQuery) GroupBy(field string, fields ...string) *ImageGroupBy {
@@ -324,11 +324,11 @@ func (iq *ImageQuery) GroupBy(field string, fields ...string) *ImageGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Xid string `json:"xid,omitempty"`
+//		Kind image.Kind `json:"kind,omitempty"`
 //	}
 //
 //	client.Image.Query().
-//		Select(image.FieldXid).
+//		Select(image.FieldKind).
 //		Scan(ctx, &v)
 func (iq *ImageQuery) Select(fields ...string) *ImageSelect {
 	iq.ctx.Fields = append(iq.ctx.Fields, fields...)
@@ -420,8 +420,8 @@ func (iq *ImageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Image,
 }
 
 func (iq *ImageQuery) loadGame(ctx context.Context, query *GameQuery, nodes []*Image, init func(*Image), assign func(*Image, *Game)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Image)
+	ids := make([]string, 0, len(nodes))
+	nodeids := make(map[string][]*Image)
 	for i := range nodes {
 		if nodes[i].game_images == nil {
 			continue
@@ -465,7 +465,7 @@ func (iq *ImageQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (iq *ImageQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(image.Table, image.Columns, sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(image.Table, image.Columns, sqlgraph.NewFieldSpec(image.FieldID, field.TypeString))
 	_spec.From = iq.sql
 	if unique := iq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

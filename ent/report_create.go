@@ -25,9 +25,9 @@ func (rc *ReportCreate) SetSubjectType(s string) *ReportCreate {
 	return rc
 }
 
-// SetSubjectXid sets the "subject_xid" field.
-func (rc *ReportCreate) SetSubjectXid(s string) *ReportCreate {
-	rc.mutation.SetSubjectXid(s)
+// SetSubjectID sets the "subject_id" field.
+func (rc *ReportCreate) SetSubjectID(s string) *ReportCreate {
+	rc.mutation.SetSubjectID(s)
 	return rc
 }
 
@@ -79,6 +79,20 @@ func (rc *ReportCreate) SetNillableStatus(r *report.Status) *ReportCreate {
 	return rc
 }
 
+// SetID sets the "id" field.
+func (rc *ReportCreate) SetID(s string) *ReportCreate {
+	rc.mutation.SetID(s)
+	return rc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (rc *ReportCreate) SetNillableID(s *string) *ReportCreate {
+	if s != nil {
+		rc.SetID(*s)
+	}
+	return rc
+}
+
 // Mutation returns the ReportMutation object of the builder.
 func (rc *ReportCreate) Mutation() *ReportMutation {
 	return rc.mutation
@@ -118,6 +132,10 @@ func (rc *ReportCreate) defaults() {
 		v := report.DefaultStatus
 		rc.mutation.SetStatus(v)
 	}
+	if _, ok := rc.mutation.ID(); !ok {
+		v := report.DefaultID()
+		rc.mutation.SetID(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -125,8 +143,8 @@ func (rc *ReportCreate) check() error {
 	if _, ok := rc.mutation.SubjectType(); !ok {
 		return &ValidationError{Name: "subject_type", err: errors.New(`ent: missing required field "Report.subject_type"`)}
 	}
-	if _, ok := rc.mutation.SubjectXid(); !ok {
-		return &ValidationError{Name: "subject_xid", err: errors.New(`ent: missing required field "Report.subject_xid"`)}
+	if _, ok := rc.mutation.SubjectID(); !ok {
+		return &ValidationError{Name: "subject_id", err: errors.New(`ent: missing required field "Report.subject_id"`)}
 	}
 	if _, ok := rc.mutation.Reason(); !ok {
 		return &ValidationError{Name: "reason", err: errors.New(`ent: missing required field "Report.reason"`)}
@@ -153,8 +171,13 @@ func (rc *ReportCreate) sqlSave(ctx context.Context) (*Report, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(string); ok {
+			_node.ID = id
+		} else {
+			return nil, fmt.Errorf("unexpected Report.ID type: %T", _spec.ID.Value)
+		}
+	}
 	rc.mutation.id = &_node.ID
 	rc.mutation.done = true
 	return _node, nil
@@ -163,15 +186,19 @@ func (rc *ReportCreate) sqlSave(ctx context.Context) (*Report, error) {
 func (rc *ReportCreate) createSpec() (*Report, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Report{config: rc.config}
-		_spec = sqlgraph.NewCreateSpec(report.Table, sqlgraph.NewFieldSpec(report.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(report.Table, sqlgraph.NewFieldSpec(report.FieldID, field.TypeString))
 	)
+	if id, ok := rc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := rc.mutation.SubjectType(); ok {
 		_spec.SetField(report.FieldSubjectType, field.TypeString, value)
 		_node.SubjectType = value
 	}
-	if value, ok := rc.mutation.SubjectXid(); ok {
-		_spec.SetField(report.FieldSubjectXid, field.TypeString, value)
-		_node.SubjectXid = value
+	if value, ok := rc.mutation.SubjectID(); ok {
+		_spec.SetField(report.FieldSubjectID, field.TypeString, value)
+		_node.SubjectID = value
 	}
 	if value, ok := rc.mutation.ReporterID(); ok {
 		_spec.SetField(report.FieldReporterID, field.TypeString, value)
@@ -237,10 +264,6 @@ func (rcb *ReportCreateBulk) Save(ctx context.Context) ([]*Report, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
-				}
 				mutation.done = true
 				return nodes[i], nil
 			})

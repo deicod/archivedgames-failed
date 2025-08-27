@@ -1,13 +1,12 @@
 package schema
 
 import (
-    xidmixin "github.com/deicod/archivedgames/internal/xidmixin"
-
     "entgo.io/ent"
     "entgo.io/ent/schema/edge"
     "entgo.io/ent/schema/field"
     "entgo.io/ent/schema"
     "entgo.io/contrib/entgql"
+    "github.com/rs/xid"
 )
 
 // Image holds the schema definition for the Image entity.
@@ -20,16 +19,14 @@ func (Image) Annotations() []schema.Annotation {
 }
 
 func (Image) Fields() []ent.Field {
-    return append(
-        append([]ent.Field{}, xidmixin.XIDMixin{}.Fields()...),
-        []ent.Field{
-            field.Enum("kind").Values("COVER", "GALLERY"),
-            field.Int("position").Default(0),
-            field.String("s3_key"),
-            field.Int("width"),
-            field.Int("height"),
-        }...,
-    )
+    return []ent.Field{
+        field.String("id").Immutable().Unique().DefaultFunc(func() string { return xid.New().String() }),
+        field.Enum("kind").Values("COVER", "GALLERY"),
+        field.Int("position").Default(0),
+        field.String("s3_key"),
+        field.Int("width"),
+        field.Int("height"),
+    }
 }
 
 func (Image) Edges() []ent.Edge {

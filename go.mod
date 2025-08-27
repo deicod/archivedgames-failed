@@ -18,7 +18,6 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/rs/xid v1.5.0
 	github.com/vektah/gqlparser/v2 v2.5.30
-	golang.org/x/sync v0.15.0
 )
 
 require (
@@ -67,6 +66,7 @@ require (
 	golang.org/x/exp v0.0.0-20221230185412-738e83a70c30 // indirect
 	golang.org/x/mod v0.25.0 // indirect
 	golang.org/x/net v0.41.0 // indirect
+	golang.org/x/sync v0.15.0 // indirect
 	golang.org/x/text v0.26.0 // indirect
 	golang.org/x/tools v0.34.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

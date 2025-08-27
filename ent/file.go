@@ -16,9 +16,7 @@ import (
 type File struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// Xid holds the value of the "xid" field.
-	Xid string `json:"xid,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Path holds the value of the "path" field.
 	Path string `json:"path,omitempty"`
 	// OriginalName holds the value of the "original_name" field.
@@ -42,7 +40,7 @@ type File struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FileQuery when eager-loading is set.
 	Edges        FileEdges `json:"edges"`
-	game_files   *int
+	game_files   *string
 	selectValues sql.SelectValues
 }
 
@@ -75,12 +73,12 @@ func (*File) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case file.FieldQuarantine, file.FieldNeedsReview:
 			values[i] = new(sql.NullBool)
-		case file.FieldID, file.FieldSizeBytes:
+		case file.FieldSizeBytes:
 			values[i] = new(sql.NullInt64)
-		case file.FieldXid, file.FieldPath, file.FieldOriginalName, file.FieldNormalizedName, file.FieldChecksum, file.FieldMimeType, file.FieldFormat, file.FieldSource:
+		case file.FieldID, file.FieldPath, file.FieldOriginalName, file.FieldNormalizedName, file.FieldChecksum, file.FieldMimeType, file.FieldFormat, file.FieldSource:
 			values[i] = new(sql.NullString)
 		case file.ForeignKeys[0]: // game_files
-			values[i] = new(sql.NullInt64)
+			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -97,16 +95,10 @@ func (f *File) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case file.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
-			}
-			f.ID = int(value.Int64)
-		case file.FieldXid:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field xid", values[i])
+				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				f.Xid = value.String
+				f.ID = value.String
 			}
 		case file.FieldPath:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -169,11 +161,11 @@ func (f *File) assignValues(columns []string, values []any) error {
 				f.NeedsReview = value.Bool
 			}
 		case file.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field game_files", value)
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field game_files", values[i])
 			} else if value.Valid {
-				f.game_files = new(int)
-				*f.game_files = int(value.Int64)
+				f.game_files = new(string)
+				*f.game_files = value.String
 			}
 		default:
 			f.selectValues.Set(columns[i], values[i])
@@ -216,9 +208,6 @@ func (f *File) String() string {
 	var builder strings.Builder
 	builder.WriteString("File(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", f.ID))
-	builder.WriteString("xid=")
-	builder.WriteString(f.Xid)
-	builder.WriteString(", ")
 	builder.WriteString("path=")
 	builder.WriteString(f.Path)
 	builder.WriteString(", ")

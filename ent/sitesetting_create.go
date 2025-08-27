@@ -46,6 +46,20 @@ func (ssc *SiteSettingCreate) SetNillablePublic(b *bool) *SiteSettingCreate {
 	return ssc
 }
 
+// SetID sets the "id" field.
+func (ssc *SiteSettingCreate) SetID(s string) *SiteSettingCreate {
+	ssc.mutation.SetID(s)
+	return ssc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (ssc *SiteSettingCreate) SetNillableID(s *string) *SiteSettingCreate {
+	if s != nil {
+		ssc.SetID(*s)
+	}
+	return ssc
+}
+
 // Mutation returns the SiteSettingMutation object of the builder.
 func (ssc *SiteSettingCreate) Mutation() *SiteSettingMutation {
 	return ssc.mutation
@@ -85,6 +99,10 @@ func (ssc *SiteSettingCreate) defaults() {
 		v := sitesetting.DefaultPublic
 		ssc.mutation.SetPublic(v)
 	}
+	if _, ok := ssc.mutation.ID(); !ok {
+		v := sitesetting.DefaultID()
+		ssc.mutation.SetID(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -109,8 +127,13 @@ func (ssc *SiteSettingCreate) sqlSave(ctx context.Context) (*SiteSetting, error)
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(string); ok {
+			_node.ID = id
+		} else {
+			return nil, fmt.Errorf("unexpected SiteSetting.ID type: %T", _spec.ID.Value)
+		}
+	}
 	ssc.mutation.id = &_node.ID
 	ssc.mutation.done = true
 	return _node, nil
@@ -119,8 +142,12 @@ func (ssc *SiteSettingCreate) sqlSave(ctx context.Context) (*SiteSetting, error)
 func (ssc *SiteSettingCreate) createSpec() (*SiteSetting, *sqlgraph.CreateSpec) {
 	var (
 		_node = &SiteSetting{config: ssc.config}
-		_spec = sqlgraph.NewCreateSpec(sitesetting.Table, sqlgraph.NewFieldSpec(sitesetting.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(sitesetting.Table, sqlgraph.NewFieldSpec(sitesetting.FieldID, field.TypeString))
 	)
+	if id, ok := ssc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := ssc.mutation.Key(); ok {
 		_spec.SetField(sitesetting.FieldKey, field.TypeString, value)
 		_node.Key = value
@@ -181,10 +208,6 @@ func (sscb *SiteSettingCreateBulk) Save(ctx context.Context) ([]*SiteSetting, er
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
-				}
 				mutation.done = true
 				return nodes[i], nil
 			})

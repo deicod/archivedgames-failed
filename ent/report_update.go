@@ -41,16 +41,16 @@ func (ru *ReportUpdate) SetNillableSubjectType(s *string) *ReportUpdate {
 	return ru
 }
 
-// SetSubjectXid sets the "subject_xid" field.
-func (ru *ReportUpdate) SetSubjectXid(s string) *ReportUpdate {
-	ru.mutation.SetSubjectXid(s)
+// SetSubjectID sets the "subject_id" field.
+func (ru *ReportUpdate) SetSubjectID(s string) *ReportUpdate {
+	ru.mutation.SetSubjectID(s)
 	return ru
 }
 
-// SetNillableSubjectXid sets the "subject_xid" field if the given value is not nil.
-func (ru *ReportUpdate) SetNillableSubjectXid(s *string) *ReportUpdate {
+// SetNillableSubjectID sets the "subject_id" field if the given value is not nil.
+func (ru *ReportUpdate) SetNillableSubjectID(s *string) *ReportUpdate {
 	if s != nil {
-		ru.SetSubjectXid(*s)
+		ru.SetSubjectID(*s)
 	}
 	return ru
 }
@@ -169,7 +169,7 @@ func (ru *ReportUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := ru.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(report.Table, report.Columns, sqlgraph.NewFieldSpec(report.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(report.Table, report.Columns, sqlgraph.NewFieldSpec(report.FieldID, field.TypeString))
 	if ps := ru.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -180,8 +180,8 @@ func (ru *ReportUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ru.mutation.SubjectType(); ok {
 		_spec.SetField(report.FieldSubjectType, field.TypeString, value)
 	}
-	if value, ok := ru.mutation.SubjectXid(); ok {
-		_spec.SetField(report.FieldSubjectXid, field.TypeString, value)
+	if value, ok := ru.mutation.SubjectID(); ok {
+		_spec.SetField(report.FieldSubjectID, field.TypeString, value)
 	}
 	if value, ok := ru.mutation.ReporterID(); ok {
 		_spec.SetField(report.FieldReporterID, field.TypeString, value)
@@ -235,16 +235,16 @@ func (ruo *ReportUpdateOne) SetNillableSubjectType(s *string) *ReportUpdateOne {
 	return ruo
 }
 
-// SetSubjectXid sets the "subject_xid" field.
-func (ruo *ReportUpdateOne) SetSubjectXid(s string) *ReportUpdateOne {
-	ruo.mutation.SetSubjectXid(s)
+// SetSubjectID sets the "subject_id" field.
+func (ruo *ReportUpdateOne) SetSubjectID(s string) *ReportUpdateOne {
+	ruo.mutation.SetSubjectID(s)
 	return ruo
 }
 
-// SetNillableSubjectXid sets the "subject_xid" field if the given value is not nil.
-func (ruo *ReportUpdateOne) SetNillableSubjectXid(s *string) *ReportUpdateOne {
+// SetNillableSubjectID sets the "subject_id" field if the given value is not nil.
+func (ruo *ReportUpdateOne) SetNillableSubjectID(s *string) *ReportUpdateOne {
 	if s != nil {
-		ruo.SetSubjectXid(*s)
+		ruo.SetSubjectID(*s)
 	}
 	return ruo
 }
@@ -376,7 +376,7 @@ func (ruo *ReportUpdateOne) sqlSave(ctx context.Context) (_node *Report, err err
 	if err := ruo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(report.Table, report.Columns, sqlgraph.NewFieldSpec(report.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(report.Table, report.Columns, sqlgraph.NewFieldSpec(report.FieldID, field.TypeString))
 	id, ok := ruo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Report.id" for update`)}
@@ -404,8 +404,8 @@ func (ruo *ReportUpdateOne) sqlSave(ctx context.Context) (_node *Report, err err
 	if value, ok := ruo.mutation.SubjectType(); ok {
 		_spec.SetField(report.FieldSubjectType, field.TypeString, value)
 	}
-	if value, ok := ruo.mutation.SubjectXid(); ok {
-		_spec.SetField(report.FieldSubjectXid, field.TypeString, value)
+	if value, ok := ruo.mutation.SubjectID(); ok {
+		_spec.SetField(report.FieldSubjectID, field.TypeString, value)
 	}
 	if value, ok := ruo.mutation.ReporterID(); ok {
 		_spec.SetField(report.FieldReporterID, field.TypeString, value)

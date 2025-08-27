@@ -16,8 +16,6 @@ const (
 	Label = "game"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldXid holds the string denoting the xid field in the database.
-	FieldXid = "xid"
 	// FieldSlug holds the string denoting the slug field in the database.
 	FieldSlug = "slug"
 	// FieldPlatform holds the string denoting the platform field in the database.
@@ -55,7 +53,6 @@ const (
 // Columns holds all SQL columns for game fields.
 var Columns = []string{
 	FieldID,
-	FieldXid,
 	FieldSlug,
 	FieldPlatform,
 	FieldTitle,
@@ -75,8 +72,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultXid holds the default value on creation for the "xid" field.
-	DefaultXid func() string
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() string
 )
 
 // Platform defines the type for the "platform" enum field.
@@ -109,11 +106,6 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
-}
-
-// ByXid orders the results by the xid field.
-func ByXid(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldXid, opts...).ToFunc()
 }
 
 // BySlug orders the results by the slug field.

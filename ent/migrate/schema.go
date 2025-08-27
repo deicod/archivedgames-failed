@@ -10,8 +10,7 @@ import (
 var (
 	// FilesColumns holds the columns for the "files" table.
 	FilesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "xid", Type: field.TypeString, Unique: true},
+		{Name: "id", Type: field.TypeString, Unique: true},
 		{Name: "path", Type: field.TypeString},
 		{Name: "original_name", Type: field.TypeString},
 		{Name: "normalized_name", Type: field.TypeString},
@@ -22,7 +21,7 @@ var (
 		{Name: "source", Type: field.TypeString},
 		{Name: "quarantine", Type: field.TypeBool, Default: false},
 		{Name: "needs_review", Type: field.TypeBool, Default: false},
-		{Name: "game_files", Type: field.TypeInt},
+		{Name: "game_files", Type: field.TypeString},
 	}
 	// FilesTable holds the schema information for the "files" table.
 	FilesTable = &schema.Table{
@@ -32,7 +31,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "files_games_files",
-				Columns:    []*schema.Column{FilesColumns[12]},
+				Columns:    []*schema.Column{FilesColumns[11]},
 				RefColumns: []*schema.Column{GamesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -40,8 +39,7 @@ var (
 	}
 	// GamesColumns holds the columns for the "games" table.
 	GamesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "xid", Type: field.TypeString, Unique: true},
+		{Name: "id", Type: field.TypeString, Unique: true},
 		{Name: "slug", Type: field.TypeString, Unique: true},
 		{Name: "platform", Type: field.TypeEnum, Enums: []string{"C64", "AMIGA", "DOS"}},
 		{Name: "title", Type: field.TypeString},
@@ -57,14 +55,13 @@ var (
 	}
 	// ImagesColumns holds the columns for the "images" table.
 	ImagesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "xid", Type: field.TypeString, Unique: true},
+		{Name: "id", Type: field.TypeString, Unique: true},
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"COVER", "GALLERY"}},
 		{Name: "position", Type: field.TypeInt, Default: 0},
 		{Name: "s3_key", Type: field.TypeString},
 		{Name: "width", Type: field.TypeInt},
 		{Name: "height", Type: field.TypeInt},
-		{Name: "game_images", Type: field.TypeInt},
+		{Name: "game_images", Type: field.TypeString},
 	}
 	// ImagesTable holds the schema information for the "images" table.
 	ImagesTable = &schema.Table{
@@ -74,7 +71,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "images_games_images",
-				Columns:    []*schema.Column{ImagesColumns[7]},
+				Columns:    []*schema.Column{ImagesColumns[6]},
 				RefColumns: []*schema.Column{GamesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -82,9 +79,9 @@ var (
 	}
 	// ReportsColumns holds the columns for the "reports" table.
 	ReportsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeString, Unique: true},
 		{Name: "subject_type", Type: field.TypeString},
-		{Name: "subject_xid", Type: field.TypeString},
+		{Name: "subject_id", Type: field.TypeString},
 		{Name: "reporter_id", Type: field.TypeString, Nullable: true},
 		{Name: "reason", Type: field.TypeString},
 		{Name: "note", Type: field.TypeString, Nullable: true},
@@ -98,7 +95,7 @@ var (
 	}
 	// SiteSettingsColumns holds the columns for the "site_settings" table.
 	SiteSettingsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeString, Unique: true},
 		{Name: "key", Type: field.TypeString, Unique: true},
 		{Name: "value", Type: field.TypeJSON, Nullable: true},
 		{Name: "public", Type: field.TypeBool, Default: true},
@@ -111,8 +108,7 @@ var (
 	}
 	// UserShadowsColumns holds the columns for the "user_shadows" table.
 	UserShadowsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "xid", Type: field.TypeString, Unique: true},
+		{Name: "id", Type: field.TypeString, Unique: true},
 		{Name: "keycloak_sub", Type: field.TypeString, Unique: true},
 		{Name: "handle", Type: field.TypeString, Nullable: true},
 		{Name: "display_name", Type: field.TypeString, Nullable: true},

@@ -109,8 +109,8 @@ func (fq *FileQuery) FirstX(ctx context.Context) *File {
 
 // FirstID returns the first File ID from the query.
 // Returns a *NotFoundError when no File ID was found.
-func (fq *FileQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (fq *FileQuery) FirstID(ctx context.Context) (id string, err error) {
+	var ids []string
 	if ids, err = fq.Limit(1).IDs(setContextOp(ctx, fq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (fq *FileQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (fq *FileQuery) FirstIDX(ctx context.Context) int {
+func (fq *FileQuery) FirstIDX(ctx context.Context) string {
 	id, err := fq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (fq *FileQuery) OnlyX(ctx context.Context) *File {
 // OnlyID is like Only, but returns the only File ID in the query.
 // Returns a *NotSingularError when more than one File ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (fq *FileQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (fq *FileQuery) OnlyID(ctx context.Context) (id string, err error) {
+	var ids []string
 	if ids, err = fq.Limit(2).IDs(setContextOp(ctx, fq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (fq *FileQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (fq *FileQuery) OnlyIDX(ctx context.Context) int {
+func (fq *FileQuery) OnlyIDX(ctx context.Context) string {
 	id, err := fq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (fq *FileQuery) AllX(ctx context.Context) []*File {
 }
 
 // IDs executes the query and returns a list of File IDs.
-func (fq *FileQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (fq *FileQuery) IDs(ctx context.Context) (ids []string, err error) {
 	if fq.ctx.Unique == nil && fq.path != nil {
 		fq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (fq *FileQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (fq *FileQuery) IDsX(ctx context.Context) []int {
+func (fq *FileQuery) IDsX(ctx context.Context) []string {
 	ids, err := fq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -301,12 +301,12 @@ func (fq *FileQuery) WithGame(opts ...func(*GameQuery)) *FileQuery {
 // Example:
 //
 //	var v []struct {
-//		Xid string `json:"xid,omitempty"`
+//		Path string `json:"path,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.File.Query().
-//		GroupBy(file.FieldXid).
+//		GroupBy(file.FieldPath).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (fq *FileQuery) GroupBy(field string, fields ...string) *FileGroupBy {
@@ -324,11 +324,11 @@ func (fq *FileQuery) GroupBy(field string, fields ...string) *FileGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Xid string `json:"xid,omitempty"`
+//		Path string `json:"path,omitempty"`
 //	}
 //
 //	client.File.Query().
-//		Select(file.FieldXid).
+//		Select(file.FieldPath).
 //		Scan(ctx, &v)
 func (fq *FileQuery) Select(fields ...string) *FileSelect {
 	fq.ctx.Fields = append(fq.ctx.Fields, fields...)
@@ -420,8 +420,8 @@ func (fq *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 }
 
 func (fq *FileQuery) loadGame(ctx context.Context, query *GameQuery, nodes []*File, init func(*File), assign func(*File, *Game)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*File)
+	ids := make([]string, 0, len(nodes))
+	nodeids := make(map[string][]*File)
 	for i := range nodes {
 		if nodes[i].game_files == nil {
 			continue
@@ -465,7 +465,7 @@ func (fq *FileQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (fq *FileQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(file.Table, file.Columns, sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(file.Table, file.Columns, sqlgraph.NewFieldSpec(file.FieldID, field.TypeString))
 	_spec.From = fq.sql
 	if unique := fq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

@@ -19,20 +19,6 @@ type UserShadowCreate struct {
 	hooks    []Hook
 }
 
-// SetXid sets the "xid" field.
-func (usc *UserShadowCreate) SetXid(s string) *UserShadowCreate {
-	usc.mutation.SetXid(s)
-	return usc
-}
-
-// SetNillableXid sets the "xid" field if the given value is not nil.
-func (usc *UserShadowCreate) SetNillableXid(s *string) *UserShadowCreate {
-	if s != nil {
-		usc.SetXid(*s)
-	}
-	return usc
-}
-
 // SetKeycloakSub sets the "keycloak_sub" field.
 func (usc *UserShadowCreate) SetKeycloakSub(s string) *UserShadowCreate {
 	usc.mutation.SetKeycloakSub(s)
@@ -63,6 +49,20 @@ func (usc *UserShadowCreate) SetDisplayName(s string) *UserShadowCreate {
 func (usc *UserShadowCreate) SetNillableDisplayName(s *string) *UserShadowCreate {
 	if s != nil {
 		usc.SetDisplayName(*s)
+	}
+	return usc
+}
+
+// SetID sets the "id" field.
+func (usc *UserShadowCreate) SetID(s string) *UserShadowCreate {
+	usc.mutation.SetID(s)
+	return usc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (usc *UserShadowCreate) SetNillableID(s *string) *UserShadowCreate {
+	if s != nil {
+		usc.SetID(*s)
 	}
 	return usc
 }
@@ -102,17 +102,14 @@ func (usc *UserShadowCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (usc *UserShadowCreate) defaults() {
-	if _, ok := usc.mutation.Xid(); !ok {
-		v := usershadow.DefaultXid()
-		usc.mutation.SetXid(v)
+	if _, ok := usc.mutation.ID(); !ok {
+		v := usershadow.DefaultID()
+		usc.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (usc *UserShadowCreate) check() error {
-	if _, ok := usc.mutation.Xid(); !ok {
-		return &ValidationError{Name: "xid", err: errors.New(`ent: missing required field "UserShadow.xid"`)}
-	}
 	if _, ok := usc.mutation.KeycloakSub(); !ok {
 		return &ValidationError{Name: "keycloak_sub", err: errors.New(`ent: missing required field "UserShadow.keycloak_sub"`)}
 	}
@@ -130,8 +127,13 @@ func (usc *UserShadowCreate) sqlSave(ctx context.Context) (*UserShadow, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(string); ok {
+			_node.ID = id
+		} else {
+			return nil, fmt.Errorf("unexpected UserShadow.ID type: %T", _spec.ID.Value)
+		}
+	}
 	usc.mutation.id = &_node.ID
 	usc.mutation.done = true
 	return _node, nil
@@ -140,11 +142,11 @@ func (usc *UserShadowCreate) sqlSave(ctx context.Context) (*UserShadow, error) {
 func (usc *UserShadowCreate) createSpec() (*UserShadow, *sqlgraph.CreateSpec) {
 	var (
 		_node = &UserShadow{config: usc.config}
-		_spec = sqlgraph.NewCreateSpec(usershadow.Table, sqlgraph.NewFieldSpec(usershadow.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(usershadow.Table, sqlgraph.NewFieldSpec(usershadow.FieldID, field.TypeString))
 	)
-	if value, ok := usc.mutation.Xid(); ok {
-		_spec.SetField(usershadow.FieldXid, field.TypeString, value)
-		_node.Xid = value
+	if id, ok := usc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := usc.mutation.KeycloakSub(); ok {
 		_spec.SetField(usershadow.FieldKeycloakSub, field.TypeString, value)
@@ -206,10 +208,6 @@ func (uscb *UserShadowCreateBulk) Save(ctx context.Context) ([]*UserShadow, erro
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
-				}
 				mutation.done = true
 				return nodes[i], nil
 			})

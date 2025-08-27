@@ -8,48 +8,58 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.SiteSetting {
+func ID(id string) predicate.SiteSetting {
 	return predicate.SiteSetting(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.SiteSetting {
+func IDEQ(id string) predicate.SiteSetting {
 	return predicate.SiteSetting(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.SiteSetting {
+func IDNEQ(id string) predicate.SiteSetting {
 	return predicate.SiteSetting(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.SiteSetting {
+func IDIn(ids ...string) predicate.SiteSetting {
 	return predicate.SiteSetting(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.SiteSetting {
+func IDNotIn(ids ...string) predicate.SiteSetting {
 	return predicate.SiteSetting(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.SiteSetting {
+func IDGT(id string) predicate.SiteSetting {
 	return predicate.SiteSetting(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.SiteSetting {
+func IDGTE(id string) predicate.SiteSetting {
 	return predicate.SiteSetting(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.SiteSetting {
+func IDLT(id string) predicate.SiteSetting {
 	return predicate.SiteSetting(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.SiteSetting {
+func IDLTE(id string) predicate.SiteSetting {
 	return predicate.SiteSetting(sql.FieldLTE(FieldID, id))
+}
+
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.SiteSetting {
+	return predicate.SiteSetting(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.SiteSetting {
+	return predicate.SiteSetting(sql.FieldContainsFold(FieldID, id))
 }
 
 // Key applies equality check predicate on the "key" field. It's identical to KeyEQ.

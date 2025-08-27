@@ -20,20 +20,6 @@ type ImageCreate struct {
 	hooks    []Hook
 }
 
-// SetXid sets the "xid" field.
-func (ic *ImageCreate) SetXid(s string) *ImageCreate {
-	ic.mutation.SetXid(s)
-	return ic
-}
-
-// SetNillableXid sets the "xid" field if the given value is not nil.
-func (ic *ImageCreate) SetNillableXid(s *string) *ImageCreate {
-	if s != nil {
-		ic.SetXid(*s)
-	}
-	return ic
-}
-
 // SetKind sets the "kind" field.
 func (ic *ImageCreate) SetKind(i image.Kind) *ImageCreate {
 	ic.mutation.SetKind(i)
@@ -72,8 +58,22 @@ func (ic *ImageCreate) SetHeight(i int) *ImageCreate {
 	return ic
 }
 
+// SetID sets the "id" field.
+func (ic *ImageCreate) SetID(s string) *ImageCreate {
+	ic.mutation.SetID(s)
+	return ic
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (ic *ImageCreate) SetNillableID(s *string) *ImageCreate {
+	if s != nil {
+		ic.SetID(*s)
+	}
+	return ic
+}
+
 // SetGameID sets the "game" edge to the Game entity by ID.
-func (ic *ImageCreate) SetGameID(id int) *ImageCreate {
+func (ic *ImageCreate) SetGameID(id string) *ImageCreate {
 	ic.mutation.SetGameID(id)
 	return ic
 }
@@ -118,21 +118,18 @@ func (ic *ImageCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (ic *ImageCreate) defaults() {
-	if _, ok := ic.mutation.Xid(); !ok {
-		v := image.DefaultXid()
-		ic.mutation.SetXid(v)
-	}
 	if _, ok := ic.mutation.Position(); !ok {
 		v := image.DefaultPosition
 		ic.mutation.SetPosition(v)
+	}
+	if _, ok := ic.mutation.ID(); !ok {
+		v := image.DefaultID()
+		ic.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (ic *ImageCreate) check() error {
-	if _, ok := ic.mutation.Xid(); !ok {
-		return &ValidationError{Name: "xid", err: errors.New(`ent: missing required field "Image.xid"`)}
-	}
 	if _, ok := ic.mutation.Kind(); !ok {
 		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "Image.kind"`)}
 	}
@@ -170,8 +167,13 @@ func (ic *ImageCreate) sqlSave(ctx context.Context) (*Image, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(string); ok {
+			_node.ID = id
+		} else {
+			return nil, fmt.Errorf("unexpected Image.ID type: %T", _spec.ID.Value)
+		}
+	}
 	ic.mutation.id = &_node.ID
 	ic.mutation.done = true
 	return _node, nil
@@ -180,11 +182,11 @@ func (ic *ImageCreate) sqlSave(ctx context.Context) (*Image, error) {
 func (ic *ImageCreate) createSpec() (*Image, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Image{config: ic.config}
-		_spec = sqlgraph.NewCreateSpec(image.Table, sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(image.Table, sqlgraph.NewFieldSpec(image.FieldID, field.TypeString))
 	)
-	if value, ok := ic.mutation.Xid(); ok {
-		_spec.SetField(image.FieldXid, field.TypeString, value)
-		_node.Xid = value
+	if id, ok := ic.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := ic.mutation.Kind(); ok {
 		_spec.SetField(image.FieldKind, field.TypeEnum, value)
@@ -214,7 +216,7 @@ func (ic *ImageCreate) createSpec() (*Image, *sqlgraph.CreateSpec) {
 			Columns: []string{image.GameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -271,10 +273,6 @@ func (icb *ImageCreateBulk) Save(ctx context.Context) ([]*Image, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
-				}
 				mutation.done = true
 				return nodes[i], nil
 			})

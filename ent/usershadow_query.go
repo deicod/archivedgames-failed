@@ -84,8 +84,8 @@ func (usq *UserShadowQuery) FirstX(ctx context.Context) *UserShadow {
 
 // FirstID returns the first UserShadow ID from the query.
 // Returns a *NotFoundError when no UserShadow ID was found.
-func (usq *UserShadowQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (usq *UserShadowQuery) FirstID(ctx context.Context) (id string, err error) {
+	var ids []string
 	if ids, err = usq.Limit(1).IDs(setContextOp(ctx, usq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -97,7 +97,7 @@ func (usq *UserShadowQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (usq *UserShadowQuery) FirstIDX(ctx context.Context) int {
+func (usq *UserShadowQuery) FirstIDX(ctx context.Context) string {
 	id, err := usq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -135,8 +135,8 @@ func (usq *UserShadowQuery) OnlyX(ctx context.Context) *UserShadow {
 // OnlyID is like Only, but returns the only UserShadow ID in the query.
 // Returns a *NotSingularError when more than one UserShadow ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (usq *UserShadowQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (usq *UserShadowQuery) OnlyID(ctx context.Context) (id string, err error) {
+	var ids []string
 	if ids, err = usq.Limit(2).IDs(setContextOp(ctx, usq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -152,7 +152,7 @@ func (usq *UserShadowQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (usq *UserShadowQuery) OnlyIDX(ctx context.Context) int {
+func (usq *UserShadowQuery) OnlyIDX(ctx context.Context) string {
 	id, err := usq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -180,7 +180,7 @@ func (usq *UserShadowQuery) AllX(ctx context.Context) []*UserShadow {
 }
 
 // IDs executes the query and returns a list of UserShadow IDs.
-func (usq *UserShadowQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (usq *UserShadowQuery) IDs(ctx context.Context) (ids []string, err error) {
 	if usq.ctx.Unique == nil && usq.path != nil {
 		usq.Unique(true)
 	}
@@ -192,7 +192,7 @@ func (usq *UserShadowQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (usq *UserShadowQuery) IDsX(ctx context.Context) []int {
+func (usq *UserShadowQuery) IDsX(ctx context.Context) []string {
 	ids, err := usq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -264,12 +264,12 @@ func (usq *UserShadowQuery) Clone() *UserShadowQuery {
 // Example:
 //
 //	var v []struct {
-//		Xid string `json:"xid,omitempty"`
+//		KeycloakSub string `json:"keycloak_sub,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.UserShadow.Query().
-//		GroupBy(usershadow.FieldXid).
+//		GroupBy(usershadow.FieldKeycloakSub).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (usq *UserShadowQuery) GroupBy(field string, fields ...string) *UserShadowGroupBy {
@@ -287,11 +287,11 @@ func (usq *UserShadowQuery) GroupBy(field string, fields ...string) *UserShadowG
 // Example:
 //
 //	var v []struct {
-//		Xid string `json:"xid,omitempty"`
+//		KeycloakSub string `json:"keycloak_sub,omitempty"`
 //	}
 //
 //	client.UserShadow.Query().
-//		Select(usershadow.FieldXid).
+//		Select(usershadow.FieldKeycloakSub).
 //		Scan(ctx, &v)
 func (usq *UserShadowQuery) Select(fields ...string) *UserShadowSelect {
 	usq.ctx.Fields = append(usq.ctx.Fields, fields...)
@@ -378,7 +378,7 @@ func (usq *UserShadowQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (usq *UserShadowQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(usershadow.Table, usershadow.Columns, sqlgraph.NewFieldSpec(usershadow.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(usershadow.Table, usershadow.Columns, sqlgraph.NewFieldSpec(usershadow.FieldID, field.TypeString))
 	_spec.From = usq.sql
 	if unique := usq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

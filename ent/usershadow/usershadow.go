@@ -11,8 +11,6 @@ const (
 	Label = "user_shadow"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldXid holds the string denoting the xid field in the database.
-	FieldXid = "xid"
 	// FieldKeycloakSub holds the string denoting the keycloak_sub field in the database.
 	FieldKeycloakSub = "keycloak_sub"
 	// FieldHandle holds the string denoting the handle field in the database.
@@ -26,7 +24,6 @@ const (
 // Columns holds all SQL columns for usershadow fields.
 var Columns = []string{
 	FieldID,
-	FieldXid,
 	FieldKeycloakSub,
 	FieldHandle,
 	FieldDisplayName,
@@ -43,8 +40,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultXid holds the default value on creation for the "xid" field.
-	DefaultXid func() string
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() string
 )
 
 // OrderOption defines the ordering options for the UserShadow queries.
@@ -53,11 +50,6 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
-}
-
-// ByXid orders the results by the xid field.
-func ByXid(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldXid, opts...).ToFunc()
 }
 
 // ByKeycloakSub orders the results by the keycloak_sub field.

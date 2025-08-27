@@ -139,14 +139,14 @@ func (gu *GameUpdate) ClearDeveloper() *GameUpdate {
 }
 
 // AddFileIDs adds the "files" edge to the File entity by IDs.
-func (gu *GameUpdate) AddFileIDs(ids ...int) *GameUpdate {
+func (gu *GameUpdate) AddFileIDs(ids ...string) *GameUpdate {
 	gu.mutation.AddFileIDs(ids...)
 	return gu
 }
 
 // AddFiles adds the "files" edges to the File entity.
 func (gu *GameUpdate) AddFiles(f ...*File) *GameUpdate {
-	ids := make([]int, len(f))
+	ids := make([]string, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -154,14 +154,14 @@ func (gu *GameUpdate) AddFiles(f ...*File) *GameUpdate {
 }
 
 // AddImageIDs adds the "images" edge to the Image entity by IDs.
-func (gu *GameUpdate) AddImageIDs(ids ...int) *GameUpdate {
+func (gu *GameUpdate) AddImageIDs(ids ...string) *GameUpdate {
 	gu.mutation.AddImageIDs(ids...)
 	return gu
 }
 
 // AddImages adds the "images" edges to the Image entity.
 func (gu *GameUpdate) AddImages(i ...*Image) *GameUpdate {
-	ids := make([]int, len(i))
+	ids := make([]string, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -180,14 +180,14 @@ func (gu *GameUpdate) ClearFiles() *GameUpdate {
 }
 
 // RemoveFileIDs removes the "files" edge to File entities by IDs.
-func (gu *GameUpdate) RemoveFileIDs(ids ...int) *GameUpdate {
+func (gu *GameUpdate) RemoveFileIDs(ids ...string) *GameUpdate {
 	gu.mutation.RemoveFileIDs(ids...)
 	return gu
 }
 
 // RemoveFiles removes "files" edges to File entities.
 func (gu *GameUpdate) RemoveFiles(f ...*File) *GameUpdate {
-	ids := make([]int, len(f))
+	ids := make([]string, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -201,14 +201,14 @@ func (gu *GameUpdate) ClearImages() *GameUpdate {
 }
 
 // RemoveImageIDs removes the "images" edge to Image entities by IDs.
-func (gu *GameUpdate) RemoveImageIDs(ids ...int) *GameUpdate {
+func (gu *GameUpdate) RemoveImageIDs(ids ...string) *GameUpdate {
 	gu.mutation.RemoveImageIDs(ids...)
 	return gu
 }
 
 // RemoveImages removes "images" edges to Image entities.
 func (gu *GameUpdate) RemoveImages(i ...*Image) *GameUpdate {
-	ids := make([]int, len(i))
+	ids := make([]string, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -256,7 +256,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := gu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(game.Table, game.Columns, sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(game.Table, game.Columns, sqlgraph.NewFieldSpec(game.FieldID, field.TypeString))
 	if ps := gu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -302,7 +302,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{game.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -315,7 +315,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{game.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -331,7 +331,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{game.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -347,7 +347,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{game.ImagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -360,7 +360,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{game.ImagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -376,7 +376,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{game.ImagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -514,14 +514,14 @@ func (guo *GameUpdateOne) ClearDeveloper() *GameUpdateOne {
 }
 
 // AddFileIDs adds the "files" edge to the File entity by IDs.
-func (guo *GameUpdateOne) AddFileIDs(ids ...int) *GameUpdateOne {
+func (guo *GameUpdateOne) AddFileIDs(ids ...string) *GameUpdateOne {
 	guo.mutation.AddFileIDs(ids...)
 	return guo
 }
 
 // AddFiles adds the "files" edges to the File entity.
 func (guo *GameUpdateOne) AddFiles(f ...*File) *GameUpdateOne {
-	ids := make([]int, len(f))
+	ids := make([]string, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -529,14 +529,14 @@ func (guo *GameUpdateOne) AddFiles(f ...*File) *GameUpdateOne {
 }
 
 // AddImageIDs adds the "images" edge to the Image entity by IDs.
-func (guo *GameUpdateOne) AddImageIDs(ids ...int) *GameUpdateOne {
+func (guo *GameUpdateOne) AddImageIDs(ids ...string) *GameUpdateOne {
 	guo.mutation.AddImageIDs(ids...)
 	return guo
 }
 
 // AddImages adds the "images" edges to the Image entity.
 func (guo *GameUpdateOne) AddImages(i ...*Image) *GameUpdateOne {
-	ids := make([]int, len(i))
+	ids := make([]string, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -555,14 +555,14 @@ func (guo *GameUpdateOne) ClearFiles() *GameUpdateOne {
 }
 
 // RemoveFileIDs removes the "files" edge to File entities by IDs.
-func (guo *GameUpdateOne) RemoveFileIDs(ids ...int) *GameUpdateOne {
+func (guo *GameUpdateOne) RemoveFileIDs(ids ...string) *GameUpdateOne {
 	guo.mutation.RemoveFileIDs(ids...)
 	return guo
 }
 
 // RemoveFiles removes "files" edges to File entities.
 func (guo *GameUpdateOne) RemoveFiles(f ...*File) *GameUpdateOne {
-	ids := make([]int, len(f))
+	ids := make([]string, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -576,14 +576,14 @@ func (guo *GameUpdateOne) ClearImages() *GameUpdateOne {
 }
 
 // RemoveImageIDs removes the "images" edge to Image entities by IDs.
-func (guo *GameUpdateOne) RemoveImageIDs(ids ...int) *GameUpdateOne {
+func (guo *GameUpdateOne) RemoveImageIDs(ids ...string) *GameUpdateOne {
 	guo.mutation.RemoveImageIDs(ids...)
 	return guo
 }
 
 // RemoveImages removes "images" edges to Image entities.
 func (guo *GameUpdateOne) RemoveImages(i ...*Image) *GameUpdateOne {
-	ids := make([]int, len(i))
+	ids := make([]string, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -644,7 +644,7 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 	if err := guo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(game.Table, game.Columns, sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(game.Table, game.Columns, sqlgraph.NewFieldSpec(game.FieldID, field.TypeString))
 	id, ok := guo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Game.id" for update`)}
@@ -707,7 +707,7 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 			Columns: []string{game.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -720,7 +720,7 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 			Columns: []string{game.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -736,7 +736,7 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 			Columns: []string{game.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -752,7 +752,7 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 			Columns: []string{game.ImagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -765,7 +765,7 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 			Columns: []string{game.ImagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -781,7 +781,7 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 			Columns: []string{game.ImagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

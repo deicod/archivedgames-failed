@@ -7,44 +7,46 @@ package graph
 import (
 	"context"
 	"fmt"
-	"strconv"
 
 	"entgo.io/contrib/entgql"
 	"github.com/deicod/archivedgames/ent"
+	"github.com/deicod/archivedgames/graph/model"
 	"github.com/deicod/archivedgames/internal/gqltypes"
 )
 
+// Files is the resolver for the files field.
+func (r *gameResolver) Files(ctx context.Context, obj *ent.Game, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.FileWhereInput) (*ent.FileConnection, error) {
+	panic(fmt.Errorf("not implemented: Files - files"))
+}
+
+// Images is the resolver for the images field.
+func (r *gameResolver) Images(ctx context.Context, obj *ent.Game, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.ImageWhereInput) (*ent.ImageConnection, error) {
+	panic(fmt.Errorf("not implemented: Images - images"))
+}
+
 // Node is the resolver for the node field.
 func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
-	// IDs are database integer primary keys in this setup.
-	i, err := strconv.Atoi(id)
-	if err != nil {
-		return nil, err
-	}
-	return r.Client.Noder(ctx, i)
+	return r.Client.Noder(ctx, id)
 }
 
 // Nodes is the resolver for the nodes field.
 func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, error) {
-	intIDs := make([]int, 0, len(ids))
-	for _, s := range ids {
-		i, err := strconv.Atoi(s)
-		if err != nil {
-			return nil, err
-		}
-		intIDs = append(intIDs, i)
-	}
-	return r.Client.Noders(ctx, intIDs)
+	return r.Client.Noders(ctx, ids)
 }
 
 // Files is the resolver for the files field.
-func (r *queryResolver) Files(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int) (*ent.FileConnection, error) {
+func (r *queryResolver) Files(ctx context.Context, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.FileWhereInput) (*ent.FileConnection, error) {
 	return r.Client.File.Query().Paginate(ctx, after, first, before, last)
 }
 
 // Games is the resolver for the games field.
-func (r *queryResolver) Games(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int) (*ent.GameConnection, error) {
+func (r *queryResolver) Games(ctx context.Context, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.GameWhereInput) (*ent.GameConnection, error) {
 	return r.Client.Game.Query().Paginate(ctx, after, first, before, last)
+}
+
+// Reports is the resolver for the reports field.
+func (r *queryResolver) Reports(ctx context.Context) ([]*ent.Report, error) {
+	panic(fmt.Errorf("not implemented: Reports - reports"))
 }
 
 // Value is the resolver for the value field.
@@ -52,11 +54,15 @@ func (r *siteSettingResolver) Value(ctx context.Context, obj *ent.SiteSetting) (
 	panic(fmt.Errorf("not implemented: Value - value"))
 }
 
+// Game returns GameResolver implementation.
+func (r *Resolver) Game() GameResolver { return &gameResolver{r} }
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 // SiteSetting returns SiteSettingResolver implementation.
 func (r *Resolver) SiteSetting() SiteSettingResolver { return &siteSettingResolver{r} }
 
+type gameResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type siteSettingResolver struct{ *Resolver }

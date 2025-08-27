@@ -8,7 +8,7 @@ import (
 )
 
 // Cursor aliases the entgql generic cursor to a concrete type for gqlgen mapping.
-type Cursor = entgql.Cursor[int]
+type Cursor = entgql.Cursor[string]
 
 // RawMessage is a JSON scalar backed by bytes, with GraphQL marshaling.
 type RawMessage []byte
@@ -29,4 +29,3 @@ func (m *RawMessage) UnmarshalGQL(v any) error {
     *m = RawMessage(b)
     return nil
 }
-

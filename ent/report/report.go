@@ -17,8 +17,8 @@ const (
 	FieldID = "id"
 	// FieldSubjectType holds the string denoting the subject_type field in the database.
 	FieldSubjectType = "subject_type"
-	// FieldSubjectXid holds the string denoting the subject_xid field in the database.
-	FieldSubjectXid = "subject_xid"
+	// FieldSubjectID holds the string denoting the subject_id field in the database.
+	FieldSubjectID = "subject_id"
 	// FieldReporterID holds the string denoting the reporter_id field in the database.
 	FieldReporterID = "reporter_id"
 	// FieldReason holds the string denoting the reason field in the database.
@@ -35,7 +35,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldSubjectType,
-	FieldSubjectXid,
+	FieldSubjectID,
 	FieldReporterID,
 	FieldReason,
 	FieldNote,
@@ -51,6 +51,11 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() string
+)
 
 // Status defines the type for the "status" enum field.
 type Status string
@@ -93,9 +98,9 @@ func BySubjectType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSubjectType, opts...).ToFunc()
 }
 
-// BySubjectXid orders the results by the subject_xid field.
-func BySubjectXid(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSubjectXid, opts...).ToFunc()
+// BySubjectID orders the results by the subject_id field.
+func BySubjectID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSubjectID, opts...).ToFunc()
 }
 
 // ByReporterID orders the results by the reporter_id field.

@@ -15,11 +15,11 @@ import (
 type Report struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID string `json:"id,omitempty"`
 	// SubjectType holds the value of the "subject_type" field.
 	SubjectType string `json:"subject_type,omitempty"`
-	// SubjectXid holds the value of the "subject_xid" field.
-	SubjectXid string `json:"subject_xid,omitempty"`
+	// SubjectID holds the value of the "subject_id" field.
+	SubjectID string `json:"subject_id,omitempty"`
 	// ReporterID holds the value of the "reporter_id" field.
 	ReporterID string `json:"reporter_id,omitempty"`
 	// Reason holds the value of the "reason" field.
@@ -36,9 +36,7 @@ func (*Report) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case report.FieldID:
-			values[i] = new(sql.NullInt64)
-		case report.FieldSubjectType, report.FieldSubjectXid, report.FieldReporterID, report.FieldReason, report.FieldNote, report.FieldStatus:
+		case report.FieldID, report.FieldSubjectType, report.FieldSubjectID, report.FieldReporterID, report.FieldReason, report.FieldNote, report.FieldStatus:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -56,22 +54,22 @@ func (r *Report) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case report.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				r.ID = value.String
 			}
-			r.ID = int(value.Int64)
 		case report.FieldSubjectType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field subject_type", values[i])
 			} else if value.Valid {
 				r.SubjectType = value.String
 			}
-		case report.FieldSubjectXid:
+		case report.FieldSubjectID:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field subject_xid", values[i])
+				return fmt.Errorf("unexpected type %T for field subject_id", values[i])
 			} else if value.Valid {
-				r.SubjectXid = value.String
+				r.SubjectID = value.String
 			}
 		case report.FieldReporterID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -136,8 +134,8 @@ func (r *Report) String() string {
 	builder.WriteString("subject_type=")
 	builder.WriteString(r.SubjectType)
 	builder.WriteString(", ")
-	builder.WriteString("subject_xid=")
-	builder.WriteString(r.SubjectXid)
+	builder.WriteString("subject_id=")
+	builder.WriteString(r.SubjectID)
 	builder.WriteString(", ")
 	builder.WriteString("reporter_id=")
 	builder.WriteString(r.ReporterID)

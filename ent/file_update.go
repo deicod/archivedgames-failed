@@ -188,7 +188,7 @@ func (fu *FileUpdate) SetNillableNeedsReview(b *bool) *FileUpdate {
 }
 
 // SetGameID sets the "game" edge to the Game entity by ID.
-func (fu *FileUpdate) SetGameID(id int) *FileUpdate {
+func (fu *FileUpdate) SetGameID(id string) *FileUpdate {
 	fu.mutation.SetGameID(id)
 	return fu
 }
@@ -248,7 +248,7 @@ func (fu *FileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := fu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(file.Table, file.Columns, sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(file.Table, file.Columns, sqlgraph.NewFieldSpec(file.FieldID, field.TypeString))
 	if ps := fu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -303,7 +303,7 @@ func (fu *FileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{file.GameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -316,7 +316,7 @@ func (fu *FileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{file.GameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -504,7 +504,7 @@ func (fuo *FileUpdateOne) SetNillableNeedsReview(b *bool) *FileUpdateOne {
 }
 
 // SetGameID sets the "game" edge to the Game entity by ID.
-func (fuo *FileUpdateOne) SetGameID(id int) *FileUpdateOne {
+func (fuo *FileUpdateOne) SetGameID(id string) *FileUpdateOne {
 	fuo.mutation.SetGameID(id)
 	return fuo
 }
@@ -577,7 +577,7 @@ func (fuo *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) 
 	if err := fuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(file.Table, file.Columns, sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(file.Table, file.Columns, sqlgraph.NewFieldSpec(file.FieldID, field.TypeString))
 	id, ok := fuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "File.id" for update`)}
@@ -649,7 +649,7 @@ func (fuo *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) 
 			Columns: []string{file.GameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -662,7 +662,7 @@ func (fuo *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) 
 			Columns: []string{file.GameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

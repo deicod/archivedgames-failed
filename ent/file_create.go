@@ -20,20 +20,6 @@ type FileCreate struct {
 	hooks    []Hook
 }
 
-// SetXid sets the "xid" field.
-func (fc *FileCreate) SetXid(s string) *FileCreate {
-	fc.mutation.SetXid(s)
-	return fc
-}
-
-// SetNillableXid sets the "xid" field if the given value is not nil.
-func (fc *FileCreate) SetNillableXid(s *string) *FileCreate {
-	if s != nil {
-		fc.SetXid(*s)
-	}
-	return fc
-}
-
 // SetPath sets the "path" field.
 func (fc *FileCreate) SetPath(s string) *FileCreate {
 	fc.mutation.SetPath(s)
@@ -126,8 +112,22 @@ func (fc *FileCreate) SetNillableNeedsReview(b *bool) *FileCreate {
 	return fc
 }
 
+// SetID sets the "id" field.
+func (fc *FileCreate) SetID(s string) *FileCreate {
+	fc.mutation.SetID(s)
+	return fc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (fc *FileCreate) SetNillableID(s *string) *FileCreate {
+	if s != nil {
+		fc.SetID(*s)
+	}
+	return fc
+}
+
 // SetGameID sets the "game" edge to the Game entity by ID.
-func (fc *FileCreate) SetGameID(id int) *FileCreate {
+func (fc *FileCreate) SetGameID(id string) *FileCreate {
 	fc.mutation.SetGameID(id)
 	return fc
 }
@@ -172,10 +172,6 @@ func (fc *FileCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (fc *FileCreate) defaults() {
-	if _, ok := fc.mutation.Xid(); !ok {
-		v := file.DefaultXid()
-		fc.mutation.SetXid(v)
-	}
 	if _, ok := fc.mutation.Quarantine(); !ok {
 		v := file.DefaultQuarantine
 		fc.mutation.SetQuarantine(v)
@@ -184,13 +180,14 @@ func (fc *FileCreate) defaults() {
 		v := file.DefaultNeedsReview
 		fc.mutation.SetNeedsReview(v)
 	}
+	if _, ok := fc.mutation.ID(); !ok {
+		v := file.DefaultID()
+		fc.mutation.SetID(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (fc *FileCreate) check() error {
-	if _, ok := fc.mutation.Xid(); !ok {
-		return &ValidationError{Name: "xid", err: errors.New(`ent: missing required field "File.xid"`)}
-	}
 	if _, ok := fc.mutation.Path(); !ok {
 		return &ValidationError{Name: "path", err: errors.New(`ent: missing required field "File.path"`)}
 	}
@@ -232,8 +229,13 @@ func (fc *FileCreate) sqlSave(ctx context.Context) (*File, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(string); ok {
+			_node.ID = id
+		} else {
+			return nil, fmt.Errorf("unexpected File.ID type: %T", _spec.ID.Value)
+		}
+	}
 	fc.mutation.id = &_node.ID
 	fc.mutation.done = true
 	return _node, nil
@@ -242,11 +244,11 @@ func (fc *FileCreate) sqlSave(ctx context.Context) (*File, error) {
 func (fc *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 	var (
 		_node = &File{config: fc.config}
-		_spec = sqlgraph.NewCreateSpec(file.Table, sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(file.Table, sqlgraph.NewFieldSpec(file.FieldID, field.TypeString))
 	)
-	if value, ok := fc.mutation.Xid(); ok {
-		_spec.SetField(file.FieldXid, field.TypeString, value)
-		_node.Xid = value
+	if id, ok := fc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := fc.mutation.Path(); ok {
 		_spec.SetField(file.FieldPath, field.TypeString, value)
@@ -296,7 +298,7 @@ func (fc *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 			Columns: []string{file.GameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -353,10 +355,6 @@ func (fcb *FileCreateBulk) Save(ctx context.Context) ([]*File, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
-				}
 				mutation.done = true
 				return nodes[i], nil
 			})

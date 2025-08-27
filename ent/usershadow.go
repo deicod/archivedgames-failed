@@ -15,9 +15,7 @@ import (
 type UserShadow struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// Xid holds the value of the "xid" field.
-	Xid string `json:"xid,omitempty"`
+	ID string `json:"id,omitempty"`
 	// KeycloakSub holds the value of the "keycloak_sub" field.
 	KeycloakSub string `json:"keycloak_sub,omitempty"`
 	// Handle holds the value of the "handle" field.
@@ -32,9 +30,7 @@ func (*UserShadow) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case usershadow.FieldID:
-			values[i] = new(sql.NullInt64)
-		case usershadow.FieldXid, usershadow.FieldKeycloakSub, usershadow.FieldHandle, usershadow.FieldDisplayName:
+		case usershadow.FieldID, usershadow.FieldKeycloakSub, usershadow.FieldHandle, usershadow.FieldDisplayName:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -52,16 +48,10 @@ func (us *UserShadow) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case usershadow.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
-			}
-			us.ID = int(value.Int64)
-		case usershadow.FieldXid:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field xid", values[i])
+				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				us.Xid = value.String
+				us.ID = value.String
 			}
 		case usershadow.FieldKeycloakSub:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -117,9 +107,6 @@ func (us *UserShadow) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserShadow(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", us.ID))
-	builder.WriteString("xid=")
-	builder.WriteString(us.Xid)
-	builder.WriteString(", ")
 	builder.WriteString("keycloak_sub=")
 	builder.WriteString(us.KeycloakSub)
 	builder.WriteString(", ")

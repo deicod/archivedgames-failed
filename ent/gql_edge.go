@@ -17,9 +17,11 @@ func (f *File) Game(ctx context.Context) (*Game, error) {
 }
 
 func (ga *Game) Files(
-	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int,
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *FileWhereInput,
 ) (*FileConnection, error) {
-	opts := []FilePaginateOption{}
+	opts := []FilePaginateOption{
+		WithFileFilter(where.Filter),
+	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
 	totalCount, hasTotalCount := ga.Edges.totalCount[0][alias]
 	if nodes, err := ga.NamedFiles(alias); err == nil || hasTotalCount {
@@ -35,9 +37,11 @@ func (ga *Game) Files(
 }
 
 func (ga *Game) Images(
-	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int,
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *ImageWhereInput,
 ) (*ImageConnection, error) {
-	opts := []ImagePaginateOption{}
+	opts := []ImagePaginateOption{
+		WithImageFilter(where.Filter),
+	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
 	totalCount, hasTotalCount := ga.Edges.totalCount[1][alias]
 	if nodes, err := ga.NamedImages(alias); err == nil || hasTotalCount {

@@ -16,8 +16,6 @@ const (
 	Label = "image"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldXid holds the string denoting the xid field in the database.
-	FieldXid = "xid"
 	// FieldKind holds the string denoting the kind field in the database.
 	FieldKind = "kind"
 	// FieldPosition holds the string denoting the position field in the database.
@@ -44,7 +42,6 @@ const (
 // Columns holds all SQL columns for image fields.
 var Columns = []string{
 	FieldID,
-	FieldXid,
 	FieldKind,
 	FieldPosition,
 	FieldS3Key,
@@ -74,10 +71,10 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultXid holds the default value on creation for the "xid" field.
-	DefaultXid func() string
 	// DefaultPosition holds the default value on creation for the "position" field.
 	DefaultPosition int
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() string
 )
 
 // Kind defines the type for the "kind" enum field.
@@ -109,11 +106,6 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
-}
-
-// ByXid orders the results by the xid field.
-func ByXid(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldXid, opts...).ToFunc()
 }
 
 // ByKind orders the results by the kind field.

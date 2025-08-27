@@ -50,11 +50,6 @@ func (f *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 				return err
 			}
 			f.withGame = query
-		case "xid":
-			if _, ok := fieldSeen[file.FieldXid]; !ok {
-				selectedFields = append(selectedFields, file.FieldXid)
-				fieldSeen[file.FieldXid] = struct{}{}
-			}
 		case "path":
 			if _, ok := fieldSeen[file.FieldPath]; !ok {
 				selectedFields = append(selectedFields, file.FieldPath)
@@ -140,6 +135,9 @@ func newFilePaginateArgs(rv map[string]any) *filePaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[whereField].(*FileWhereInput); ok {
+		args.opts = append(args.opts, WithFileFilter(v.Filter))
+	}
 	return args
 }
 
@@ -171,7 +169,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				path  = append(path, alias)
 				query = (&FileClient{config: ga.config}).Query()
 			)
-			args := newFilePaginateArgs(fieldArgs(ctx, nil, path...))
+			args := newFilePaginateArgs(fieldArgs(ctx, new(FileWhereInput), path...))
 			if err := validateFirstLast(args.first, args.last); err != nil {
 				return fmt.Errorf("validate first and last in path %q: %w", path, err)
 			}
@@ -193,8 +191,8 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 							ids[i] = nodes[i].ID
 						}
 						var v []struct {
-							NodeID int `sql:"game_files"`
-							Count  int `sql:"count"`
+							NodeID string `sql:"game_files"`
+							Count  int    `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {
 							s.Where(sql.InValues(s.C(game.FilesColumn), ids...))
@@ -202,7 +200,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 						if err := query.GroupBy(game.FilesColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
 							return err
 						}
-						m := make(map[int]int, len(v))
+						m := make(map[string]int, len(v))
 						for i := range v {
 							m[v[i].NodeID] = v[i].Count
 						}
@@ -260,7 +258,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				path  = append(path, alias)
 				query = (&ImageClient{config: ga.config}).Query()
 			)
-			args := newImagePaginateArgs(fieldArgs(ctx, nil, path...))
+			args := newImagePaginateArgs(fieldArgs(ctx, new(ImageWhereInput), path...))
 			if err := validateFirstLast(args.first, args.last); err != nil {
 				return fmt.Errorf("validate first and last in path %q: %w", path, err)
 			}
@@ -282,8 +280,8 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 							ids[i] = nodes[i].ID
 						}
 						var v []struct {
-							NodeID int `sql:"game_images"`
-							Count  int `sql:"count"`
+							NodeID string `sql:"game_images"`
+							Count  int    `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {
 							s.Where(sql.InValues(s.C(game.ImagesColumn), ids...))
@@ -291,7 +289,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 						if err := query.GroupBy(game.ImagesColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
 							return err
 						}
-						m := make(map[int]int, len(v))
+						m := make(map[string]int, len(v))
 						for i := range v {
 							m[v[i].NodeID] = v[i].Count
 						}
@@ -342,11 +340,6 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			ga.WithNamedImages(alias, func(wq *ImageQuery) {
 				*wq = *query
 			})
-		case "xid":
-			if _, ok := fieldSeen[game.FieldXid]; !ok {
-				selectedFields = append(selectedFields, game.FieldXid)
-				fieldSeen[game.FieldXid] = struct{}{}
-			}
 		case "slug":
 			if _, ok := fieldSeen[game.FieldSlug]; !ok {
 				selectedFields = append(selectedFields, game.FieldSlug)
@@ -412,6 +405,9 @@ func newGamePaginateArgs(rv map[string]any) *gamePaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[whereField].(*GameWhereInput); ok {
+		args.opts = append(args.opts, WithGameFilter(v.Filter))
+	}
 	return args
 }
 
@@ -447,11 +443,6 @@ func (i *ImageQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				return err
 			}
 			i.withGame = query
-		case "xid":
-			if _, ok := fieldSeen[image.FieldXid]; !ok {
-				selectedFields = append(selectedFields, image.FieldXid)
-				fieldSeen[image.FieldXid] = struct{}{}
-			}
 		case "kind":
 			if _, ok := fieldSeen[image.FieldKind]; !ok {
 				selectedFields = append(selectedFields, image.FieldKind)
@@ -512,6 +503,9 @@ func newImagePaginateArgs(rv map[string]any) *imagePaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[whereField].(*ImageWhereInput); ok {
+		args.opts = append(args.opts, WithImageFilter(v.Filter))
+	}
 	return args
 }
 
@@ -541,10 +535,10 @@ func (r *ReportQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 				selectedFields = append(selectedFields, report.FieldSubjectType)
 				fieldSeen[report.FieldSubjectType] = struct{}{}
 			}
-		case "subjectXid":
-			if _, ok := fieldSeen[report.FieldSubjectXid]; !ok {
-				selectedFields = append(selectedFields, report.FieldSubjectXid)
-				fieldSeen[report.FieldSubjectXid] = struct{}{}
+		case "subjectID":
+			if _, ok := fieldSeen[report.FieldSubjectID]; !ok {
+				selectedFields = append(selectedFields, report.FieldSubjectID)
+				fieldSeen[report.FieldSubjectID] = struct{}{}
 			}
 		case "reporterID":
 			if _, ok := fieldSeen[report.FieldReporterID]; !ok {
@@ -600,6 +594,9 @@ func newReportPaginateArgs(rv map[string]any) *reportPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*ReportWhereInput); ok {
+		args.opts = append(args.opts, WithReportFilter(v.Filter))
 	}
 	return args
 }
@@ -675,6 +672,9 @@ func newSiteSettingPaginateArgs(rv map[string]any) *sitesettingPaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[whereField].(*SiteSettingWhereInput); ok {
+		args.opts = append(args.opts, WithSiteSettingFilter(v.Filter))
+	}
 	return args
 }
 
@@ -699,11 +699,6 @@ func (us *UserShadowQuery) collectField(ctx context.Context, oneNode bool, opCtx
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
-		case "xid":
-			if _, ok := fieldSeen[usershadow.FieldXid]; !ok {
-				selectedFields = append(selectedFields, usershadow.FieldXid)
-				fieldSeen[usershadow.FieldXid] = struct{}{}
-			}
 		case "keycloakSub":
 			if _, ok := fieldSeen[usershadow.FieldKeycloakSub]; !ok {
 				selectedFields = append(selectedFields, usershadow.FieldKeycloakSub)
@@ -753,6 +748,9 @@ func newUserShadowPaginateArgs(rv map[string]any) *usershadowPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*UserShadowWhereInput); ok {
+		args.opts = append(args.opts, WithUserShadowFilter(v.Filter))
 	}
 	return args
 }

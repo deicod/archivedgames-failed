@@ -6,6 +6,7 @@ import (
 	"github.com/deicod/archivedgames/ent/file"
 	"github.com/deicod/archivedgames/ent/game"
 	"github.com/deicod/archivedgames/ent/image"
+	"github.com/deicod/archivedgames/ent/report"
 	"github.com/deicod/archivedgames/ent/schema"
 	"github.com/deicod/archivedgames/ent/sitesetting"
 	"github.com/deicod/archivedgames/ent/usershadow"
@@ -17,10 +18,6 @@ import (
 func init() {
 	fileFields := schema.File{}.Fields()
 	_ = fileFields
-	// fileDescXid is the schema descriptor for xid field.
-	fileDescXid := fileFields[0].Descriptor()
-	// file.DefaultXid holds the default value on creation for the xid field.
-	file.DefaultXid = fileDescXid.Default.(func() string)
 	// fileDescQuarantine is the schema descriptor for quarantine field.
 	fileDescQuarantine := fileFields[9].Descriptor()
 	// file.DefaultQuarantine holds the default value on creation for the quarantine field.
@@ -29,34 +26,46 @@ func init() {
 	fileDescNeedsReview := fileFields[10].Descriptor()
 	// file.DefaultNeedsReview holds the default value on creation for the needs_review field.
 	file.DefaultNeedsReview = fileDescNeedsReview.Default.(bool)
+	// fileDescID is the schema descriptor for id field.
+	fileDescID := fileFields[0].Descriptor()
+	// file.DefaultID holds the default value on creation for the id field.
+	file.DefaultID = fileDescID.Default.(func() string)
 	gameFields := schema.Game{}.Fields()
 	_ = gameFields
-	// gameDescXid is the schema descriptor for xid field.
-	gameDescXid := gameFields[0].Descriptor()
-	// game.DefaultXid holds the default value on creation for the xid field.
-	game.DefaultXid = gameDescXid.Default.(func() string)
+	// gameDescID is the schema descriptor for id field.
+	gameDescID := gameFields[0].Descriptor()
+	// game.DefaultID holds the default value on creation for the id field.
+	game.DefaultID = gameDescID.Default.(func() string)
 	imageFields := schema.Image{}.Fields()
 	_ = imageFields
-	// imageDescXid is the schema descriptor for xid field.
-	imageDescXid := imageFields[0].Descriptor()
-	// image.DefaultXid holds the default value on creation for the xid field.
-	image.DefaultXid = imageDescXid.Default.(func() string)
 	// imageDescPosition is the schema descriptor for position field.
 	imageDescPosition := imageFields[2].Descriptor()
 	// image.DefaultPosition holds the default value on creation for the position field.
 	image.DefaultPosition = imageDescPosition.Default.(int)
+	// imageDescID is the schema descriptor for id field.
+	imageDescID := imageFields[0].Descriptor()
+	// image.DefaultID holds the default value on creation for the id field.
+	image.DefaultID = imageDescID.Default.(func() string)
 	reportFields := schema.Report{}.Fields()
 	_ = reportFields
+	// reportDescID is the schema descriptor for id field.
+	reportDescID := reportFields[0].Descriptor()
+	// report.DefaultID holds the default value on creation for the id field.
+	report.DefaultID = reportDescID.Default.(func() string)
 	sitesettingFields := schema.SiteSetting{}.Fields()
 	_ = sitesettingFields
 	// sitesettingDescPublic is the schema descriptor for public field.
-	sitesettingDescPublic := sitesettingFields[2].Descriptor()
+	sitesettingDescPublic := sitesettingFields[3].Descriptor()
 	// sitesetting.DefaultPublic holds the default value on creation for the public field.
 	sitesetting.DefaultPublic = sitesettingDescPublic.Default.(bool)
+	// sitesettingDescID is the schema descriptor for id field.
+	sitesettingDescID := sitesettingFields[0].Descriptor()
+	// sitesetting.DefaultID holds the default value on creation for the id field.
+	sitesetting.DefaultID = sitesettingDescID.Default.(func() string)
 	usershadowFields := schema.UserShadow{}.Fields()
 	_ = usershadowFields
-	// usershadowDescXid is the schema descriptor for xid field.
-	usershadowDescXid := usershadowFields[0].Descriptor()
-	// usershadow.DefaultXid holds the default value on creation for the xid field.
-	usershadow.DefaultXid = usershadowDescXid.Default.(func() string)
+	// usershadowDescID is the schema descriptor for id field.
+	usershadowDescID := usershadowFields[0].Descriptor()
+	// usershadow.DefaultID holds the default value on creation for the id field.
+	usershadow.DefaultID = usershadowDescID.Default.(func() string)
 }

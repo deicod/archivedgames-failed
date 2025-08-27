@@ -1,33 +1,36 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-	"os"
-	"strings"
-	"time"
+    "context"
+    "database/sql"
+    "encoding/json"
+    "fmt"
+    "log"
+    "net/http"
+    "os"
+    "strings"
+    "time"
 
-	"github.com/deicod/archivedgames/ent"
-	"github.com/deicod/archivedgames/ent/game"
-	_ "github.com/lib/pq"
+    "github.com/deicod/archivedgames/ent"
+    "github.com/deicod/archivedgames/ent/game"
+    "github.com/deicod/archivedgames/ent/file"
+    _ "github.com/lib/pq"
 
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/playground"
-	graphpkg "github.com/deicod/archivedgames/graph"
-	authmw "github.com/deicod/archivedgames/internal/auth"
-	ratelimit "github.com/deicod/archivedgames/internal/rate"
-	reqmw "github.com/deicod/archivedgames/internal/request"
+    "github.com/99designs/gqlgen/graphql/handler"
+    "github.com/99designs/gqlgen/graphql/playground"
+    graphpkg "github.com/deicod/archivedgames/graph"
+    authmw "github.com/deicod/archivedgames/internal/auth"
+    ratelimit "github.com/deicod/archivedgames/internal/rate"
+    reqmw "github.com/deicod/archivedgames/internal/request"
+    "github.com/deicod/archivedgames/internal/s3client"
 )
 
 func dsnFromEnv() string {
 	host := getenv("PGHOST", "localhost")
 	port := getenv("PGPORT", "5432")
 	db := getenv("PGDATABASE", "archivedgames")
-	user := getenv("PGUSER", "app")
-	pass := getenv("PGPASSWORD", "app")
+	user := getenv("PGUSER", "dev")
+	pass := getenv("PGPASSWORD", "dev")
 	ssl := getenv("PGSSLMODE", "disable")
 	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", host, port, user, pass, db, ssl)
 }
@@ -53,9 +56,11 @@ func main() {
 		if err := client.Schema.Create(ctx); err != nil {
 			log.Fatalf("running migrations: %v", err)
 		}
+		dropLegacyColumns(ctx)
 	}
 
-	mux := http.NewServeMux()
+    dlRate := ratelimit.NewFromEnv()
+    mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(200); w.Write([]byte("ok")) })
 	mux.HandleFunc("/readyz", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(200); w.Write([]byte("ready")) })
 	mux.HandleFunc("/robots.txt", robotsTxt)
@@ -83,7 +88,31 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, `[%q,%s]`, q, toJSONArr(titles))
 	})
-	resolver := &graphpkg.Resolver{Client: client, Rate: ratelimit.NewFromEnv()}
+
+	// HTTP download redirect: /d/{fileId}
+	mux.HandleFunc("/d/", func(w http.ResponseWriter, r *http.Request) {
+		id := strings.TrimPrefix(r.URL.Path, "/d/")
+		if id == "" { http.Error(w, "missing id", http.StatusBadRequest); return }
+		ctx := r.Context()
+		f, err := client.File.Query().Where(file.IDEQ(id)).Only(ctx)
+		if err != nil { http.Error(w, "not found", http.StatusNotFound); return }
+		if f.Quarantine { http.Error(w, "quarantined", http.StatusForbidden); return }
+		if f.Source != "s3" { http.Error(w, "unsupported source", http.StatusBadRequest); return }
+		uid, _ := authmw.UserID(ctx)
+		ip := reqmw.FromContextIP(ctx)
+        if dlRate != nil {
+            if err := dlRate.AllowDownload(uid, ip, f.SizeBytes); err != nil {
+                http.Error(w, err.Error(), http.StatusTooManyRequests)
+                return
+            }
+        }
+		s3c, err := s3client.New(ctx)
+		if err != nil { http.Error(w, "s3 error", http.StatusInternalServerError); return }
+		url, err := s3c.PresignGet(ctx, f.Path, 2*time.Minute)
+		if err != nil { http.Error(w, "sign error", http.StatusInternalServerError); return }
+		http.Redirect(w, r, url, http.StatusFound)
+	})
+    resolver := &graphpkg.Resolver{Client: client, Rate: dlRate}
 	srv := handler.NewDefaultServer(graphpkg.NewExecutableSchema(graphpkg.Config{Resolvers: resolver}))
 	// Attach OIDC auth middleware
 	mux.Handle("/graphql", reqmw.WithClientIP(authmw.NewValidator().Middleware(srv)))
@@ -151,4 +180,15 @@ func sitemapXML(w http.ResponseWriter, r *http.Request, c *ent.Client) {
 func toJSONArr(ss []string) string {
 	b, _ := json.Marshal(ss)
 	return string(b)
+}
+
+func dropLegacyColumns(ctx context.Context) {
+	// Best-effort dev cleanup: drop old subject_xid column if present.
+	dsn := dsnFromEnv()
+	db, err := sql.Open("postgres", dsn)
+	if err != nil {
+		return
+	}
+	defer db.Close()
+	_, _ = db.ExecContext(ctx, `ALTER TABLE reports DROP COLUMN IF EXISTS subject_xid`)
 }

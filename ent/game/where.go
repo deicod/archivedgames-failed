@@ -9,53 +9,58 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.Game {
+func ID(id string) predicate.Game {
 	return predicate.Game(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.Game {
+func IDEQ(id string) predicate.Game {
 	return predicate.Game(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.Game {
+func IDNEQ(id string) predicate.Game {
 	return predicate.Game(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.Game {
+func IDIn(ids ...string) predicate.Game {
 	return predicate.Game(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.Game {
+func IDNotIn(ids ...string) predicate.Game {
 	return predicate.Game(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.Game {
+func IDGT(id string) predicate.Game {
 	return predicate.Game(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.Game {
+func IDGTE(id string) predicate.Game {
 	return predicate.Game(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.Game {
+func IDLT(id string) predicate.Game {
 	return predicate.Game(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.Game {
+func IDLTE(id string) predicate.Game {
 	return predicate.Game(sql.FieldLTE(FieldID, id))
 }
 
-// Xid applies equality check predicate on the "xid" field. It's identical to XidEQ.
-func Xid(v string) predicate.Game {
-	return predicate.Game(sql.FieldEQ(FieldXid, v))
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.Game {
+	return predicate.Game(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.Game {
+	return predicate.Game(sql.FieldContainsFold(FieldID, id))
 }
 
 // Slug applies equality check predicate on the "slug" field. It's identical to SlugEQ.
@@ -81,71 +86,6 @@ func Publisher(v string) predicate.Game {
 // Developer applies equality check predicate on the "developer" field. It's identical to DeveloperEQ.
 func Developer(v string) predicate.Game {
 	return predicate.Game(sql.FieldEQ(FieldDeveloper, v))
-}
-
-// XidEQ applies the EQ predicate on the "xid" field.
-func XidEQ(v string) predicate.Game {
-	return predicate.Game(sql.FieldEQ(FieldXid, v))
-}
-
-// XidNEQ applies the NEQ predicate on the "xid" field.
-func XidNEQ(v string) predicate.Game {
-	return predicate.Game(sql.FieldNEQ(FieldXid, v))
-}
-
-// XidIn applies the In predicate on the "xid" field.
-func XidIn(vs ...string) predicate.Game {
-	return predicate.Game(sql.FieldIn(FieldXid, vs...))
-}
-
-// XidNotIn applies the NotIn predicate on the "xid" field.
-func XidNotIn(vs ...string) predicate.Game {
-	return predicate.Game(sql.FieldNotIn(FieldXid, vs...))
-}
-
-// XidGT applies the GT predicate on the "xid" field.
-func XidGT(v string) predicate.Game {
-	return predicate.Game(sql.FieldGT(FieldXid, v))
-}
-
-// XidGTE applies the GTE predicate on the "xid" field.
-func XidGTE(v string) predicate.Game {
-	return predicate.Game(sql.FieldGTE(FieldXid, v))
-}
-
-// XidLT applies the LT predicate on the "xid" field.
-func XidLT(v string) predicate.Game {
-	return predicate.Game(sql.FieldLT(FieldXid, v))
-}
-
-// XidLTE applies the LTE predicate on the "xid" field.
-func XidLTE(v string) predicate.Game {
-	return predicate.Game(sql.FieldLTE(FieldXid, v))
-}
-
-// XidContains applies the Contains predicate on the "xid" field.
-func XidContains(v string) predicate.Game {
-	return predicate.Game(sql.FieldContains(FieldXid, v))
-}
-
-// XidHasPrefix applies the HasPrefix predicate on the "xid" field.
-func XidHasPrefix(v string) predicate.Game {
-	return predicate.Game(sql.FieldHasPrefix(FieldXid, v))
-}
-
-// XidHasSuffix applies the HasSuffix predicate on the "xid" field.
-func XidHasSuffix(v string) predicate.Game {
-	return predicate.Game(sql.FieldHasSuffix(FieldXid, v))
-}
-
-// XidEqualFold applies the EqualFold predicate on the "xid" field.
-func XidEqualFold(v string) predicate.Game {
-	return predicate.Game(sql.FieldEqualFold(FieldXid, v))
-}
-
-// XidContainsFold applies the ContainsFold predicate on the "xid" field.
-func XidContainsFold(v string) predicate.Game {
-	return predicate.Game(sql.FieldContainsFold(FieldXid, v))
 }
 
 // SlugEQ applies the EQ predicate on the "slug" field.

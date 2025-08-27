@@ -114,7 +114,7 @@ func (usu *UserShadowUpdate) ExecX(ctx context.Context) {
 }
 
 func (usu *UserShadowUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(usershadow.Table, usershadow.Columns, sqlgraph.NewFieldSpec(usershadow.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(usershadow.Table, usershadow.Columns, sqlgraph.NewFieldSpec(usershadow.FieldID, field.TypeString))
 	if ps := usu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -257,7 +257,7 @@ func (usuo *UserShadowUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (usuo *UserShadowUpdateOne) sqlSave(ctx context.Context) (_node *UserShadow, err error) {
-	_spec := sqlgraph.NewUpdateSpec(usershadow.Table, usershadow.Columns, sqlgraph.NewFieldSpec(usershadow.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(usershadow.Table, usershadow.Columns, sqlgraph.NewFieldSpec(usershadow.FieldID, field.TypeString))
 	id, ok := usuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "UserShadow.id" for update`)}

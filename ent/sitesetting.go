@@ -16,7 +16,7 @@ import (
 type SiteSetting struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Key holds the value of the "key" field.
 	Key string `json:"key,omitempty"`
 	// Value holds the value of the "value" field.
@@ -35,9 +35,7 @@ func (*SiteSetting) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case sitesetting.FieldPublic:
 			values[i] = new(sql.NullBool)
-		case sitesetting.FieldID:
-			values[i] = new(sql.NullInt64)
-		case sitesetting.FieldKey:
+		case sitesetting.FieldID, sitesetting.FieldKey:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -55,11 +53,11 @@ func (ss *SiteSetting) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case sitesetting.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				ss.ID = value.String
 			}
-			ss.ID = int(value.Int64)
 		case sitesetting.FieldKey:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field key", values[i])

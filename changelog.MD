@@ -8,6 +8,20 @@ Entry template:
 
 ---
 
+
+- 2025-08-28: Relay global IDs + frontend queries
+  - Switch all entities to string `id` primary keys using rs/xid; remove separate `xid` fields
+  - Update Node/Nodes resolvers and pagination to use `Cursor[string]`; align gqlgen mappings
+  - Rename GraphQL args to id-based names: `gameId`, `fileId`, `subjectId` (was `*Xid`)
+  - Rename `Report.subject_xid` → `subject_id`; add dev-only cleanup to drop legacy column if present
+  - Enable entgql WhereInputs; `games(where: ...)` and `files(where: ...)` available for Relay filters
+  - Frontend: PlatformList uses Relay to list games by platform with pagination; GameDetail queries by `slug` and lists images/files; Download uses `getDownloadURL(fileId)`
+  - Add HTTP download redirect endpoint `/d/{fileId}` and wire GameDetail downloads to it (D2)
+  - Add ImageUploader component: calls createImageUploads → PUT → finalizeImageUploads (auth required)
+  - Add Report button on file rows (GameDetail) to call `reportContent` (I1)
+  - Frontend: SupportButton reads donations from `publicSiteConfig` (env fallback); sync OIDC access_token to localStorage for API
+  - Web upgrades: Relay 20 + React 19.1; add schema merge step for relay-compiler; remove legacy JS relay config
+
 - 2025-08-27: V1 backend scaffold + core features
   - Initialize Go module and Makefile; add gen/migrate/run targets
   - Add ent schemas: Game, File(+needs_review), Image, UserShadow, SiteSetting
