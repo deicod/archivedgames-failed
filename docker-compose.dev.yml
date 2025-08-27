@@ -24,8 +24,8 @@ services:
       - miniodata:/data
 
   app:
-    image: alpine:3.20
-    command: ["sh","-c","echo 'backend agent will replace this service' && sleep 3600"]
+    build: .
+    command: ["/server"]
     env_file:
       - .env
       - .env.local

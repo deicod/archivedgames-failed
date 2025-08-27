@@ -27,7 +27,12 @@ npm run dev
 4. Backend: (agent will scaffold Go code next)
 
 ```bash
-# placeholder; agent will write cmd/server and ent schemas
+# Generate code (ent + gql) and run server
+make gen
+go run ./cmd/server
+
+# Or run via Docker Compose (builds server image)
+docker compose -f docker-compose.dev.yml up -d app
 ```
 
 ## Docs

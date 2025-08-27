@@ -2,3 +2,8 @@
 
 # JSON passthrough for SiteSetting.value
 scalar RawMessage
+
+extend type Query {
+  getDownloadURL(fileXid: String!, ttlSeconds: Int = 120): String!
+  opensearchSuggestions(q: String!, platform: GamePlatform): [String!]!
+}

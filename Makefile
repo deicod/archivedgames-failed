@@ -16,3 +16,5 @@ migrate:
 run:
 	go run ./cmd/server
 
+seed:
+	go run ./cmd/seed
