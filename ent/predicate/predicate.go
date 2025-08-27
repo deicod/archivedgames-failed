@@ -15,6 +15,9 @@ type Game func(*sql.Selector)
 // Image is the predicate function for image builders.
 type Image func(*sql.Selector)
 
+// Report is the predicate function for report builders.
+type Report func(*sql.Selector)
+
 // SiteSetting is the predicate function for sitesetting builders.
 type SiteSetting func(*sql.Selector)
 

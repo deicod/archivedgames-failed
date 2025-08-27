@@ -24,4 +24,6 @@ extend type Mutation {
   createImageUploads(gameXid: String!, kind: ImageKind!, count: Int!): [PresignedPut!]!
   finalizeImageUploads(gameXid: String!, kind: ImageKind!, items: [UploadedImageInput!]!): [Image!]!
   setSiteSetting(key: String!, value: RawMessage!, public: Boolean): SiteSetting!
+  reportContent(subjectType: String!, subjectXid: String!, reason: String!, note: String): Report!
+  quarantineFile(fileXid: String!, reason: String!): File!
 }

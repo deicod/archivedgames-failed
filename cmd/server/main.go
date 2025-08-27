@@ -2,13 +2,16 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/deicod/archivedgames/ent"
+	"github.com/deicod/archivedgames/ent/game"
 	_ "github.com/lib/pq"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -58,6 +61,28 @@ func main() {
 	mux.HandleFunc("/robots.txt", robotsTxt)
 	mux.HandleFunc("/opensearch.xml", openSearchXML)
 	mux.HandleFunc("/sitemap.xml", func(w http.ResponseWriter, r *http.Request) { sitemapXML(w, r, client) })
+	mux.HandleFunc("/api/opensearch", func(w http.ResponseWriter, r *http.Request) {
+		q := r.URL.Query().Get("q")
+		plat := r.URL.Query().Get("platform")
+		ctx := r.Context()
+		qb := client.Game.Query()
+		if q != "" {
+			qb = qb.Where(game.TitleContainsFold(q))
+		}
+		if plat != "" {
+			switch strings.ToLower(plat) {
+			case "c64":
+				qb = qb.Where(game.PlatformEQ(game.PlatformC64))
+			case "amiga":
+				qb = qb.Where(game.PlatformEQ(game.PlatformAMIGA))
+			case "dos":
+				qb = qb.Where(game.PlatformEQ(game.PlatformDOS))
+			}
+		}
+		titles, _ := qb.Limit(10).Select("title").Strings(ctx)
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `[%q,%s]`, q, toJSONArr(titles))
+	})
 	resolver := &graphpkg.Resolver{Client: client, Rate: ratelimit.NewFromEnv()}
 	srv := handler.NewDefaultServer(graphpkg.NewExecutableSchema(graphpkg.Config{Resolvers: resolver}))
 	// Attach OIDC auth middleware
@@ -121,4 +146,9 @@ func sitemapXML(w http.ResponseWriter, r *http.Request, c *ent.Client) {
 		w.Write([]byte("  <url><loc>" + u + "</loc></url>\n"))
 	}
 	w.Write([]byte("</urlset>"))
+}
+
+func toJSONArr(ss []string) string {
+	b, _ := json.Marshal(ss)
+	return string(b)
 }

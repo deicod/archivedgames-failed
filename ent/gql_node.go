@@ -16,6 +16,7 @@ import (
 	"github.com/deicod/archivedgames/ent/file"
 	"github.com/deicod/archivedgames/ent/game"
 	"github.com/deicod/archivedgames/ent/image"
+	"github.com/deicod/archivedgames/ent/report"
 	"github.com/deicod/archivedgames/ent/sitesetting"
 	"github.com/deicod/archivedgames/ent/usershadow"
 	"github.com/hashicorp/go-multierror"
@@ -41,6 +42,11 @@ var imageImplementors = []string{"Image", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*Image) IsNode() {}
+
+var reportImplementors = []string{"Report", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Report) IsNode() {}
 
 var sitesettingImplementors = []string{"SiteSetting", "Node"}
 
@@ -133,6 +139,15 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			Where(image.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, imageImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case report.Table:
+		query := c.Report.Query().
+			Where(report.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, reportImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -264,6 +279,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.Image.Query().
 			Where(image.IDIn(ids...))
 		query, err := query.CollectFields(ctx, imageImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case report.Table:
+		query := c.Report.Query().
+			Where(report.IDIn(ids...))
+		query, err := query.CollectFields(ctx, reportImplementors...)
 		if err != nil {
 			return nil, err
 		}

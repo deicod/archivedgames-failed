@@ -13,6 +13,7 @@ import (
 	"github.com/deicod/archivedgames/ent/file"
 	"github.com/deicod/archivedgames/ent/game"
 	"github.com/deicod/archivedgames/ent/image"
+	"github.com/deicod/archivedgames/ent/report"
 	"github.com/deicod/archivedgames/ent/sitesetting"
 	"github.com/deicod/archivedgames/ent/usershadow"
 )
@@ -496,6 +497,95 @@ type imagePaginateArgs struct {
 
 func newImagePaginateArgs(rv map[string]any) *imagePaginateArgs {
 	args := &imagePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (r *ReportQuery) CollectFields(ctx context.Context, satisfies ...string) (*ReportQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return r, nil
+	}
+	if err := r.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+func (r *ReportQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(report.Columns))
+		selectedFields = []string{report.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "subjectType":
+			if _, ok := fieldSeen[report.FieldSubjectType]; !ok {
+				selectedFields = append(selectedFields, report.FieldSubjectType)
+				fieldSeen[report.FieldSubjectType] = struct{}{}
+			}
+		case "subjectXid":
+			if _, ok := fieldSeen[report.FieldSubjectXid]; !ok {
+				selectedFields = append(selectedFields, report.FieldSubjectXid)
+				fieldSeen[report.FieldSubjectXid] = struct{}{}
+			}
+		case "reporterID":
+			if _, ok := fieldSeen[report.FieldReporterID]; !ok {
+				selectedFields = append(selectedFields, report.FieldReporterID)
+				fieldSeen[report.FieldReporterID] = struct{}{}
+			}
+		case "reason":
+			if _, ok := fieldSeen[report.FieldReason]; !ok {
+				selectedFields = append(selectedFields, report.FieldReason)
+				fieldSeen[report.FieldReason] = struct{}{}
+			}
+		case "note":
+			if _, ok := fieldSeen[report.FieldNote]; !ok {
+				selectedFields = append(selectedFields, report.FieldNote)
+				fieldSeen[report.FieldNote] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[report.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, report.FieldStatus)
+				fieldSeen[report.FieldStatus] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		r.Select(selectedFields...)
+	}
+	return nil
+}
+
+type reportPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ReportPaginateOption
+}
+
+func newReportPaginateArgs(rv map[string]any) *reportPaginateArgs {
+	args := &reportPaginateArgs{}
 	if rv == nil {
 		return args
 	}

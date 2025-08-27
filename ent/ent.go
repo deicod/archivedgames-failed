@@ -15,6 +15,7 @@ import (
 	"github.com/deicod/archivedgames/ent/file"
 	"github.com/deicod/archivedgames/ent/game"
 	"github.com/deicod/archivedgames/ent/image"
+	"github.com/deicod/archivedgames/ent/report"
 	"github.com/deicod/archivedgames/ent/sitesetting"
 	"github.com/deicod/archivedgames/ent/usershadow"
 )
@@ -80,6 +81,7 @@ func checkColumn(table, column string) error {
 			file.Table:        file.ValidColumn,
 			game.Table:        game.ValidColumn,
 			image.Table:       image.ValidColumn,
+			report.Table:      report.ValidColumn,
 			sitesetting.Table: sitesetting.ValidColumn,
 			usershadow.Table:  usershadow.ValidColumn,
 		})

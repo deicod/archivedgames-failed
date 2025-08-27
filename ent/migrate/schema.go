@@ -80,6 +80,22 @@ var (
 			},
 		},
 	}
+	// ReportsColumns holds the columns for the "reports" table.
+	ReportsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "subject_type", Type: field.TypeString},
+		{Name: "subject_xid", Type: field.TypeString},
+		{Name: "reporter_id", Type: field.TypeString, Nullable: true},
+		{Name: "reason", Type: field.TypeString},
+		{Name: "note", Type: field.TypeString, Nullable: true},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"OPEN", "TRIAGED", "ACTIONED", "REJECTED"}, Default: "OPEN"},
+	}
+	// ReportsTable holds the schema information for the "reports" table.
+	ReportsTable = &schema.Table{
+		Name:       "reports",
+		Columns:    ReportsColumns,
+		PrimaryKey: []*schema.Column{ReportsColumns[0]},
+	}
 	// SiteSettingsColumns holds the columns for the "site_settings" table.
 	SiteSettingsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -112,6 +128,7 @@ var (
 		FilesTable,
 		GamesTable,
 		ImagesTable,
+		ReportsTable,
 		SiteSettingsTable,
 		UserShadowsTable,
 	}

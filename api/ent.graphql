@@ -294,6 +294,24 @@ type Query {
     last: Int
   ): GameConnection!
 }
+type Report implements Node {
+  id: ID!
+  subjectType: String!
+  subjectXid: String!
+  reporterID: String
+  reason: String!
+  note: String
+  status: ReportStatus!
+}
+"""
+ReportStatus is enum for the field status
+"""
+enum ReportStatus @goModel(model: "github.com/deicod/archivedgames/ent/report.Status") {
+  OPEN
+  TRIAGED
+  ACTIONED
+  REJECTED
+}
 type SiteSetting implements Node {
   id: ID!
   key: String!

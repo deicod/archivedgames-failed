@@ -109,6 +109,28 @@ func (r *mutationResolver) SetSiteSetting(ctx context.Context, key string, value
 	return create.Save(ctx)
 }
 
+// ReportContent is the resolver for the reportContent field.
+func (r *mutationResolver) ReportContent(ctx context.Context, subjectType string, subjectXid string, reason string, note *string) (*ent.Report, error) {
+    rid, _ := auth.UserID(ctx)
+    create := r.Client.Report.Create().SetSubjectType(subjectType).SetSubjectXid(subjectXid).SetReason(reason)
+    if rid != "" { create = create.SetReporterID(rid) }
+    if note != nil { create = create.SetNote(*note) }
+    return create.Save(ctx)
+}
+
+// QuarantineFile is the resolver for the quarantineFile field.
+func (r *mutationResolver) QuarantineFile(ctx context.Context, fileXid string, reason string) (*ent.File, error) {
+    isAdmin := false
+    for _, ro := range auth.Roles(ctx) { if ro == "admin" { isAdmin = true; break } }
+    if !isAdmin { return nil, errors.New("forbidden") }
+    f, err := r.Client.File.Query().Where(file.XidEQ(fileXid)).Only(ctx)
+    if err != nil { return nil, err }
+    if err := r.Client.File.UpdateOne(f).SetQuarantine(true).Exec(ctx); err != nil { return nil, err }
+    // audit as report actioned
+    _, _ = r.Client.Report.Create().SetSubjectType("file").SetSubjectXid(fileXid).SetReason("quarantine").SetNote(reason).SetStatus("ACTIONED").Save(ctx)
+    return r.Client.File.Get(ctx, f.ID)
+}
+
 // GetDownloadURL is the resolver for the getDownloadURL field.
 func (r *queryResolver) GetDownloadURL(ctx context.Context, fileXid string, ttlSeconds *int) (string, error) {
 	f, err := r.Client.File.Query().Where(file.XidEQ(fileXid)).Only(ctx)

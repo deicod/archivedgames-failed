@@ -45,6 +45,8 @@ func init() {
 	imageDescPosition := imageFields[2].Descriptor()
 	// image.DefaultPosition holds the default value on creation for the position field.
 	image.DefaultPosition = imageDescPosition.Default.(int)
+	reportFields := schema.Report{}.Fields()
+	_ = reportFields
 	sitesettingFields := schema.SiteSetting{}.Fields()
 	_ = sitesettingFields
 	// sitesettingDescPublic is the schema descriptor for public field.

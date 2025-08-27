@@ -18,6 +18,8 @@ type Tx struct {
 	Game *GameClient
 	// Image is the client for interacting with the Image builders.
 	Image *ImageClient
+	// Report is the client for interacting with the Report builders.
+	Report *ReportClient
 	// SiteSetting is the client for interacting with the SiteSetting builders.
 	SiteSetting *SiteSettingClient
 	// UserShadow is the client for interacting with the UserShadow builders.
@@ -156,6 +158,7 @@ func (tx *Tx) init() {
 	tx.File = NewFileClient(tx.config)
 	tx.Game = NewGameClient(tx.config)
 	tx.Image = NewImageClient(tx.config)
+	tx.Report = NewReportClient(tx.config)
 	tx.SiteSetting = NewSiteSettingClient(tx.config)
 	tx.UserShadow = NewUserShadowClient(tx.config)
 }
