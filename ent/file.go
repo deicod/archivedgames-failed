@@ -37,6 +37,8 @@ type File struct {
 	Source string `json:"source,omitempty"`
 	// Quarantine holds the value of the "quarantine" field.
 	Quarantine bool `json:"quarantine,omitempty"`
+	// NeedsReview holds the value of the "needs_review" field.
+	NeedsReview bool `json:"needs_review,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FileQuery when eager-loading is set.
 	Edges        FileEdges `json:"edges"`
@@ -71,7 +73,7 @@ func (*File) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case file.FieldQuarantine:
+		case file.FieldQuarantine, file.FieldNeedsReview:
 			values[i] = new(sql.NullBool)
 		case file.FieldID, file.FieldSizeBytes:
 			values[i] = new(sql.NullInt64)
@@ -160,6 +162,12 @@ func (f *File) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				f.Quarantine = value.Bool
 			}
+		case file.FieldNeedsReview:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field needs_review", values[i])
+			} else if value.Valid {
+				f.NeedsReview = value.Bool
+			}
 		case file.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field game_files", value)
@@ -237,6 +245,9 @@ func (f *File) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("quarantine=")
 	builder.WriteString(fmt.Sprintf("%v", f.Quarantine))
+	builder.WriteString(", ")
+	builder.WriteString("needs_review=")
+	builder.WriteString(fmt.Sprintf("%v", f.NeedsReview))
 	builder.WriteByte(')')
 	return builder.String()
 }

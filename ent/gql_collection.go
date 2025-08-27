@@ -99,6 +99,11 @@ func (f *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 				selectedFields = append(selectedFields, file.FieldQuarantine)
 				fieldSeen[file.FieldQuarantine] = struct{}{}
 			}
+		case "needsReview":
+			if _, ok := fieldSeen[file.FieldNeedsReview]; !ok {
+				selectedFields = append(selectedFields, file.FieldNeedsReview)
+				fieldSeen[file.FieldNeedsReview] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:

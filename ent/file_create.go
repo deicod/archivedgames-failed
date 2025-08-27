@@ -112,6 +112,20 @@ func (fc *FileCreate) SetNillableQuarantine(b *bool) *FileCreate {
 	return fc
 }
 
+// SetNeedsReview sets the "needs_review" field.
+func (fc *FileCreate) SetNeedsReview(b bool) *FileCreate {
+	fc.mutation.SetNeedsReview(b)
+	return fc
+}
+
+// SetNillableNeedsReview sets the "needs_review" field if the given value is not nil.
+func (fc *FileCreate) SetNillableNeedsReview(b *bool) *FileCreate {
+	if b != nil {
+		fc.SetNeedsReview(*b)
+	}
+	return fc
+}
+
 // SetGameID sets the "game" edge to the Game entity by ID.
 func (fc *FileCreate) SetGameID(id int) *FileCreate {
 	fc.mutation.SetGameID(id)
@@ -166,6 +180,10 @@ func (fc *FileCreate) defaults() {
 		v := file.DefaultQuarantine
 		fc.mutation.SetQuarantine(v)
 	}
+	if _, ok := fc.mutation.NeedsReview(); !ok {
+		v := file.DefaultNeedsReview
+		fc.mutation.SetNeedsReview(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -193,6 +211,9 @@ func (fc *FileCreate) check() error {
 	}
 	if _, ok := fc.mutation.Quarantine(); !ok {
 		return &ValidationError{Name: "quarantine", err: errors.New(`ent: missing required field "File.quarantine"`)}
+	}
+	if _, ok := fc.mutation.NeedsReview(); !ok {
+		return &ValidationError{Name: "needs_review", err: errors.New(`ent: missing required field "File.needs_review"`)}
 	}
 	if len(fc.mutation.GameIDs()) == 0 {
 		return &ValidationError{Name: "game", err: errors.New(`ent: missing required edge "File.game"`)}
@@ -262,6 +283,10 @@ func (fc *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 	if value, ok := fc.mutation.Quarantine(); ok {
 		_spec.SetField(file.FieldQuarantine, field.TypeBool, value)
 		_node.Quarantine = value
+	}
+	if value, ok := fc.mutation.NeedsReview(); ok {
+		_spec.SetField(file.FieldNeedsReview, field.TypeBool, value)
+		_node.NeedsReview = value
 	}
 	if nodes := fc.mutation.GameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

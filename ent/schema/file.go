@@ -33,6 +33,7 @@ func (File) Fields() []ent.Field {
             field.String("format").Optional(),
             field.String("source"), // local|s3
             field.Bool("quarantine").Default(false),
+            field.Bool("needs_review").Default(false),
         }...,
     )
 }

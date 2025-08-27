@@ -25,6 +25,10 @@ func init() {
 	fileDescQuarantine := fileFields[9].Descriptor()
 	// file.DefaultQuarantine holds the default value on creation for the quarantine field.
 	file.DefaultQuarantine = fileDescQuarantine.Default.(bool)
+	// fileDescNeedsReview is the schema descriptor for needs_review field.
+	fileDescNeedsReview := fileFields[10].Descriptor()
+	// file.DefaultNeedsReview holds the default value on creation for the needs_review field.
+	file.DefaultNeedsReview = fileDescNeedsReview.Default.(bool)
 	gameFields := schema.Game{}.Fields()
 	_ = gameFields
 	// gameDescXid is the schema descriptor for xid field.

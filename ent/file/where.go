@@ -103,6 +103,11 @@ func Quarantine(v bool) predicate.File {
 	return predicate.File(sql.FieldEQ(FieldQuarantine, v))
 }
 
+// NeedsReview applies equality check predicate on the "needs_review" field. It's identical to NeedsReviewEQ.
+func NeedsReview(v bool) predicate.File {
+	return predicate.File(sql.FieldEQ(FieldNeedsReview, v))
+}
+
 // XidEQ applies the EQ predicate on the "xid" field.
 func XidEQ(v string) predicate.File {
 	return predicate.File(sql.FieldEQ(FieldXid, v))
@@ -691,6 +696,16 @@ func QuarantineEQ(v bool) predicate.File {
 // QuarantineNEQ applies the NEQ predicate on the "quarantine" field.
 func QuarantineNEQ(v bool) predicate.File {
 	return predicate.File(sql.FieldNEQ(FieldQuarantine, v))
+}
+
+// NeedsReviewEQ applies the EQ predicate on the "needs_review" field.
+func NeedsReviewEQ(v bool) predicate.File {
+	return predicate.File(sql.FieldEQ(FieldNeedsReview, v))
+}
+
+// NeedsReviewNEQ applies the NEQ predicate on the "needs_review" field.
+func NeedsReviewNEQ(v bool) predicate.File {
+	return predicate.File(sql.FieldNEQ(FieldNeedsReview, v))
 }
 
 // HasGame applies the HasEdge predicate on the "game" edge.

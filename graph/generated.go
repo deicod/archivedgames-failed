@@ -56,6 +56,7 @@ type ComplexityRoot struct {
 		Game           func(childComplexity int) int
 		ID             func(childComplexity int) int
 		MimeType       func(childComplexity int) int
+		NeedsReview    func(childComplexity int) int
 		NormalizedName func(childComplexity int) int
 		OriginalName   func(childComplexity int) int
 		Path           func(childComplexity int) int
@@ -216,6 +217,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.File.MimeType(childComplexity), true
+
+	case "File.needsReview":
+		if e.complexity.File.NeedsReview == nil {
+			break
+		}
+
+		return e.complexity.File.NeedsReview(childComplexity), true
 
 	case "File.normalizedName":
 		if e.complexity.File.NormalizedName == nil {
@@ -778,6 +786,7 @@ type File implements Node {
   format: String
   source: String!
   quarantine: Boolean!
+  needsReview: Boolean!
   game: Game!
 }
 """
@@ -2257,6 +2266,50 @@ func (ec *executionContext) fieldContext_File_quarantine(_ context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _File_needsReview(ctx context.Context, field graphql.CollectedField, obj *ent.File) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_File_needsReview(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NeedsReview, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_File_needsReview(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "File",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _File_game(ctx context.Context, field graphql.CollectedField, obj *ent.File) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_File_game(ctx, field)
 	if err != nil {
@@ -2526,6 +2579,8 @@ func (ec *executionContext) fieldContext_FileEdge_node(_ context.Context, field 
 				return ec.fieldContext_File_source(ctx, field)
 			case "quarantine":
 				return ec.fieldContext_File_quarantine(ctx, field)
+			case "needsReview":
+				return ec.fieldContext_File_needsReview(ctx, field)
 			case "game":
 				return ec.fieldContext_File_game(ctx, field)
 			}
@@ -7007,6 +7062,11 @@ func (ec *executionContext) _File(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "quarantine":
 			out.Values[i] = ec._File_quarantine(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "needsReview":
+			out.Values[i] = ec._File_needsReview(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}

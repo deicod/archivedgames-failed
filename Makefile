@@ -18,3 +18,6 @@ run:
 
 seed:
 	go run ./cmd/seed
+
+ingest:
+	go run ./cmd/ingest --root ./games

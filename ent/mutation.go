@@ -52,6 +52,7 @@ type FileMutation struct {
 	format          *string
 	source          *string
 	quarantine      *bool
+	needs_review    *bool
 	clearedFields   map[string]struct{}
 	game            *int
 	clearedgame     bool
@@ -564,6 +565,42 @@ func (m *FileMutation) ResetQuarantine() {
 	m.quarantine = nil
 }
 
+// SetNeedsReview sets the "needs_review" field.
+func (m *FileMutation) SetNeedsReview(b bool) {
+	m.needs_review = &b
+}
+
+// NeedsReview returns the value of the "needs_review" field in the mutation.
+func (m *FileMutation) NeedsReview() (r bool, exists bool) {
+	v := m.needs_review
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNeedsReview returns the old "needs_review" field's value of the File entity.
+// If the File object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileMutation) OldNeedsReview(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNeedsReview is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNeedsReview requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNeedsReview: %w", err)
+	}
+	return oldValue.NeedsReview, nil
+}
+
+// ResetNeedsReview resets all changes to the "needs_review" field.
+func (m *FileMutation) ResetNeedsReview() {
+	m.needs_review = nil
+}
+
 // SetGameID sets the "game" edge to the Game entity by id.
 func (m *FileMutation) SetGameID(id int) {
 	m.game = &id
@@ -637,7 +674,7 @@ func (m *FileMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FileMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.xid != nil {
 		fields = append(fields, file.FieldXid)
 	}
@@ -668,6 +705,9 @@ func (m *FileMutation) Fields() []string {
 	if m.quarantine != nil {
 		fields = append(fields, file.FieldQuarantine)
 	}
+	if m.needs_review != nil {
+		fields = append(fields, file.FieldNeedsReview)
+	}
 	return fields
 }
 
@@ -696,6 +736,8 @@ func (m *FileMutation) Field(name string) (ent.Value, bool) {
 		return m.Source()
 	case file.FieldQuarantine:
 		return m.Quarantine()
+	case file.FieldNeedsReview:
+		return m.NeedsReview()
 	}
 	return nil, false
 }
@@ -725,6 +767,8 @@ func (m *FileMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldSource(ctx)
 	case file.FieldQuarantine:
 		return m.OldQuarantine(ctx)
+	case file.FieldNeedsReview:
+		return m.OldNeedsReview(ctx)
 	}
 	return nil, fmt.Errorf("unknown File field %s", name)
 }
@@ -803,6 +847,13 @@ func (m *FileMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetQuarantine(v)
+		return nil
+	case file.FieldNeedsReview:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNeedsReview(v)
 		return nil
 	}
 	return fmt.Errorf("unknown File field %s", name)
@@ -912,6 +963,9 @@ func (m *FileMutation) ResetField(name string) error {
 		return nil
 	case file.FieldQuarantine:
 		m.ResetQuarantine()
+		return nil
+	case file.FieldNeedsReview:
+		m.ResetNeedsReview()
 		return nil
 	}
 	return fmt.Errorf("unknown File field %s", name)

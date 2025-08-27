@@ -32,6 +32,8 @@ const (
 	FieldSource = "source"
 	// FieldQuarantine holds the string denoting the quarantine field in the database.
 	FieldQuarantine = "quarantine"
+	// FieldNeedsReview holds the string denoting the needs_review field in the database.
+	FieldNeedsReview = "needs_review"
 	// EdgeGame holds the string denoting the game edge name in mutations.
 	EdgeGame = "game"
 	// Table holds the table name of the file in the database.
@@ -58,6 +60,7 @@ var Columns = []string{
 	FieldFormat,
 	FieldSource,
 	FieldQuarantine,
+	FieldNeedsReview,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "files"
@@ -86,6 +89,8 @@ var (
 	DefaultXid func() string
 	// DefaultQuarantine holds the default value on creation for the "quarantine" field.
 	DefaultQuarantine bool
+	// DefaultNeedsReview holds the default value on creation for the "needs_review" field.
+	DefaultNeedsReview bool
 )
 
 // OrderOption defines the ordering options for the File queries.
@@ -144,6 +149,11 @@ func BySource(opts ...sql.OrderTermOption) OrderOption {
 // ByQuarantine orders the results by the quarantine field.
 func ByQuarantine(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldQuarantine, opts...).ToFunc()
+}
+
+// ByNeedsReview orders the results by the needs_review field.
+func ByNeedsReview(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldNeedsReview, opts...).ToFunc()
 }
 
 // ByGameField orders the results by game field.

@@ -173,6 +173,20 @@ func (fu *FileUpdate) SetNillableQuarantine(b *bool) *FileUpdate {
 	return fu
 }
 
+// SetNeedsReview sets the "needs_review" field.
+func (fu *FileUpdate) SetNeedsReview(b bool) *FileUpdate {
+	fu.mutation.SetNeedsReview(b)
+	return fu
+}
+
+// SetNillableNeedsReview sets the "needs_review" field if the given value is not nil.
+func (fu *FileUpdate) SetNillableNeedsReview(b *bool) *FileUpdate {
+	if b != nil {
+		fu.SetNeedsReview(*b)
+	}
+	return fu
+}
+
 // SetGameID sets the "game" edge to the Game entity by ID.
 func (fu *FileUpdate) SetGameID(id int) *FileUpdate {
 	fu.mutation.SetGameID(id)
@@ -277,6 +291,9 @@ func (fu *FileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := fu.mutation.Quarantine(); ok {
 		_spec.SetField(file.FieldQuarantine, field.TypeBool, value)
+	}
+	if value, ok := fu.mutation.NeedsReview(); ok {
+		_spec.SetField(file.FieldNeedsReview, field.TypeBool, value)
 	}
 	if fu.mutation.GameCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -472,6 +489,20 @@ func (fuo *FileUpdateOne) SetNillableQuarantine(b *bool) *FileUpdateOne {
 	return fuo
 }
 
+// SetNeedsReview sets the "needs_review" field.
+func (fuo *FileUpdateOne) SetNeedsReview(b bool) *FileUpdateOne {
+	fuo.mutation.SetNeedsReview(b)
+	return fuo
+}
+
+// SetNillableNeedsReview sets the "needs_review" field if the given value is not nil.
+func (fuo *FileUpdateOne) SetNillableNeedsReview(b *bool) *FileUpdateOne {
+	if b != nil {
+		fuo.SetNeedsReview(*b)
+	}
+	return fuo
+}
+
 // SetGameID sets the "game" edge to the Game entity by ID.
 func (fuo *FileUpdateOne) SetGameID(id int) *FileUpdateOne {
 	fuo.mutation.SetGameID(id)
@@ -606,6 +637,9 @@ func (fuo *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) 
 	}
 	if value, ok := fuo.mutation.Quarantine(); ok {
 		_spec.SetField(file.FieldQuarantine, field.TypeBool, value)
+	}
+	if value, ok := fuo.mutation.NeedsReview(); ok {
+		_spec.SetField(file.FieldNeedsReview, field.TypeBool, value)
 	}
 	if fuo.mutation.GameCleared() {
 		edge := &sqlgraph.EdgeSpec{

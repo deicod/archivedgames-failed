@@ -17,6 +17,7 @@ type File implements Node {
   format: String
   source: String!
   quarantine: Boolean!
+  needsReview: Boolean!
   game: Game!
 }
 """
