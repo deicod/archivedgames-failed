@@ -32,6 +32,10 @@ const (
 	FieldQuarantine = "quarantine"
 	// FieldNeedsReview holds the string denoting the needs_review field in the database.
 	FieldNeedsReview = "needs_review"
+	// FieldDiskNumber holds the string denoting the disk_number field in the database.
+	FieldDiskNumber = "disk_number"
+	// FieldSide holds the string denoting the side field in the database.
+	FieldSide = "side"
 	// EdgeGame holds the string denoting the game edge name in mutations.
 	EdgeGame = "game"
 	// Table holds the table name of the file in the database.
@@ -58,6 +62,8 @@ var Columns = []string{
 	FieldSource,
 	FieldQuarantine,
 	FieldNeedsReview,
+	FieldDiskNumber,
+	FieldSide,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "files"
@@ -146,6 +152,16 @@ func ByQuarantine(opts ...sql.OrderTermOption) OrderOption {
 // ByNeedsReview orders the results by the needs_review field.
 func ByNeedsReview(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldNeedsReview, opts...).ToFunc()
+}
+
+// ByDiskNumber orders the results by the disk_number field.
+func ByDiskNumber(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDiskNumber, opts...).ToFunc()
+}
+
+// BySide orders the results by the side field.
+func BySide(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSide, opts...).ToFunc()
 }
 
 // ByGameField orders the results by game field.

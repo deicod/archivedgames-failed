@@ -21,6 +21,8 @@ var (
 		{Name: "source", Type: field.TypeString},
 		{Name: "quarantine", Type: field.TypeBool, Default: false},
 		{Name: "needs_review", Type: field.TypeBool, Default: false},
+		{Name: "disk_number", Type: field.TypeInt, Nullable: true},
+		{Name: "side", Type: field.TypeString, Nullable: true},
 		{Name: "game_files", Type: field.TypeString},
 	}
 	// FilesTable holds the schema information for the "files" table.
@@ -31,7 +33,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "files_games_files",
-				Columns:    []*schema.Column{FilesColumns[11]},
+				Columns:    []*schema.Column{FilesColumns[13]},
 				RefColumns: []*schema.Column{GamesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

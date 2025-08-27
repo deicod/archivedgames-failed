@@ -187,6 +187,53 @@ func (fu *FileUpdate) SetNillableNeedsReview(b *bool) *FileUpdate {
 	return fu
 }
 
+// SetDiskNumber sets the "disk_number" field.
+func (fu *FileUpdate) SetDiskNumber(i int) *FileUpdate {
+	fu.mutation.ResetDiskNumber()
+	fu.mutation.SetDiskNumber(i)
+	return fu
+}
+
+// SetNillableDiskNumber sets the "disk_number" field if the given value is not nil.
+func (fu *FileUpdate) SetNillableDiskNumber(i *int) *FileUpdate {
+	if i != nil {
+		fu.SetDiskNumber(*i)
+	}
+	return fu
+}
+
+// AddDiskNumber adds i to the "disk_number" field.
+func (fu *FileUpdate) AddDiskNumber(i int) *FileUpdate {
+	fu.mutation.AddDiskNumber(i)
+	return fu
+}
+
+// ClearDiskNumber clears the value of the "disk_number" field.
+func (fu *FileUpdate) ClearDiskNumber() *FileUpdate {
+	fu.mutation.ClearDiskNumber()
+	return fu
+}
+
+// SetSide sets the "side" field.
+func (fu *FileUpdate) SetSide(s string) *FileUpdate {
+	fu.mutation.SetSide(s)
+	return fu
+}
+
+// SetNillableSide sets the "side" field if the given value is not nil.
+func (fu *FileUpdate) SetNillableSide(s *string) *FileUpdate {
+	if s != nil {
+		fu.SetSide(*s)
+	}
+	return fu
+}
+
+// ClearSide clears the value of the "side" field.
+func (fu *FileUpdate) ClearSide() *FileUpdate {
+	fu.mutation.ClearSide()
+	return fu
+}
+
 // SetGameID sets the "game" edge to the Game entity by ID.
 func (fu *FileUpdate) SetGameID(id string) *FileUpdate {
 	fu.mutation.SetGameID(id)
@@ -294,6 +341,21 @@ func (fu *FileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := fu.mutation.NeedsReview(); ok {
 		_spec.SetField(file.FieldNeedsReview, field.TypeBool, value)
+	}
+	if value, ok := fu.mutation.DiskNumber(); ok {
+		_spec.SetField(file.FieldDiskNumber, field.TypeInt, value)
+	}
+	if value, ok := fu.mutation.AddedDiskNumber(); ok {
+		_spec.AddField(file.FieldDiskNumber, field.TypeInt, value)
+	}
+	if fu.mutation.DiskNumberCleared() {
+		_spec.ClearField(file.FieldDiskNumber, field.TypeInt)
+	}
+	if value, ok := fu.mutation.Side(); ok {
+		_spec.SetField(file.FieldSide, field.TypeString, value)
+	}
+	if fu.mutation.SideCleared() {
+		_spec.ClearField(file.FieldSide, field.TypeString)
 	}
 	if fu.mutation.GameCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -503,6 +565,53 @@ func (fuo *FileUpdateOne) SetNillableNeedsReview(b *bool) *FileUpdateOne {
 	return fuo
 }
 
+// SetDiskNumber sets the "disk_number" field.
+func (fuo *FileUpdateOne) SetDiskNumber(i int) *FileUpdateOne {
+	fuo.mutation.ResetDiskNumber()
+	fuo.mutation.SetDiskNumber(i)
+	return fuo
+}
+
+// SetNillableDiskNumber sets the "disk_number" field if the given value is not nil.
+func (fuo *FileUpdateOne) SetNillableDiskNumber(i *int) *FileUpdateOne {
+	if i != nil {
+		fuo.SetDiskNumber(*i)
+	}
+	return fuo
+}
+
+// AddDiskNumber adds i to the "disk_number" field.
+func (fuo *FileUpdateOne) AddDiskNumber(i int) *FileUpdateOne {
+	fuo.mutation.AddDiskNumber(i)
+	return fuo
+}
+
+// ClearDiskNumber clears the value of the "disk_number" field.
+func (fuo *FileUpdateOne) ClearDiskNumber() *FileUpdateOne {
+	fuo.mutation.ClearDiskNumber()
+	return fuo
+}
+
+// SetSide sets the "side" field.
+func (fuo *FileUpdateOne) SetSide(s string) *FileUpdateOne {
+	fuo.mutation.SetSide(s)
+	return fuo
+}
+
+// SetNillableSide sets the "side" field if the given value is not nil.
+func (fuo *FileUpdateOne) SetNillableSide(s *string) *FileUpdateOne {
+	if s != nil {
+		fuo.SetSide(*s)
+	}
+	return fuo
+}
+
+// ClearSide clears the value of the "side" field.
+func (fuo *FileUpdateOne) ClearSide() *FileUpdateOne {
+	fuo.mutation.ClearSide()
+	return fuo
+}
+
 // SetGameID sets the "game" edge to the Game entity by ID.
 func (fuo *FileUpdateOne) SetGameID(id string) *FileUpdateOne {
 	fuo.mutation.SetGameID(id)
@@ -640,6 +749,21 @@ func (fuo *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) 
 	}
 	if value, ok := fuo.mutation.NeedsReview(); ok {
 		_spec.SetField(file.FieldNeedsReview, field.TypeBool, value)
+	}
+	if value, ok := fuo.mutation.DiskNumber(); ok {
+		_spec.SetField(file.FieldDiskNumber, field.TypeInt, value)
+	}
+	if value, ok := fuo.mutation.AddedDiskNumber(); ok {
+		_spec.AddField(file.FieldDiskNumber, field.TypeInt, value)
+	}
+	if fuo.mutation.DiskNumberCleared() {
+		_spec.ClearField(file.FieldDiskNumber, field.TypeInt)
+	}
+	if value, ok := fuo.mutation.Side(); ok {
+		_spec.SetField(file.FieldSide, field.TypeString, value)
+	}
+	if fuo.mutation.SideCleared() {
+		_spec.ClearField(file.FieldSide, field.TypeString)
 	}
 	if fuo.mutation.GameCleared() {
 		edge := &sqlgraph.EdgeSpec{

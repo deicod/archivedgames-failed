@@ -250,7 +250,7 @@ func (r *queryResolver) PublicSiteConfig(ctx context.Context) (gqltypes.RawMessa
 }
 
 // ReportsOpen is the resolver for the reportsOpen field.
-func (r *queryResolver) ReportsOpen(ctx context.Context, first *int) ([]*ent.Report, error) {
+func (r *queryResolver) ReportsOpen(ctx context.Context, first *int, offset *int, subjectType *string) ([]*ent.Report, error) {
 	lim := 50
 	if first != nil && *first > 0 {
 		lim = *first

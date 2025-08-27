@@ -950,7 +950,7 @@ extend type Query {
   getDownloadURL(fileId: String!, ttlSeconds: Int = 120): String!
   opensearchSuggestions(q: String!, platform: GamePlatform): [String!]!
   publicSiteConfig: RawMessage!
-  reportsOpen(first: Int = 50): [Report!]!
+  reportsOpen(first: Int = 50, offset: Int = 0, subjectType: String): [Report!]!
 }
 
 type PresignedPut {

@@ -18,6 +18,9 @@ const Header: React.FC = () => {
           <Link to="/platform/c64" className="hover:underline">C64</Link>
           <Link to="/platform/amiga" className="hover:underline">Amiga</Link>
           <Link to="/platform/dos" className="hover:underline">DOS</Link>
+          {auth.isAuthenticated && (
+            <Link to="/admin/reports" className="hover:underline text-amber-300">Admin</Link>
+          )}
         </nav>
         <div className="flex-1" />
         <SupportButton />

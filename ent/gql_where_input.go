@@ -161,6 +161,35 @@ type FileWhereInput struct {
 	NeedsReview    *bool `json:"needsReview,omitempty"`
 	NeedsReviewNEQ *bool `json:"needsReviewNEQ,omitempty"`
 
+	// "disk_number" field predicates.
+	DiskNumber       *int  `json:"diskNumber,omitempty"`
+	DiskNumberNEQ    *int  `json:"diskNumberNEQ,omitempty"`
+	DiskNumberIn     []int `json:"diskNumberIn,omitempty"`
+	DiskNumberNotIn  []int `json:"diskNumberNotIn,omitempty"`
+	DiskNumberGT     *int  `json:"diskNumberGT,omitempty"`
+	DiskNumberGTE    *int  `json:"diskNumberGTE,omitempty"`
+	DiskNumberLT     *int  `json:"diskNumberLT,omitempty"`
+	DiskNumberLTE    *int  `json:"diskNumberLTE,omitempty"`
+	DiskNumberIsNil  bool  `json:"diskNumberIsNil,omitempty"`
+	DiskNumberNotNil bool  `json:"diskNumberNotNil,omitempty"`
+
+	// "side" field predicates.
+	Side             *string  `json:"side,omitempty"`
+	SideNEQ          *string  `json:"sideNEQ,omitempty"`
+	SideIn           []string `json:"sideIn,omitempty"`
+	SideNotIn        []string `json:"sideNotIn,omitempty"`
+	SideGT           *string  `json:"sideGT,omitempty"`
+	SideGTE          *string  `json:"sideGTE,omitempty"`
+	SideLT           *string  `json:"sideLT,omitempty"`
+	SideLTE          *string  `json:"sideLTE,omitempty"`
+	SideContains     *string  `json:"sideContains,omitempty"`
+	SideHasPrefix    *string  `json:"sideHasPrefix,omitempty"`
+	SideHasSuffix    *string  `json:"sideHasSuffix,omitempty"`
+	SideIsNil        bool     `json:"sideIsNil,omitempty"`
+	SideNotNil       bool     `json:"sideNotNil,omitempty"`
+	SideEqualFold    *string  `json:"sideEqualFold,omitempty"`
+	SideContainsFold *string  `json:"sideContainsFold,omitempty"`
+
 	// "game" edge predicates.
 	HasGame     *bool             `json:"hasGame,omitempty"`
 	HasGameWith []*GameWhereInput `json:"hasGameWith,omitempty"`
@@ -587,6 +616,81 @@ func (i *FileWhereInput) P() (predicate.File, error) {
 	}
 	if i.NeedsReviewNEQ != nil {
 		predicates = append(predicates, file.NeedsReviewNEQ(*i.NeedsReviewNEQ))
+	}
+	if i.DiskNumber != nil {
+		predicates = append(predicates, file.DiskNumberEQ(*i.DiskNumber))
+	}
+	if i.DiskNumberNEQ != nil {
+		predicates = append(predicates, file.DiskNumberNEQ(*i.DiskNumberNEQ))
+	}
+	if len(i.DiskNumberIn) > 0 {
+		predicates = append(predicates, file.DiskNumberIn(i.DiskNumberIn...))
+	}
+	if len(i.DiskNumberNotIn) > 0 {
+		predicates = append(predicates, file.DiskNumberNotIn(i.DiskNumberNotIn...))
+	}
+	if i.DiskNumberGT != nil {
+		predicates = append(predicates, file.DiskNumberGT(*i.DiskNumberGT))
+	}
+	if i.DiskNumberGTE != nil {
+		predicates = append(predicates, file.DiskNumberGTE(*i.DiskNumberGTE))
+	}
+	if i.DiskNumberLT != nil {
+		predicates = append(predicates, file.DiskNumberLT(*i.DiskNumberLT))
+	}
+	if i.DiskNumberLTE != nil {
+		predicates = append(predicates, file.DiskNumberLTE(*i.DiskNumberLTE))
+	}
+	if i.DiskNumberIsNil {
+		predicates = append(predicates, file.DiskNumberIsNil())
+	}
+	if i.DiskNumberNotNil {
+		predicates = append(predicates, file.DiskNumberNotNil())
+	}
+	if i.Side != nil {
+		predicates = append(predicates, file.SideEQ(*i.Side))
+	}
+	if i.SideNEQ != nil {
+		predicates = append(predicates, file.SideNEQ(*i.SideNEQ))
+	}
+	if len(i.SideIn) > 0 {
+		predicates = append(predicates, file.SideIn(i.SideIn...))
+	}
+	if len(i.SideNotIn) > 0 {
+		predicates = append(predicates, file.SideNotIn(i.SideNotIn...))
+	}
+	if i.SideGT != nil {
+		predicates = append(predicates, file.SideGT(*i.SideGT))
+	}
+	if i.SideGTE != nil {
+		predicates = append(predicates, file.SideGTE(*i.SideGTE))
+	}
+	if i.SideLT != nil {
+		predicates = append(predicates, file.SideLT(*i.SideLT))
+	}
+	if i.SideLTE != nil {
+		predicates = append(predicates, file.SideLTE(*i.SideLTE))
+	}
+	if i.SideContains != nil {
+		predicates = append(predicates, file.SideContains(*i.SideContains))
+	}
+	if i.SideHasPrefix != nil {
+		predicates = append(predicates, file.SideHasPrefix(*i.SideHasPrefix))
+	}
+	if i.SideHasSuffix != nil {
+		predicates = append(predicates, file.SideHasSuffix(*i.SideHasSuffix))
+	}
+	if i.SideIsNil {
+		predicates = append(predicates, file.SideIsNil())
+	}
+	if i.SideNotNil {
+		predicates = append(predicates, file.SideNotNil())
+	}
+	if i.SideEqualFold != nil {
+		predicates = append(predicates, file.SideEqualFold(*i.SideEqualFold))
+	}
+	if i.SideContainsFold != nil {
+		predicates = append(predicates, file.SideContainsFold(*i.SideContainsFold))
 	}
 
 	if i.HasGame != nil {

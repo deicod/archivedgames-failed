@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<83af7a602315659d4e6d97d493e63ada>>
+ * @generated SignedSource<<ebb9ead1e7c7cedd622308cf9ae600b7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,8 @@ import { ConcreteRequest } from 'relay-runtime';
 export type ReportStatus = "ACTIONED" | "OPEN" | "REJECTED" | "TRIAGED" | "%future added value";
 export type AdminReports_Query$variables = {
   first: number;
+  offset: number;
+  subjectType?: string | null | undefined;
 };
 export type AdminReports_Query$data = {
   readonly reportsOpen: ReadonlyArray<{
@@ -34,6 +36,16 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "first"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "offset"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "subjectType"
   }
 ],
 v1 = [
@@ -47,6 +59,16 @@ v1 = [
             "kind": "Variable",
             "name": "first",
             "variableName": "first"
+          },
+          {
+            "kind": "Variable",
+            "name": "offset",
+            "variableName": "offset"
+          },
+          {
+            "kind": "Variable",
+            "name": "subjectType",
+            "variableName": "subjectType"
           }
         ],
         "concreteType": "Report",
@@ -130,6 +152,6 @@ return {
 };
 })();
 
-(node as any).hash = "43668786162d964b4f69f8ae99cb8864";
+(node as any).hash = "1d9a204421c7680c2eb2355912c4a964";
 
 export default node;

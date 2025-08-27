@@ -37,6 +37,10 @@ type File struct {
 	Quarantine bool `json:"quarantine,omitempty"`
 	// NeedsReview holds the value of the "needs_review" field.
 	NeedsReview bool `json:"needs_review,omitempty"`
+	// DiskNumber holds the value of the "disk_number" field.
+	DiskNumber *int `json:"disk_number,omitempty"`
+	// Side holds the value of the "side" field.
+	Side string `json:"side,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FileQuery when eager-loading is set.
 	Edges        FileEdges `json:"edges"`
@@ -73,9 +77,9 @@ func (*File) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case file.FieldQuarantine, file.FieldNeedsReview:
 			values[i] = new(sql.NullBool)
-		case file.FieldSizeBytes:
+		case file.FieldSizeBytes, file.FieldDiskNumber:
 			values[i] = new(sql.NullInt64)
-		case file.FieldID, file.FieldPath, file.FieldOriginalName, file.FieldNormalizedName, file.FieldChecksum, file.FieldMimeType, file.FieldFormat, file.FieldSource:
+		case file.FieldID, file.FieldPath, file.FieldOriginalName, file.FieldNormalizedName, file.FieldChecksum, file.FieldMimeType, file.FieldFormat, file.FieldSource, file.FieldSide:
 			values[i] = new(sql.NullString)
 		case file.ForeignKeys[0]: // game_files
 			values[i] = new(sql.NullString)
@@ -160,6 +164,19 @@ func (f *File) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				f.NeedsReview = value.Bool
 			}
+		case file.FieldDiskNumber:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field disk_number", values[i])
+			} else if value.Valid {
+				f.DiskNumber = new(int)
+				*f.DiskNumber = int(value.Int64)
+			}
+		case file.FieldSide:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field side", values[i])
+			} else if value.Valid {
+				f.Side = value.String
+			}
 		case file.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field game_files", values[i])
@@ -237,6 +254,14 @@ func (f *File) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("needs_review=")
 	builder.WriteString(fmt.Sprintf("%v", f.NeedsReview))
+	builder.WriteString(", ")
+	if v := f.DiskNumber; v != nil {
+		builder.WriteString("disk_number=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	builder.WriteString("side=")
+	builder.WriteString(f.Side)
 	builder.WriteByte(')')
 	return builder.String()
 }

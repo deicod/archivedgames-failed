@@ -155,7 +155,7 @@ type ComplexityRoot struct {
 		OpensearchSuggestions func(childComplexity int, q string, platform *game.Platform) int
 		PublicSiteConfig      func(childComplexity int) int
 		Reports               func(childComplexity int) int
-		ReportsOpen           func(childComplexity int, first *int) int
+		ReportsOpen           func(childComplexity int, first *int, offset *int, subjectType *string) int
 	}
 
 	Report struct {
@@ -205,7 +205,7 @@ type QueryResolver interface {
 	GetDownloadURL(ctx context.Context, fileID string, ttlSeconds *int) (string, error)
 	OpensearchSuggestions(ctx context.Context, q string, platform *game.Platform) ([]string, error)
 	PublicSiteConfig(ctx context.Context) (gqltypes.RawMessage, error)
-	ReportsOpen(ctx context.Context, first *int) ([]*ent.Report, error)
+	ReportsOpen(ctx context.Context, first *int, offset *int, subjectType *string) ([]*ent.Report, error)
 }
 type SiteSettingResolver interface {
 	Value(ctx context.Context, obj *ent.SiteSetting) (gqltypes.RawMessage, error)
@@ -763,7 +763,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.ReportsOpen(childComplexity, args["first"].(*int)), true
+		return e.complexity.Query.ReportsOpen(childComplexity, args["first"].(*int), args["offset"].(*int), args["subjectType"].(*string)), true
 
 	case "Report.id":
 		if e.complexity.Report.ID == nil {
@@ -1933,7 +1933,7 @@ extend type Query {
   getDownloadURL(fileId: String!, ttlSeconds: Int = 120): String!
   opensearchSuggestions(q: String!, platform: GamePlatform): [String!]!
   publicSiteConfig: RawMessage!
-  reportsOpen(first: Int = 50): [Report!]!
+  reportsOpen(first: Int = 50, offset: Int = 0, subjectType: String): [Report!]!
 }
 
 type PresignedPut {
@@ -3064,6 +3064,16 @@ func (ec *executionContext) field_Query_reportsOpen_args(ctx context.Context, ra
 		return nil, err
 	}
 	args["first"] = arg0
+	arg1, err := ec.field_Query_reportsOpen_argsOffset(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg1
+	arg2, err := ec.field_Query_reportsOpen_argsSubjectType(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["subjectType"] = arg2
 	return args, nil
 }
 func (ec *executionContext) field_Query_reportsOpen_argsFirst(
@@ -3081,6 +3091,42 @@ func (ec *executionContext) field_Query_reportsOpen_argsFirst(
 	}
 
 	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_reportsOpen_argsOffset(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int, error) {
+	if _, ok := rawArgs["offset"]; !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+	if tmp, ok := rawArgs["offset"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_reportsOpen_argsSubjectType(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*string, error) {
+	if _, ok := rawArgs["subjectType"]; !ok {
+		var zeroVal *string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("subjectType"))
+	if tmp, ok := rawArgs["subjectType"]; ok {
+		return ec.unmarshalOString2ᚖstring(ctx, tmp)
+	}
+
+	var zeroVal *string
 	return zeroVal, nil
 }
 
@@ -6445,7 +6491,7 @@ func (ec *executionContext) _Query_reportsOpen(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ReportsOpen(rctx, fc.Args["first"].(*int))
+		return ec.resolvers.Query().ReportsOpen(rctx, fc.Args["first"].(*int), fc.Args["offset"].(*int), fc.Args["subjectType"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

@@ -113,6 +113,16 @@ func NeedsReview(v bool) predicate.File {
 	return predicate.File(sql.FieldEQ(FieldNeedsReview, v))
 }
 
+// DiskNumber applies equality check predicate on the "disk_number" field. It's identical to DiskNumberEQ.
+func DiskNumber(v int) predicate.File {
+	return predicate.File(sql.FieldEQ(FieldDiskNumber, v))
+}
+
+// Side applies equality check predicate on the "side" field. It's identical to SideEQ.
+func Side(v string) predicate.File {
+	return predicate.File(sql.FieldEQ(FieldSide, v))
+}
+
 // PathEQ applies the EQ predicate on the "path" field.
 func PathEQ(v string) predicate.File {
 	return predicate.File(sql.FieldEQ(FieldPath, v))
@@ -646,6 +656,131 @@ func NeedsReviewEQ(v bool) predicate.File {
 // NeedsReviewNEQ applies the NEQ predicate on the "needs_review" field.
 func NeedsReviewNEQ(v bool) predicate.File {
 	return predicate.File(sql.FieldNEQ(FieldNeedsReview, v))
+}
+
+// DiskNumberEQ applies the EQ predicate on the "disk_number" field.
+func DiskNumberEQ(v int) predicate.File {
+	return predicate.File(sql.FieldEQ(FieldDiskNumber, v))
+}
+
+// DiskNumberNEQ applies the NEQ predicate on the "disk_number" field.
+func DiskNumberNEQ(v int) predicate.File {
+	return predicate.File(sql.FieldNEQ(FieldDiskNumber, v))
+}
+
+// DiskNumberIn applies the In predicate on the "disk_number" field.
+func DiskNumberIn(vs ...int) predicate.File {
+	return predicate.File(sql.FieldIn(FieldDiskNumber, vs...))
+}
+
+// DiskNumberNotIn applies the NotIn predicate on the "disk_number" field.
+func DiskNumberNotIn(vs ...int) predicate.File {
+	return predicate.File(sql.FieldNotIn(FieldDiskNumber, vs...))
+}
+
+// DiskNumberGT applies the GT predicate on the "disk_number" field.
+func DiskNumberGT(v int) predicate.File {
+	return predicate.File(sql.FieldGT(FieldDiskNumber, v))
+}
+
+// DiskNumberGTE applies the GTE predicate on the "disk_number" field.
+func DiskNumberGTE(v int) predicate.File {
+	return predicate.File(sql.FieldGTE(FieldDiskNumber, v))
+}
+
+// DiskNumberLT applies the LT predicate on the "disk_number" field.
+func DiskNumberLT(v int) predicate.File {
+	return predicate.File(sql.FieldLT(FieldDiskNumber, v))
+}
+
+// DiskNumberLTE applies the LTE predicate on the "disk_number" field.
+func DiskNumberLTE(v int) predicate.File {
+	return predicate.File(sql.FieldLTE(FieldDiskNumber, v))
+}
+
+// DiskNumberIsNil applies the IsNil predicate on the "disk_number" field.
+func DiskNumberIsNil() predicate.File {
+	return predicate.File(sql.FieldIsNull(FieldDiskNumber))
+}
+
+// DiskNumberNotNil applies the NotNil predicate on the "disk_number" field.
+func DiskNumberNotNil() predicate.File {
+	return predicate.File(sql.FieldNotNull(FieldDiskNumber))
+}
+
+// SideEQ applies the EQ predicate on the "side" field.
+func SideEQ(v string) predicate.File {
+	return predicate.File(sql.FieldEQ(FieldSide, v))
+}
+
+// SideNEQ applies the NEQ predicate on the "side" field.
+func SideNEQ(v string) predicate.File {
+	return predicate.File(sql.FieldNEQ(FieldSide, v))
+}
+
+// SideIn applies the In predicate on the "side" field.
+func SideIn(vs ...string) predicate.File {
+	return predicate.File(sql.FieldIn(FieldSide, vs...))
+}
+
+// SideNotIn applies the NotIn predicate on the "side" field.
+func SideNotIn(vs ...string) predicate.File {
+	return predicate.File(sql.FieldNotIn(FieldSide, vs...))
+}
+
+// SideGT applies the GT predicate on the "side" field.
+func SideGT(v string) predicate.File {
+	return predicate.File(sql.FieldGT(FieldSide, v))
+}
+
+// SideGTE applies the GTE predicate on the "side" field.
+func SideGTE(v string) predicate.File {
+	return predicate.File(sql.FieldGTE(FieldSide, v))
+}
+
+// SideLT applies the LT predicate on the "side" field.
+func SideLT(v string) predicate.File {
+	return predicate.File(sql.FieldLT(FieldSide, v))
+}
+
+// SideLTE applies the LTE predicate on the "side" field.
+func SideLTE(v string) predicate.File {
+	return predicate.File(sql.FieldLTE(FieldSide, v))
+}
+
+// SideContains applies the Contains predicate on the "side" field.
+func SideContains(v string) predicate.File {
+	return predicate.File(sql.FieldContains(FieldSide, v))
+}
+
+// SideHasPrefix applies the HasPrefix predicate on the "side" field.
+func SideHasPrefix(v string) predicate.File {
+	return predicate.File(sql.FieldHasPrefix(FieldSide, v))
+}
+
+// SideHasSuffix applies the HasSuffix predicate on the "side" field.
+func SideHasSuffix(v string) predicate.File {
+	return predicate.File(sql.FieldHasSuffix(FieldSide, v))
+}
+
+// SideIsNil applies the IsNil predicate on the "side" field.
+func SideIsNil() predicate.File {
+	return predicate.File(sql.FieldIsNull(FieldSide))
+}
+
+// SideNotNil applies the NotNil predicate on the "side" field.
+func SideNotNil() predicate.File {
+	return predicate.File(sql.FieldNotNull(FieldSide))
+}
+
+// SideEqualFold applies the EqualFold predicate on the "side" field.
+func SideEqualFold(v string) predicate.File {
+	return predicate.File(sql.FieldEqualFold(FieldSide, v))
+}
+
+// SideContainsFold applies the ContainsFold predicate on the "side" field.
+func SideContainsFold(v string) predicate.File {
+	return predicate.File(sql.FieldContainsFold(FieldSide, v))
 }
 
 // HasGame applies the HasEdge predicate on the "game" edge.

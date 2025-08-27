@@ -54,6 +54,9 @@ type FileMutation struct {
 	source          *string
 	quarantine      *bool
 	needs_review    *bool
+	disk_number     *int
+	adddisk_number  *int
+	side            *string
 	clearedFields   map[string]struct{}
 	game            *string
 	clearedgame     bool
@@ -572,6 +575,125 @@ func (m *FileMutation) ResetNeedsReview() {
 	m.needs_review = nil
 }
 
+// SetDiskNumber sets the "disk_number" field.
+func (m *FileMutation) SetDiskNumber(i int) {
+	m.disk_number = &i
+	m.adddisk_number = nil
+}
+
+// DiskNumber returns the value of the "disk_number" field in the mutation.
+func (m *FileMutation) DiskNumber() (r int, exists bool) {
+	v := m.disk_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDiskNumber returns the old "disk_number" field's value of the File entity.
+// If the File object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileMutation) OldDiskNumber(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDiskNumber is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDiskNumber requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDiskNumber: %w", err)
+	}
+	return oldValue.DiskNumber, nil
+}
+
+// AddDiskNumber adds i to the "disk_number" field.
+func (m *FileMutation) AddDiskNumber(i int) {
+	if m.adddisk_number != nil {
+		*m.adddisk_number += i
+	} else {
+		m.adddisk_number = &i
+	}
+}
+
+// AddedDiskNumber returns the value that was added to the "disk_number" field in this mutation.
+func (m *FileMutation) AddedDiskNumber() (r int, exists bool) {
+	v := m.adddisk_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearDiskNumber clears the value of the "disk_number" field.
+func (m *FileMutation) ClearDiskNumber() {
+	m.disk_number = nil
+	m.adddisk_number = nil
+	m.clearedFields[file.FieldDiskNumber] = struct{}{}
+}
+
+// DiskNumberCleared returns if the "disk_number" field was cleared in this mutation.
+func (m *FileMutation) DiskNumberCleared() bool {
+	_, ok := m.clearedFields[file.FieldDiskNumber]
+	return ok
+}
+
+// ResetDiskNumber resets all changes to the "disk_number" field.
+func (m *FileMutation) ResetDiskNumber() {
+	m.disk_number = nil
+	m.adddisk_number = nil
+	delete(m.clearedFields, file.FieldDiskNumber)
+}
+
+// SetSide sets the "side" field.
+func (m *FileMutation) SetSide(s string) {
+	m.side = &s
+}
+
+// Side returns the value of the "side" field in the mutation.
+func (m *FileMutation) Side() (r string, exists bool) {
+	v := m.side
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSide returns the old "side" field's value of the File entity.
+// If the File object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileMutation) OldSide(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSide is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSide requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSide: %w", err)
+	}
+	return oldValue.Side, nil
+}
+
+// ClearSide clears the value of the "side" field.
+func (m *FileMutation) ClearSide() {
+	m.side = nil
+	m.clearedFields[file.FieldSide] = struct{}{}
+}
+
+// SideCleared returns if the "side" field was cleared in this mutation.
+func (m *FileMutation) SideCleared() bool {
+	_, ok := m.clearedFields[file.FieldSide]
+	return ok
+}
+
+// ResetSide resets all changes to the "side" field.
+func (m *FileMutation) ResetSide() {
+	m.side = nil
+	delete(m.clearedFields, file.FieldSide)
+}
+
 // SetGameID sets the "game" edge to the Game entity by id.
 func (m *FileMutation) SetGameID(id string) {
 	m.game = &id
@@ -645,7 +767,7 @@ func (m *FileMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FileMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 12)
 	if m._path != nil {
 		fields = append(fields, file.FieldPath)
 	}
@@ -676,6 +798,12 @@ func (m *FileMutation) Fields() []string {
 	if m.needs_review != nil {
 		fields = append(fields, file.FieldNeedsReview)
 	}
+	if m.disk_number != nil {
+		fields = append(fields, file.FieldDiskNumber)
+	}
+	if m.side != nil {
+		fields = append(fields, file.FieldSide)
+	}
 	return fields
 }
 
@@ -704,6 +832,10 @@ func (m *FileMutation) Field(name string) (ent.Value, bool) {
 		return m.Quarantine()
 	case file.FieldNeedsReview:
 		return m.NeedsReview()
+	case file.FieldDiskNumber:
+		return m.DiskNumber()
+	case file.FieldSide:
+		return m.Side()
 	}
 	return nil, false
 }
@@ -733,6 +865,10 @@ func (m *FileMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldQuarantine(ctx)
 	case file.FieldNeedsReview:
 		return m.OldNeedsReview(ctx)
+	case file.FieldDiskNumber:
+		return m.OldDiskNumber(ctx)
+	case file.FieldSide:
+		return m.OldSide(ctx)
 	}
 	return nil, fmt.Errorf("unknown File field %s", name)
 }
@@ -812,6 +948,20 @@ func (m *FileMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetNeedsReview(v)
 		return nil
+	case file.FieldDiskNumber:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDiskNumber(v)
+		return nil
+	case file.FieldSide:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSide(v)
+		return nil
 	}
 	return fmt.Errorf("unknown File field %s", name)
 }
@@ -823,6 +973,9 @@ func (m *FileMutation) AddedFields() []string {
 	if m.addsize_bytes != nil {
 		fields = append(fields, file.FieldSizeBytes)
 	}
+	if m.adddisk_number != nil {
+		fields = append(fields, file.FieldDiskNumber)
+	}
 	return fields
 }
 
@@ -833,6 +986,8 @@ func (m *FileMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case file.FieldSizeBytes:
 		return m.AddedSizeBytes()
+	case file.FieldDiskNumber:
+		return m.AddedDiskNumber()
 	}
 	return nil, false
 }
@@ -849,6 +1004,13 @@ func (m *FileMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddSizeBytes(v)
 		return nil
+	case file.FieldDiskNumber:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDiskNumber(v)
+		return nil
 	}
 	return fmt.Errorf("unknown File numeric field %s", name)
 }
@@ -862,6 +1024,12 @@ func (m *FileMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(file.FieldFormat) {
 		fields = append(fields, file.FieldFormat)
+	}
+	if m.FieldCleared(file.FieldDiskNumber) {
+		fields = append(fields, file.FieldDiskNumber)
+	}
+	if m.FieldCleared(file.FieldSide) {
+		fields = append(fields, file.FieldSide)
 	}
 	return fields
 }
@@ -882,6 +1050,12 @@ func (m *FileMutation) ClearField(name string) error {
 		return nil
 	case file.FieldFormat:
 		m.ClearFormat()
+		return nil
+	case file.FieldDiskNumber:
+		m.ClearDiskNumber()
+		return nil
+	case file.FieldSide:
+		m.ClearSide()
 		return nil
 	}
 	return fmt.Errorf("unknown File nullable field %s", name)
@@ -920,6 +1094,12 @@ func (m *FileMutation) ResetField(name string) error {
 		return nil
 	case file.FieldNeedsReview:
 		m.ResetNeedsReview()
+		return nil
+	case file.FieldDiskNumber:
+		m.ResetDiskNumber()
+		return nil
+	case file.FieldSide:
+		m.ResetSide()
 		return nil
 	}
 	return fmt.Errorf("unknown File field %s", name)

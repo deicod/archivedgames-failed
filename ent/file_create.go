@@ -112,6 +112,34 @@ func (fc *FileCreate) SetNillableNeedsReview(b *bool) *FileCreate {
 	return fc
 }
 
+// SetDiskNumber sets the "disk_number" field.
+func (fc *FileCreate) SetDiskNumber(i int) *FileCreate {
+	fc.mutation.SetDiskNumber(i)
+	return fc
+}
+
+// SetNillableDiskNumber sets the "disk_number" field if the given value is not nil.
+func (fc *FileCreate) SetNillableDiskNumber(i *int) *FileCreate {
+	if i != nil {
+		fc.SetDiskNumber(*i)
+	}
+	return fc
+}
+
+// SetSide sets the "side" field.
+func (fc *FileCreate) SetSide(s string) *FileCreate {
+	fc.mutation.SetSide(s)
+	return fc
+}
+
+// SetNillableSide sets the "side" field if the given value is not nil.
+func (fc *FileCreate) SetNillableSide(s *string) *FileCreate {
+	if s != nil {
+		fc.SetSide(*s)
+	}
+	return fc
+}
+
 // SetID sets the "id" field.
 func (fc *FileCreate) SetID(s string) *FileCreate {
 	fc.mutation.SetID(s)
@@ -289,6 +317,14 @@ func (fc *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 	if value, ok := fc.mutation.NeedsReview(); ok {
 		_spec.SetField(file.FieldNeedsReview, field.TypeBool, value)
 		_node.NeedsReview = value
+	}
+	if value, ok := fc.mutation.DiskNumber(); ok {
+		_spec.SetField(file.FieldDiskNumber, field.TypeInt, value)
+		_node.DiskNumber = &value
+	}
+	if value, ok := fc.mutation.Side(); ok {
+		_spec.SetField(file.FieldSide, field.TypeString, value)
+		_node.Side = value
 	}
 	if nodes := fc.mutation.GameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

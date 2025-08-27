@@ -14,6 +14,7 @@ import (
 	"github.com/deicod/archivedgames/ent"
 	"github.com/deicod/archivedgames/ent/file"
 	"github.com/deicod/archivedgames/ent/game"
+	entimage "github.com/deicod/archivedgames/ent/image"
 	_ "github.com/lib/pq"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -134,7 +135,27 @@ func main() {
 	srv := handler.NewDefaultServer(graphpkg.NewExecutableSchema(graphpkg.Config{Resolvers: resolver}))
 	// Attach OIDC auth middleware
 	mux.Handle("/graphql", reqmw.WithClientIP(authmw.NewValidator().Middleware(srv)))
-	mux.Handle("/", playground.Handler("GraphQL", "/graphql"))
+	// Root handler with simple prerender for bots on /, /platform/*, /game/*
+	playgroundHandler := playground.Handler("GraphQL", "/graphql")
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if isBot(r) {
+			// Prerender paths
+			p := r.URL.Path
+			if p == "/" {
+				prerenderHome(w, r)
+				return
+			}
+			if strings.HasPrefix(p, "/platform/") {
+				prerenderPlatform(w, r)
+				return
+			}
+			if strings.HasPrefix(p, "/game/") {
+				prerenderGame(w, r, client)
+				return
+			}
+		}
+		playgroundHandler.ServeHTTP(w, r)
+	})
 
 	addr := ":8080"
 	httpSrv := &http.Server{Addr: addr, Handler: mux, ReadHeaderTimeout: 10 * time.Second}
@@ -151,6 +172,97 @@ func baseURL(r *http.Request) string {
 	}
 	host := r.Host
 	return scheme + "://" + host
+}
+
+func isBot(r *http.Request) bool {
+	ua := strings.ToLower(r.Header.Get("User-Agent"))
+	if ua == "" {
+		return false
+	}
+	bots := []string{"googlebot", "bingbot", "twitterbot", "facebookexternalhit", "slackbot", "duckduckbot", "baiduspider", "yandex"}
+	for _, b := range bots {
+		if strings.Contains(ua, b) {
+			return true
+		}
+	}
+	return false
+}
+
+func writeHTML(w http.ResponseWriter, title string, meta map[string]string, body string) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>%s</title>", title)
+	for k, v := range meta {
+		// og: and twitter: meta
+		if strings.HasPrefix(k, "og:") || strings.HasPrefix(k, "twitter:") {
+			fmt.Fprintf(w, "<meta property=\"%s\" content=\"%s\">", k, htmlEscape(v))
+		} else {
+			fmt.Fprintf(w, "<meta name=\"%s\" content=\"%s\">", k, htmlEscape(v))
+		}
+	}
+	fmt.Fprint(w, "</head><body>")
+	fmt.Fprint(w, body)
+	fmt.Fprint(w, "</body></html>")
+}
+
+func htmlEscape(s string) string {
+	r := strings.NewReplacer("&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;")
+	return r.Replace(s)
+}
+
+func prerenderHome(w http.ResponseWriter, r *http.Request) {
+	b := baseURL(r)
+	meta := map[string]string{
+		"description": "Browse and download classic games (C64, Amiga, DOS)",
+		"og:title":    "ArchivedGames",
+		"og:type":     "website",
+		"og:url":      b + "/",
+	}
+	writeHTML(w, "ArchivedGames", meta, "<h1>ArchivedGames</h1>")
+}
+
+func prerenderPlatform(w http.ResponseWriter, r *http.Request) {
+	b := baseURL(r)
+	plat := strings.TrimPrefix(r.URL.Path, "/platform/")
+	title := fmt.Sprintf("%s — ArchivedGames", strings.ToUpper(plat))
+	meta := map[string]string{
+		"description": "Browse classic games by platform",
+		"og:title":    title,
+		"og:type":     "website",
+		"og:url":      b + r.URL.Path,
+	}
+	writeHTML(w, title, meta, fmt.Sprintf("<h1>%s</h1>", htmlEscape(strings.ToUpper(plat))))
+}
+
+func prerenderGame(w http.ResponseWriter, r *http.Request, c *ent.Client) {
+	b := baseURL(r)
+	slug := strings.TrimPrefix(r.URL.Path, "/game/")
+	ctx := r.Context()
+	g, err := c.Game.Query().Where(game.SlugEQ(slug)).Only(ctx)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	title := fmt.Sprintf("%s — ArchivedGames", g.Title)
+	ogImg := ""
+	if img, err := c.Image.Query().Where(entimage.HasGameWith(game.IDEQ(g.ID)), entimage.KindEQ(entimage.KindCOVER)).Only(ctx); err == nil {
+		if s3c, err := s3client.New(ctx); err == nil {
+			if url, err := s3c.PresignGet(ctx, img.S3Key, 30*time.Minute); err == nil {
+				ogImg = url
+			}
+		}
+	}
+	meta := map[string]string{
+		"description": "Download and view screenshots",
+		"og:title":    title,
+		"og:type":     "article",
+		"og:url":      b + r.URL.Path,
+	}
+	if ogImg != "" {
+		meta["og:image"] = ogImg
+		meta["twitter:card"] = "summary_large_image"
+	}
+	writeHTML(w, title, meta, fmt.Sprintf("<h1>%s</h1>", htmlEscape(g.Title)))
 }
 
 func robotsTxt(w http.ResponseWriter, r *http.Request) {
