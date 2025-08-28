@@ -56,6 +56,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	File struct {
 		Checksum       func(childComplexity int) int
+		DiskNumber     func(childComplexity int) int
 		Format         func(childComplexity int) int
 		Game           func(childComplexity int) int
 		ID             func(childComplexity int) int
@@ -65,6 +66,8 @@ type ComplexityRoot struct {
 		OriginalName   func(childComplexity int) int
 		Path           func(childComplexity int) int
 		Quarantine     func(childComplexity int) int
+		SetKey         func(childComplexity int) int
+		Side           func(childComplexity int) int
 		SizeBytes      func(childComplexity int) int
 		Source         func(childComplexity int) int
 	}
@@ -131,6 +134,7 @@ type ComplexityRoot struct {
 		QuarantineFile       func(childComplexity int, fileID string, reason string) int
 		ReportContent        func(childComplexity int, subjectType string, subjectID string, reason string, note *string) int
 		SetCoverImage        func(childComplexity int, imageID string) int
+		SetReportStatus      func(childComplexity int, reportID string, status report.Status) int
 		SetSiteSetting       func(childComplexity int, key string, value gqltypes.RawMessage, public *bool) int
 	}
 
@@ -195,6 +199,7 @@ type MutationResolver interface {
 	QuarantineFile(ctx context.Context, fileID string, reason string) (*ent.File, error)
 	SetCoverImage(ctx context.Context, imageID string) (*ent.Image, error)
 	DeleteImage(ctx context.Context, imageID string) (bool, error)
+	SetReportStatus(ctx context.Context, reportID string, status report.Status) (*ent.Report, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (ent.Noder, error)
@@ -236,6 +241,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.File.Checksum(childComplexity), true
+
+	case "File.diskNumber":
+		if e.complexity.File.DiskNumber == nil {
+			break
+		}
+
+		return e.complexity.File.DiskNumber(childComplexity), true
 
 	case "File.format":
 		if e.complexity.File.Format == nil {
@@ -299,6 +311,20 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.File.Quarantine(childComplexity), true
+
+	case "File.setKey":
+		if e.complexity.File.SetKey == nil {
+			break
+		}
+
+		return e.complexity.File.SetKey(childComplexity), true
+
+	case "File.side":
+		if e.complexity.File.Side == nil {
+			break
+		}
+
+		return e.complexity.File.Side(childComplexity), true
 
 	case "File.sizeBytes":
 		if e.complexity.File.SizeBytes == nil {
@@ -612,6 +638,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.SetCoverImage(childComplexity, args["imageId"].(string)), true
+
+	case "Mutation.setReportStatus":
+		if e.complexity.Mutation.SetReportStatus == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_setReportStatus_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SetReportStatus(childComplexity, args["reportId"].(string), args["status"].(report.Status)), true
 
 	case "Mutation.setSiteSetting":
 		if e.complexity.Mutation.SetSiteSetting == nil {
@@ -994,6 +1032,7 @@ type File implements Node {
   path: String!
   originalName: String!
   normalizedName: String!
+  setKey: String
   checksum: String!
   sizeBytes: Int!
   mimeType: String
@@ -1001,6 +1040,8 @@ type File implements Node {
   source: String!
   quarantine: Boolean!
   needsReview: Boolean!
+  diskNumber: Int
+  side: String
   game: Game!
 }
 """
@@ -1103,6 +1144,24 @@ input FileWhereInput {
   normalizedNameEqualFold: String
   normalizedNameContainsFold: String
   """
+  set_key field predicates
+  """
+  setKey: String
+  setKeyNEQ: String
+  setKeyIn: [String!]
+  setKeyNotIn: [String!]
+  setKeyGT: String
+  setKeyGTE: String
+  setKeyLT: String
+  setKeyLTE: String
+  setKeyContains: String
+  setKeyHasPrefix: String
+  setKeyHasSuffix: String
+  setKeyIsNil: Boolean
+  setKeyNotNil: Boolean
+  setKeyEqualFold: String
+  setKeyContainsFold: String
+  """
   checksum field predicates
   """
   checksum: String
@@ -1191,6 +1250,37 @@ input FileWhereInput {
   """
   needsReview: Boolean
   needsReviewNEQ: Boolean
+  """
+  disk_number field predicates
+  """
+  diskNumber: Int
+  diskNumberNEQ: Int
+  diskNumberIn: [Int!]
+  diskNumberNotIn: [Int!]
+  diskNumberGT: Int
+  diskNumberGTE: Int
+  diskNumberLT: Int
+  diskNumberLTE: Int
+  diskNumberIsNil: Boolean
+  diskNumberNotNil: Boolean
+  """
+  side field predicates
+  """
+  side: String
+  sideNEQ: String
+  sideIn: [String!]
+  sideNotIn: [String!]
+  sideGT: String
+  sideGTE: String
+  sideLT: String
+  sideLTE: String
+  sideContains: String
+  sideHasPrefix: String
+  sideHasSuffix: String
+  sideIsNil: Boolean
+  sideNotNil: Boolean
+  sideEqualFold: String
+  sideContainsFold: String
   """
   game edge predicates
   """
@@ -1955,6 +2045,7 @@ extend type Mutation {
   quarantineFile(fileId: String!, reason: String!): File!
   setCoverImage(imageId: String!): Image!
   deleteImage(imageId: String!): Boolean!
+  setReportStatus(reportId: String!, status: ReportStatus!): Report!
 }
 `, BuiltIn: false},
 }
@@ -2553,6 +2644,57 @@ func (ec *executionContext) field_Mutation_setCoverImage_argsImageID(
 	}
 
 	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_setReportStatus_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Mutation_setReportStatus_argsReportID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["reportId"] = arg0
+	arg1, err := ec.field_Mutation_setReportStatus_argsStatus(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["status"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_setReportStatus_argsReportID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	if _, ok := rawArgs["reportId"]; !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("reportId"))
+	if tmp, ok := rawArgs["reportId"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_setReportStatus_argsStatus(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (report.Status, error) {
+	if _, ok := rawArgs["status"]; !ok {
+		var zeroVal report.Status
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+	if tmp, ok := rawArgs["status"]; ok {
+		return ec.unmarshalNReportStatus2githubᚗcomᚋdeicodᚋarchivedgamesᚋentᚋreportᚐStatus(ctx, tmp)
+	}
+
+	var zeroVal report.Status
 	return zeroVal, nil
 }
 
@@ -3426,6 +3568,47 @@ func (ec *executionContext) fieldContext_File_normalizedName(_ context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _File_setKey(ctx context.Context, field graphql.CollectedField, obj *ent.File) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_File_setKey(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SetKey, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_File_setKey(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "File",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _File_checksum(ctx context.Context, field graphql.CollectedField, obj *ent.File) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_File_checksum(ctx, field)
 	if err != nil {
@@ -3728,6 +3911,88 @@ func (ec *executionContext) fieldContext_File_needsReview(_ context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _File_diskNumber(ctx context.Context, field graphql.CollectedField, obj *ent.File) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_File_diskNumber(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DiskNumber, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_File_diskNumber(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "File",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _File_side(ctx context.Context, field graphql.CollectedField, obj *ent.File) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_File_side(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Side, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_File_side(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "File",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _File_game(ctx context.Context, field graphql.CollectedField, obj *ent.File) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_File_game(ctx, field)
 	if err != nil {
@@ -3981,6 +4246,8 @@ func (ec *executionContext) fieldContext_FileEdge_node(_ context.Context, field 
 				return ec.fieldContext_File_originalName(ctx, field)
 			case "normalizedName":
 				return ec.fieldContext_File_normalizedName(ctx, field)
+			case "setKey":
+				return ec.fieldContext_File_setKey(ctx, field)
 			case "checksum":
 				return ec.fieldContext_File_checksum(ctx, field)
 			case "sizeBytes":
@@ -3995,6 +4262,10 @@ func (ec *executionContext) fieldContext_FileEdge_node(_ context.Context, field 
 				return ec.fieldContext_File_quarantine(ctx, field)
 			case "needsReview":
 				return ec.fieldContext_File_needsReview(ctx, field)
+			case "diskNumber":
+				return ec.fieldContext_File_diskNumber(ctx, field)
+			case "side":
+				return ec.fieldContext_File_side(ctx, field)
 			case "game":
 				return ec.fieldContext_File_game(ctx, field)
 			}
@@ -5612,6 +5883,8 @@ func (ec *executionContext) fieldContext_Mutation_quarantineFile(ctx context.Con
 				return ec.fieldContext_File_originalName(ctx, field)
 			case "normalizedName":
 				return ec.fieldContext_File_normalizedName(ctx, field)
+			case "setKey":
+				return ec.fieldContext_File_setKey(ctx, field)
 			case "checksum":
 				return ec.fieldContext_File_checksum(ctx, field)
 			case "sizeBytes":
@@ -5626,6 +5899,10 @@ func (ec *executionContext) fieldContext_Mutation_quarantineFile(ctx context.Con
 				return ec.fieldContext_File_quarantine(ctx, field)
 			case "needsReview":
 				return ec.fieldContext_File_needsReview(ctx, field)
+			case "diskNumber":
+				return ec.fieldContext_File_diskNumber(ctx, field)
+			case "side":
+				return ec.fieldContext_File_side(ctx, field)
 			case "game":
 				return ec.fieldContext_File_game(ctx, field)
 			}
@@ -5766,6 +6043,77 @@ func (ec *executionContext) fieldContext_Mutation_deleteImage(ctx context.Contex
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_deleteImage_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_setReportStatus(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_setReportStatus(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().SetReportStatus(rctx, fc.Args["reportId"].(string), fc.Args["status"].(report.Status))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Report)
+	fc.Result = res
+	return ec.marshalNReport2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋentᚐReport(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_setReportStatus(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Report_id(ctx, field)
+			case "subjectType":
+				return ec.fieldContext_Report_subjectType(ctx, field)
+			case "subjectID":
+				return ec.fieldContext_Report_subjectID(ctx, field)
+			case "reporterID":
+				return ec.fieldContext_Report_reporterID(ctx, field)
+			case "reason":
+				return ec.fieldContext_Report_reason(ctx, field)
+			case "note":
+				return ec.fieldContext_Report_note(ctx, field)
+			case "status":
+				return ec.fieldContext_Report_status(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Report", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_setReportStatus_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -9282,7 +9630,7 @@ func (ec *executionContext) unmarshalInputFileWhereInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "idEqualFold", "idContainsFold", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathEqualFold", "pathContainsFold", "originalName", "originalNameNEQ", "originalNameIn", "originalNameNotIn", "originalNameGT", "originalNameGTE", "originalNameLT", "originalNameLTE", "originalNameContains", "originalNameHasPrefix", "originalNameHasSuffix", "originalNameEqualFold", "originalNameContainsFold", "normalizedName", "normalizedNameNEQ", "normalizedNameIn", "normalizedNameNotIn", "normalizedNameGT", "normalizedNameGTE", "normalizedNameLT", "normalizedNameLTE", "normalizedNameContains", "normalizedNameHasPrefix", "normalizedNameHasSuffix", "normalizedNameEqualFold", "normalizedNameContainsFold", "checksum", "checksumNEQ", "checksumIn", "checksumNotIn", "checksumGT", "checksumGTE", "checksumLT", "checksumLTE", "checksumContains", "checksumHasPrefix", "checksumHasSuffix", "checksumEqualFold", "checksumContainsFold", "sizeBytes", "sizeBytesNEQ", "sizeBytesIn", "sizeBytesNotIn", "sizeBytesGT", "sizeBytesGTE", "sizeBytesLT", "sizeBytesLTE", "mimeType", "mimeTypeNEQ", "mimeTypeIn", "mimeTypeNotIn", "mimeTypeGT", "mimeTypeGTE", "mimeTypeLT", "mimeTypeLTE", "mimeTypeContains", "mimeTypeHasPrefix", "mimeTypeHasSuffix", "mimeTypeIsNil", "mimeTypeNotNil", "mimeTypeEqualFold", "mimeTypeContainsFold", "format", "formatNEQ", "formatIn", "formatNotIn", "formatGT", "formatGTE", "formatLT", "formatLTE", "formatContains", "formatHasPrefix", "formatHasSuffix", "formatIsNil", "formatNotNil", "formatEqualFold", "formatContainsFold", "source", "sourceNEQ", "sourceIn", "sourceNotIn", "sourceGT", "sourceGTE", "sourceLT", "sourceLTE", "sourceContains", "sourceHasPrefix", "sourceHasSuffix", "sourceEqualFold", "sourceContainsFold", "quarantine", "quarantineNEQ", "needsReview", "needsReviewNEQ", "hasGame", "hasGameWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "idEqualFold", "idContainsFold", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathEqualFold", "pathContainsFold", "originalName", "originalNameNEQ", "originalNameIn", "originalNameNotIn", "originalNameGT", "originalNameGTE", "originalNameLT", "originalNameLTE", "originalNameContains", "originalNameHasPrefix", "originalNameHasSuffix", "originalNameEqualFold", "originalNameContainsFold", "normalizedName", "normalizedNameNEQ", "normalizedNameIn", "normalizedNameNotIn", "normalizedNameGT", "normalizedNameGTE", "normalizedNameLT", "normalizedNameLTE", "normalizedNameContains", "normalizedNameHasPrefix", "normalizedNameHasSuffix", "normalizedNameEqualFold", "normalizedNameContainsFold", "setKey", "setKeyNEQ", "setKeyIn", "setKeyNotIn", "setKeyGT", "setKeyGTE", "setKeyLT", "setKeyLTE", "setKeyContains", "setKeyHasPrefix", "setKeyHasSuffix", "setKeyIsNil", "setKeyNotNil", "setKeyEqualFold", "setKeyContainsFold", "checksum", "checksumNEQ", "checksumIn", "checksumNotIn", "checksumGT", "checksumGTE", "checksumLT", "checksumLTE", "checksumContains", "checksumHasPrefix", "checksumHasSuffix", "checksumEqualFold", "checksumContainsFold", "sizeBytes", "sizeBytesNEQ", "sizeBytesIn", "sizeBytesNotIn", "sizeBytesGT", "sizeBytesGTE", "sizeBytesLT", "sizeBytesLTE", "mimeType", "mimeTypeNEQ", "mimeTypeIn", "mimeTypeNotIn", "mimeTypeGT", "mimeTypeGTE", "mimeTypeLT", "mimeTypeLTE", "mimeTypeContains", "mimeTypeHasPrefix", "mimeTypeHasSuffix", "mimeTypeIsNil", "mimeTypeNotNil", "mimeTypeEqualFold", "mimeTypeContainsFold", "format", "formatNEQ", "formatIn", "formatNotIn", "formatGT", "formatGTE", "formatLT", "formatLTE", "formatContains", "formatHasPrefix", "formatHasSuffix", "formatIsNil", "formatNotNil", "formatEqualFold", "formatContainsFold", "source", "sourceNEQ", "sourceIn", "sourceNotIn", "sourceGT", "sourceGTE", "sourceLT", "sourceLTE", "sourceContains", "sourceHasPrefix", "sourceHasSuffix", "sourceEqualFold", "sourceContainsFold", "quarantine", "quarantineNEQ", "needsReview", "needsReviewNEQ", "diskNumber", "diskNumberNEQ", "diskNumberIn", "diskNumberNotIn", "diskNumberGT", "diskNumberGTE", "diskNumberLT", "diskNumberLTE", "diskNumberIsNil", "diskNumberNotNil", "side", "sideNEQ", "sideIn", "sideNotIn", "sideGT", "sideGTE", "sideLT", "sideLTE", "sideContains", "sideHasPrefix", "sideHasSuffix", "sideIsNil", "sideNotNil", "sideEqualFold", "sideContainsFold", "hasGame", "hasGameWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -9653,6 +10001,111 @@ func (ec *executionContext) unmarshalInputFileWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.NormalizedNameContainsFold = data
+		case "setKey":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKey"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKey = data
+		case "setKeyNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyNeq = data
+		case "setKeyIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyIn = data
+		case "setKeyNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyNotIn = data
+		case "setKeyGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyGt = data
+		case "setKeyGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyGte = data
+		case "setKeyLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyLt = data
+		case "setKeyLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyLte = data
+		case "setKeyContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyContains = data
+		case "setKeyHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyHasPrefix = data
+		case "setKeyHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyHasSuffix = data
+		case "setKeyIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyIsNil"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyIsNil = data
+		case "setKeyNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyNotNil"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyNotNil = data
+		case "setKeyEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyEqualFold = data
+		case "setKeyContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKeyContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKeyContainsFold = data
 		case "checksum":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("checksum"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -10129,6 +10582,181 @@ func (ec *executionContext) unmarshalInputFileWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.NeedsReviewNeq = data
+		case "diskNumber":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("diskNumber"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DiskNumber = data
+		case "diskNumberNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("diskNumberNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DiskNumberNeq = data
+		case "diskNumberIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("diskNumberIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DiskNumberIn = data
+		case "diskNumberNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("diskNumberNotIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DiskNumberNotIn = data
+		case "diskNumberGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("diskNumberGT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DiskNumberGt = data
+		case "diskNumberGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("diskNumberGTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DiskNumberGte = data
+		case "diskNumberLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("diskNumberLT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DiskNumberLt = data
+		case "diskNumberLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("diskNumberLTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DiskNumberLte = data
+		case "diskNumberIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("diskNumberIsNil"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DiskNumberIsNil = data
+		case "diskNumberNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("diskNumberNotNil"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DiskNumberNotNil = data
+		case "side":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("side"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Side = data
+		case "sideNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideNeq = data
+		case "sideIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideIn = data
+		case "sideNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideNotIn = data
+		case "sideGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideGt = data
+		case "sideGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideGte = data
+		case "sideLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideLt = data
+		case "sideLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideLte = data
+		case "sideContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideContains = data
+		case "sideHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideHasPrefix = data
+		case "sideHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideHasSuffix = data
+		case "sideIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideIsNil"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideIsNil = data
+		case "sideNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideNotNil"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideNotNil = data
+		case "sideEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideEqualFold = data
+		case "sideContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sideContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SideContainsFold = data
 		case "hasGame":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasGame"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -12561,6 +13189,8 @@ func (ec *executionContext) _File(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "setKey":
+			out.Values[i] = ec._File_setKey(ctx, field, obj)
 		case "checksum":
 			out.Values[i] = ec._File_checksum(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -12590,6 +13220,10 @@ func (ec *executionContext) _File(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "diskNumber":
+			out.Values[i] = ec._File_diskNumber(ctx, field, obj)
+		case "side":
+			out.Values[i] = ec._File_side(ctx, field, obj)
 		case "game":
 			field := field
 
@@ -13206,6 +13840,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "deleteImage":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_deleteImage(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "setReportStatus":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_setReportStatus(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

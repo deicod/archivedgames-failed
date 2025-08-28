@@ -72,6 +72,22 @@ type FileWhereInput struct {
 	NormalizedNameHasSuffix    *string  `json:"normalizedNameHasSuffix,omitempty"`
 	NormalizedNameEqualFold    *string  `json:"normalizedNameEqualFold,omitempty"`
 	NormalizedNameContainsFold *string  `json:"normalizedNameContainsFold,omitempty"`
+	// set_key field predicates
+	SetKey             *string  `json:"setKey,omitempty"`
+	SetKeyNeq          *string  `json:"setKeyNEQ,omitempty"`
+	SetKeyIn           []string `json:"setKeyIn,omitempty"`
+	SetKeyNotIn        []string `json:"setKeyNotIn,omitempty"`
+	SetKeyGt           *string  `json:"setKeyGT,omitempty"`
+	SetKeyGte          *string  `json:"setKeyGTE,omitempty"`
+	SetKeyLt           *string  `json:"setKeyLT,omitempty"`
+	SetKeyLte          *string  `json:"setKeyLTE,omitempty"`
+	SetKeyContains     *string  `json:"setKeyContains,omitempty"`
+	SetKeyHasPrefix    *string  `json:"setKeyHasPrefix,omitempty"`
+	SetKeyHasSuffix    *string  `json:"setKeyHasSuffix,omitempty"`
+	SetKeyIsNil        *bool    `json:"setKeyIsNil,omitempty"`
+	SetKeyNotNil       *bool    `json:"setKeyNotNil,omitempty"`
+	SetKeyEqualFold    *string  `json:"setKeyEqualFold,omitempty"`
+	SetKeyContainsFold *string  `json:"setKeyContainsFold,omitempty"`
 	// checksum field predicates
 	Checksum             *string  `json:"checksum,omitempty"`
 	ChecksumNeq          *string  `json:"checksumNEQ,omitempty"`
@@ -147,6 +163,33 @@ type FileWhereInput struct {
 	// needs_review field predicates
 	NeedsReview    *bool `json:"needsReview,omitempty"`
 	NeedsReviewNeq *bool `json:"needsReviewNEQ,omitempty"`
+	// disk_number field predicates
+	DiskNumber       *int  `json:"diskNumber,omitempty"`
+	DiskNumberNeq    *int  `json:"diskNumberNEQ,omitempty"`
+	DiskNumberIn     []int `json:"diskNumberIn,omitempty"`
+	DiskNumberNotIn  []int `json:"diskNumberNotIn,omitempty"`
+	DiskNumberGt     *int  `json:"diskNumberGT,omitempty"`
+	DiskNumberGte    *int  `json:"diskNumberGTE,omitempty"`
+	DiskNumberLt     *int  `json:"diskNumberLT,omitempty"`
+	DiskNumberLte    *int  `json:"diskNumberLTE,omitempty"`
+	DiskNumberIsNil  *bool `json:"diskNumberIsNil,omitempty"`
+	DiskNumberNotNil *bool `json:"diskNumberNotNil,omitempty"`
+	// side field predicates
+	Side             *string  `json:"side,omitempty"`
+	SideNeq          *string  `json:"sideNEQ,omitempty"`
+	SideIn           []string `json:"sideIn,omitempty"`
+	SideNotIn        []string `json:"sideNotIn,omitempty"`
+	SideGt           *string  `json:"sideGT,omitempty"`
+	SideGte          *string  `json:"sideGTE,omitempty"`
+	SideLt           *string  `json:"sideLT,omitempty"`
+	SideLte          *string  `json:"sideLTE,omitempty"`
+	SideContains     *string  `json:"sideContains,omitempty"`
+	SideHasPrefix    *string  `json:"sideHasPrefix,omitempty"`
+	SideHasSuffix    *string  `json:"sideHasSuffix,omitempty"`
+	SideIsNil        *bool    `json:"sideIsNil,omitempty"`
+	SideNotNil       *bool    `json:"sideNotNil,omitempty"`
+	SideEqualFold    *string  `json:"sideEqualFold,omitempty"`
+	SideContainsFold *string  `json:"sideContainsFold,omitempty"`
 	// game edge predicates
 	HasGame     *bool             `json:"hasGame,omitempty"`
 	HasGameWith []*GameWhereInput `json:"hasGameWith,omitempty"`

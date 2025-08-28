@@ -1024,5 +1024,6 @@ type Mutation {
   quarantineFile(fileId: String!, reason: String!): File!
   setCoverImage(imageId: String!): Image!
   deleteImage(imageId: String!): Boolean!
+  setReportStatus(reportId: String!, status: ReportStatus!): Report!
 }
 

@@ -40,6 +40,30 @@ async function requestDownload(fileId: string){
   if (signed) window.location.href = signed;
 }
 
+
+async function setCover(imageId: string){
+  const url = (import.meta as any).env.VITE_GRAPHQL_URL as string;
+  const token = window.localStorage.getItem('access_token');
+  await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    body: JSON.stringify({ query: `mutation($id:String!){ setCoverImage(imageId:$id){ id } }`, variables: { id: imageId } })
+  });
+  window.location.reload();
+}
+
+async function deleteImg(imageId: string){
+  if(!window.confirm('Delete this image?')) return;
+  const url = (import.meta as any).env.VITE_GRAPHQL_URL as string;
+  const token = window.localStorage.getItem('access_token');
+  await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    body: JSON.stringify({ query: `mutation($id:String!){ deleteImage(imageId:$id) }`, variables: { id: imageId } })
+  });
+  window.location.reload();
+}
+
 export default function GameDetail(){
   const { slug } = useParams();
   const auth = useAuth();
@@ -51,13 +75,18 @@ export default function GameDetail(){
   return (
     <div className="grid md:grid-cols-3 gap-6">
       <div className="md:col-span-2 space-y-4">
-        <div className="aspect-video bg-white/5 rounded-2xl flex items-center justify-center">{images[0] ? <img src={"/s3/"+images[0].s3Key} alt="cover" className="w-full h-full object-cover rounded-2xl"/> : null}</div>
+        <div className="aspect-video bg-white/5 rounded-2xl flex items-center justify-center">{images[0] ? <img src={`/img/${images[0].id}`} alt="cover" className="w-full h-full object-cover rounded-2xl"/> : null}</div>
         <div className="grid grid-cols-2 gap-3">
           {images.slice(1).map((img:any)=> (
-          <div key={img.id} className="aspect-[4/3] bg-white/5 rounded-xl flex items-center justify-center">
-            {/* thumbnail placeholder */}
-            <div className="text-xs text-white/50">{img.s3Key}</div>
-          </div>
+          <div key={img.id} className="aspect-[4/3] bg-white/5 rounded-xl overflow-hidden relative group">
+              <img src={`/img/${img.id}`} alt="gallery" className="w-full h-full object-cover"/>
+              {auth?.isAuthenticated && (
+                <div className="absolute inset-x-0 bottom-0 p-2 flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={()=>setCover(img.id)} className="px-2 py-1 text-xs rounded bg-white/10 hover:bg-white/20">Set cover</button>
+                  <button onClick={()=>deleteImg(img.id)} className="px-2 py-1 text-xs rounded bg-red-500/20 hover:bg-red-500/30">Delete</button>
+                </div>
+              )}
+            </div>
         ))}
         </div>
       </div>

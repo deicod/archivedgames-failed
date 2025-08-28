@@ -5,6 +5,7 @@ import PlatformList from './pages/PlatformList';
 import GameDetail from './pages/GameDetail';
 import { useAuth } from 'react-oidc-context';
 import SupportButton from './components/SupportButton';
+import { isAdminFromToken } from './utils/jwt';
 import AdminReports from './pages/AdminReports';
 
 const Header: React.FC = () => {
@@ -18,7 +19,7 @@ const Header: React.FC = () => {
           <Link to="/platform/c64" className="hover:underline">C64</Link>
           <Link to="/platform/amiga" className="hover:underline">Amiga</Link>
           <Link to="/platform/dos" className="hover:underline">DOS</Link>
-          {auth.isAuthenticated && (
+          {auth.isAuthenticated && isAdmin && (
             <Link to="/admin/reports" className="hover:underline text-amber-300">Admin</Link>
           )}
         </nav>
@@ -34,7 +35,11 @@ const Header: React.FC = () => {
   );
 };
 
-const App: React.FC = () => (
+const App: React.FC = () => {
+  const auth = useAuth();
+  const token = (auth?.user as any)?.access_token as string | undefined;
+  const isAdmin = token ? isAdminFromToken(token) : false;
+  return (
   <div className="min-h-screen flex flex-col">
     <Header />
     <main className="flex-1 max-w-6xl mx-auto px-4 py-6">
@@ -47,6 +52,6 @@ const App: React.FC = () => (
     </main>
     <footer className="border-t border-white/10 py-6 text-center text-xs text-white/60">© ArchivedGames</footer>
   </div>
-);
+)};
 
 export default App;

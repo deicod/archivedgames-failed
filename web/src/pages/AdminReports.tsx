@@ -21,6 +21,12 @@ export default function AdminReports(){
     const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token?{ Authorization:`Bearer ${token}` }: {}) }, body: JSON.stringify({ query: `mutation($id:String!){ quarantineFile(fileId:$id, reason:"admin") { id } }`, variables: { id: fileId } }) });
     if (res.ok) window.location.reload();
   };
+  const setStatus = async (reportId: string, status: string) => {
+    const url = (import.meta as any).env.VITE_GRAPHQL_URL as string;
+    const token = localStorage.getItem('access_token');
+    await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token?{ Authorization:`Bearer ${token}` }: {}) }, body: JSON.stringify({ query: `mutation($id:String!,$s:ReportStatus!){ setReportStatus(reportId:$id, status:$s){ id status } }`, variables: { id: reportId, s: status } }) });
+    window.location.reload();
+  };
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">Reports (Open)</h1>
@@ -42,8 +48,10 @@ export default function AdminReports(){
               <td className="font-mono truncate max-w-[24ch]">{r.subjectID}</td>
               <td>{r.reason}</td>
               <td className="text-white/60">{r.note||''}</td>
-              <td>
+              <td className="space-x-2">
                 {r.subjectType==='file' ? <button onClick={()=>quarantine(r.subjectID)} className="px-2 py-1 rounded bg-red-500/20 hover:bg-red-500/30">Quarantine</button> : null}
+                <button onClick={()=>setStatus(r.id,'TRIAGED')} className="px-2 py-1 rounded bg-yellow-500/20 hover:bg-yellow-500/30">Triaged</button>
+                <button onClick={()=>setStatus(r.id,'REJECTED')} className="px-2 py-1 rounded bg-white/10 hover:bg-white/20">Reject</button>
               </td>
             </tr>
           ))}

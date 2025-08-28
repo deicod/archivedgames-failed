@@ -27,6 +27,8 @@ Entry template:
   - Ingestion grouping metadata: parse disk/side tokens from filenames and persist `disk_number`/`side` on File records
   - SEO: enrich game meta with publisher/year; add `/static/og/{platform}.png` solid placeholders when no cover
   - Ingestion: persist `set_key` on File to group multi-disk/side sets per normalized title and platform
+  - UI gating: show Admin link only for users with `admin` role (decoded from access_token); add /img/{imageId} redirect for displaying images via S3 presign
+  - Admin moderation: add setReportStatus(reportId,status) mutation; AdminReports now supports TRIAGED/REJECTED status changes
   - Frontend: SupportButton reads donations from `publicSiteConfig` (env fallback); sync OIDC access_token to localStorage for API
   - Web upgrades: Relay 20 + React 19.1; add schema merge step for relay-compiler; remove legacy JS relay config
 

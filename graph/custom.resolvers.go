@@ -180,6 +180,25 @@ func (r *mutationResolver) DeleteImage(ctx context.Context, imageID string) (boo
 	return true, nil
 }
 
+// SetReportStatus is the resolver for the setReportStatus field.
+func (r *mutationResolver) SetReportStatus(ctx context.Context, reportID string, status report.Status) (*ent.Report, error) {
+	// Admin guard
+	isAdmin := false
+	for _, ro := range auth.Roles(ctx) {
+		if ro == "admin" {
+			isAdmin = true
+			break
+		}
+	}
+	if !isAdmin {
+		return nil, errors.New("forbidden")
+	}
+	if err := r.Client.Report.UpdateOneID(reportID).SetStatus(status).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return r.Client.Report.Get(ctx, reportID)
+}
+
 // GetDownloadURL is the resolver for the getDownloadURL field.
 func (r *queryResolver) GetDownloadURL(ctx context.Context, fileID string, ttlSeconds *int) (string, error) {
 	f, err := r.Client.File.Query().Where(file.IDEQ(fileID)).Only(ctx)
