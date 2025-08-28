@@ -1,0 +1,55 @@
+name: Import M2 Issues from CSV
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_path:
+        description: Path to CSV file
+        required: true
+        default: scripts/m2_issues.csv
+      dry_run:
+        description: 'Dry run (true/false)'
+        required: true
+        default: 'true'
+      create_milestone:
+        description: 'Ensure milestone exists before import (true/false)'
+        required: true
+        default: 'true'
+      milestone_title:
+        description: 'Milestone title (only used when create_milestone=true)'
+        required: true
+        default: 'M2-UGC-Search-Moderation'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure milestone exists
+        if: ${{ github.event.inputs.create_milestone == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TITLE: ${{ github.event.inputs.milestone_title }}
+        run: |
+          set -euo pipefail
+          REPO="${GITHUB_REPOSITORY}"
+          FOUND=$(gh api "repos/${REPO}/milestones" --jq '.[] | select(.title==env.TITLE) | .number' || true)
+          if [ -z "$FOUND" ]; then
+            gh api -X POST "repos/${REPO}/milestones" -f title="$TITLE" >/dev/null
+            echo "Created milestone: $TITLE"
+          else:
+            echo "Milestone exists: $TITLE (id $FOUND)"
+          fi
+
+      - name: Import issues from CSV
+        uses: dsanchezcr/issue-importer-action@v1.0.0
+        with:
+          file-path: ${{ github.event.inputs.file_path }}
+          file-format: csv
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          dry-run: ${{ github.event.inputs.dry_run }}
