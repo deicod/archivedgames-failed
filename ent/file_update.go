@@ -23,267 +23,267 @@ type FileUpdate struct {
 }
 
 // Where appends a list predicates to the FileUpdate builder.
-func (fu *FileUpdate) Where(ps ...predicate.File) *FileUpdate {
-	fu.mutation.Where(ps...)
-	return fu
+func (_u *FileUpdate) Where(ps ...predicate.File) *FileUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetPath sets the "path" field.
-func (fu *FileUpdate) SetPath(s string) *FileUpdate {
-	fu.mutation.SetPath(s)
-	return fu
+func (_u *FileUpdate) SetPath(v string) *FileUpdate {
+	_u.mutation.SetPath(v)
+	return _u
 }
 
 // SetNillablePath sets the "path" field if the given value is not nil.
-func (fu *FileUpdate) SetNillablePath(s *string) *FileUpdate {
-	if s != nil {
-		fu.SetPath(*s)
+func (_u *FileUpdate) SetNillablePath(v *string) *FileUpdate {
+	if v != nil {
+		_u.SetPath(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetOriginalName sets the "original_name" field.
-func (fu *FileUpdate) SetOriginalName(s string) *FileUpdate {
-	fu.mutation.SetOriginalName(s)
-	return fu
+func (_u *FileUpdate) SetOriginalName(v string) *FileUpdate {
+	_u.mutation.SetOriginalName(v)
+	return _u
 }
 
 // SetNillableOriginalName sets the "original_name" field if the given value is not nil.
-func (fu *FileUpdate) SetNillableOriginalName(s *string) *FileUpdate {
-	if s != nil {
-		fu.SetOriginalName(*s)
+func (_u *FileUpdate) SetNillableOriginalName(v *string) *FileUpdate {
+	if v != nil {
+		_u.SetOriginalName(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetNormalizedName sets the "normalized_name" field.
-func (fu *FileUpdate) SetNormalizedName(s string) *FileUpdate {
-	fu.mutation.SetNormalizedName(s)
-	return fu
+func (_u *FileUpdate) SetNormalizedName(v string) *FileUpdate {
+	_u.mutation.SetNormalizedName(v)
+	return _u
 }
 
 // SetNillableNormalizedName sets the "normalized_name" field if the given value is not nil.
-func (fu *FileUpdate) SetNillableNormalizedName(s *string) *FileUpdate {
-	if s != nil {
-		fu.SetNormalizedName(*s)
+func (_u *FileUpdate) SetNillableNormalizedName(v *string) *FileUpdate {
+	if v != nil {
+		_u.SetNormalizedName(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetSetKey sets the "set_key" field.
-func (fu *FileUpdate) SetSetKey(s string) *FileUpdate {
-	fu.mutation.SetSetKey(s)
-	return fu
+func (_u *FileUpdate) SetSetKey(v string) *FileUpdate {
+	_u.mutation.SetSetKey(v)
+	return _u
 }
 
 // SetNillableSetKey sets the "set_key" field if the given value is not nil.
-func (fu *FileUpdate) SetNillableSetKey(s *string) *FileUpdate {
-	if s != nil {
-		fu.SetSetKey(*s)
+func (_u *FileUpdate) SetNillableSetKey(v *string) *FileUpdate {
+	if v != nil {
+		_u.SetSetKey(*v)
 	}
-	return fu
+	return _u
 }
 
 // ClearSetKey clears the value of the "set_key" field.
-func (fu *FileUpdate) ClearSetKey() *FileUpdate {
-	fu.mutation.ClearSetKey()
-	return fu
+func (_u *FileUpdate) ClearSetKey() *FileUpdate {
+	_u.mutation.ClearSetKey()
+	return _u
 }
 
 // SetChecksum sets the "checksum" field.
-func (fu *FileUpdate) SetChecksum(s string) *FileUpdate {
-	fu.mutation.SetChecksum(s)
-	return fu
+func (_u *FileUpdate) SetChecksum(v string) *FileUpdate {
+	_u.mutation.SetChecksum(v)
+	return _u
 }
 
 // SetNillableChecksum sets the "checksum" field if the given value is not nil.
-func (fu *FileUpdate) SetNillableChecksum(s *string) *FileUpdate {
-	if s != nil {
-		fu.SetChecksum(*s)
+func (_u *FileUpdate) SetNillableChecksum(v *string) *FileUpdate {
+	if v != nil {
+		_u.SetChecksum(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetSizeBytes sets the "size_bytes" field.
-func (fu *FileUpdate) SetSizeBytes(i int64) *FileUpdate {
-	fu.mutation.ResetSizeBytes()
-	fu.mutation.SetSizeBytes(i)
-	return fu
+func (_u *FileUpdate) SetSizeBytes(v int64) *FileUpdate {
+	_u.mutation.ResetSizeBytes()
+	_u.mutation.SetSizeBytes(v)
+	return _u
 }
 
 // SetNillableSizeBytes sets the "size_bytes" field if the given value is not nil.
-func (fu *FileUpdate) SetNillableSizeBytes(i *int64) *FileUpdate {
-	if i != nil {
-		fu.SetSizeBytes(*i)
+func (_u *FileUpdate) SetNillableSizeBytes(v *int64) *FileUpdate {
+	if v != nil {
+		_u.SetSizeBytes(*v)
 	}
-	return fu
+	return _u
 }
 
-// AddSizeBytes adds i to the "size_bytes" field.
-func (fu *FileUpdate) AddSizeBytes(i int64) *FileUpdate {
-	fu.mutation.AddSizeBytes(i)
-	return fu
+// AddSizeBytes adds value to the "size_bytes" field.
+func (_u *FileUpdate) AddSizeBytes(v int64) *FileUpdate {
+	_u.mutation.AddSizeBytes(v)
+	return _u
 }
 
 // SetMimeType sets the "mime_type" field.
-func (fu *FileUpdate) SetMimeType(s string) *FileUpdate {
-	fu.mutation.SetMimeType(s)
-	return fu
+func (_u *FileUpdate) SetMimeType(v string) *FileUpdate {
+	_u.mutation.SetMimeType(v)
+	return _u
 }
 
 // SetNillableMimeType sets the "mime_type" field if the given value is not nil.
-func (fu *FileUpdate) SetNillableMimeType(s *string) *FileUpdate {
-	if s != nil {
-		fu.SetMimeType(*s)
+func (_u *FileUpdate) SetNillableMimeType(v *string) *FileUpdate {
+	if v != nil {
+		_u.SetMimeType(*v)
 	}
-	return fu
+	return _u
 }
 
 // ClearMimeType clears the value of the "mime_type" field.
-func (fu *FileUpdate) ClearMimeType() *FileUpdate {
-	fu.mutation.ClearMimeType()
-	return fu
+func (_u *FileUpdate) ClearMimeType() *FileUpdate {
+	_u.mutation.ClearMimeType()
+	return _u
 }
 
 // SetFormat sets the "format" field.
-func (fu *FileUpdate) SetFormat(s string) *FileUpdate {
-	fu.mutation.SetFormat(s)
-	return fu
+func (_u *FileUpdate) SetFormat(v string) *FileUpdate {
+	_u.mutation.SetFormat(v)
+	return _u
 }
 
 // SetNillableFormat sets the "format" field if the given value is not nil.
-func (fu *FileUpdate) SetNillableFormat(s *string) *FileUpdate {
-	if s != nil {
-		fu.SetFormat(*s)
+func (_u *FileUpdate) SetNillableFormat(v *string) *FileUpdate {
+	if v != nil {
+		_u.SetFormat(*v)
 	}
-	return fu
+	return _u
 }
 
 // ClearFormat clears the value of the "format" field.
-func (fu *FileUpdate) ClearFormat() *FileUpdate {
-	fu.mutation.ClearFormat()
-	return fu
+func (_u *FileUpdate) ClearFormat() *FileUpdate {
+	_u.mutation.ClearFormat()
+	return _u
 }
 
 // SetSource sets the "source" field.
-func (fu *FileUpdate) SetSource(s string) *FileUpdate {
-	fu.mutation.SetSource(s)
-	return fu
+func (_u *FileUpdate) SetSource(v string) *FileUpdate {
+	_u.mutation.SetSource(v)
+	return _u
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (fu *FileUpdate) SetNillableSource(s *string) *FileUpdate {
-	if s != nil {
-		fu.SetSource(*s)
+func (_u *FileUpdate) SetNillableSource(v *string) *FileUpdate {
+	if v != nil {
+		_u.SetSource(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetQuarantine sets the "quarantine" field.
-func (fu *FileUpdate) SetQuarantine(b bool) *FileUpdate {
-	fu.mutation.SetQuarantine(b)
-	return fu
+func (_u *FileUpdate) SetQuarantine(v bool) *FileUpdate {
+	_u.mutation.SetQuarantine(v)
+	return _u
 }
 
 // SetNillableQuarantine sets the "quarantine" field if the given value is not nil.
-func (fu *FileUpdate) SetNillableQuarantine(b *bool) *FileUpdate {
-	if b != nil {
-		fu.SetQuarantine(*b)
+func (_u *FileUpdate) SetNillableQuarantine(v *bool) *FileUpdate {
+	if v != nil {
+		_u.SetQuarantine(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetNeedsReview sets the "needs_review" field.
-func (fu *FileUpdate) SetNeedsReview(b bool) *FileUpdate {
-	fu.mutation.SetNeedsReview(b)
-	return fu
+func (_u *FileUpdate) SetNeedsReview(v bool) *FileUpdate {
+	_u.mutation.SetNeedsReview(v)
+	return _u
 }
 
 // SetNillableNeedsReview sets the "needs_review" field if the given value is not nil.
-func (fu *FileUpdate) SetNillableNeedsReview(b *bool) *FileUpdate {
-	if b != nil {
-		fu.SetNeedsReview(*b)
+func (_u *FileUpdate) SetNillableNeedsReview(v *bool) *FileUpdate {
+	if v != nil {
+		_u.SetNeedsReview(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetDiskNumber sets the "disk_number" field.
-func (fu *FileUpdate) SetDiskNumber(i int) *FileUpdate {
-	fu.mutation.ResetDiskNumber()
-	fu.mutation.SetDiskNumber(i)
-	return fu
+func (_u *FileUpdate) SetDiskNumber(v int) *FileUpdate {
+	_u.mutation.ResetDiskNumber()
+	_u.mutation.SetDiskNumber(v)
+	return _u
 }
 
 // SetNillableDiskNumber sets the "disk_number" field if the given value is not nil.
-func (fu *FileUpdate) SetNillableDiskNumber(i *int) *FileUpdate {
-	if i != nil {
-		fu.SetDiskNumber(*i)
+func (_u *FileUpdate) SetNillableDiskNumber(v *int) *FileUpdate {
+	if v != nil {
+		_u.SetDiskNumber(*v)
 	}
-	return fu
+	return _u
 }
 
-// AddDiskNumber adds i to the "disk_number" field.
-func (fu *FileUpdate) AddDiskNumber(i int) *FileUpdate {
-	fu.mutation.AddDiskNumber(i)
-	return fu
+// AddDiskNumber adds value to the "disk_number" field.
+func (_u *FileUpdate) AddDiskNumber(v int) *FileUpdate {
+	_u.mutation.AddDiskNumber(v)
+	return _u
 }
 
 // ClearDiskNumber clears the value of the "disk_number" field.
-func (fu *FileUpdate) ClearDiskNumber() *FileUpdate {
-	fu.mutation.ClearDiskNumber()
-	return fu
+func (_u *FileUpdate) ClearDiskNumber() *FileUpdate {
+	_u.mutation.ClearDiskNumber()
+	return _u
 }
 
 // SetSide sets the "side" field.
-func (fu *FileUpdate) SetSide(s string) *FileUpdate {
-	fu.mutation.SetSide(s)
-	return fu
+func (_u *FileUpdate) SetSide(v string) *FileUpdate {
+	_u.mutation.SetSide(v)
+	return _u
 }
 
 // SetNillableSide sets the "side" field if the given value is not nil.
-func (fu *FileUpdate) SetNillableSide(s *string) *FileUpdate {
-	if s != nil {
-		fu.SetSide(*s)
+func (_u *FileUpdate) SetNillableSide(v *string) *FileUpdate {
+	if v != nil {
+		_u.SetSide(*v)
 	}
-	return fu
+	return _u
 }
 
 // ClearSide clears the value of the "side" field.
-func (fu *FileUpdate) ClearSide() *FileUpdate {
-	fu.mutation.ClearSide()
-	return fu
+func (_u *FileUpdate) ClearSide() *FileUpdate {
+	_u.mutation.ClearSide()
+	return _u
 }
 
 // SetGameID sets the "game" edge to the Game entity by ID.
-func (fu *FileUpdate) SetGameID(id string) *FileUpdate {
-	fu.mutation.SetGameID(id)
-	return fu
+func (_u *FileUpdate) SetGameID(id string) *FileUpdate {
+	_u.mutation.SetGameID(id)
+	return _u
 }
 
 // SetGame sets the "game" edge to the Game entity.
-func (fu *FileUpdate) SetGame(g *Game) *FileUpdate {
-	return fu.SetGameID(g.ID)
+func (_u *FileUpdate) SetGame(v *Game) *FileUpdate {
+	return _u.SetGameID(v.ID)
 }
 
 // Mutation returns the FileMutation object of the builder.
-func (fu *FileUpdate) Mutation() *FileMutation {
-	return fu.mutation
+func (_u *FileUpdate) Mutation() *FileMutation {
+	return _u.mutation
 }
 
 // ClearGame clears the "game" edge to the Game entity.
-func (fu *FileUpdate) ClearGame() *FileUpdate {
-	fu.mutation.ClearGame()
-	return fu
+func (_u *FileUpdate) ClearGame() *FileUpdate {
+	_u.mutation.ClearGame()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (fu *FileUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, fu.sqlSave, fu.mutation, fu.hooks)
+func (_u *FileUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fu *FileUpdate) SaveX(ctx context.Context) int {
-	affected, err := fu.Save(ctx)
+func (_u *FileUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -291,99 +291,99 @@ func (fu *FileUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (fu *FileUpdate) Exec(ctx context.Context) error {
-	_, err := fu.Save(ctx)
+func (_u *FileUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fu *FileUpdate) ExecX(ctx context.Context) {
-	if err := fu.Exec(ctx); err != nil {
+func (_u *FileUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fu *FileUpdate) check() error {
-	if fu.mutation.GameCleared() && len(fu.mutation.GameIDs()) > 0 {
+func (_u *FileUpdate) check() error {
+	if _u.mutation.GameCleared() && len(_u.mutation.GameIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "File.game"`)
 	}
 	return nil
 }
 
-func (fu *FileUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := fu.check(); err != nil {
-		return n, err
+func (_u *FileUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(file.Table, file.Columns, sqlgraph.NewFieldSpec(file.FieldID, field.TypeString))
-	if ps := fu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := fu.mutation.Path(); ok {
+	if value, ok := _u.mutation.Path(); ok {
 		_spec.SetField(file.FieldPath, field.TypeString, value)
 	}
-	if value, ok := fu.mutation.OriginalName(); ok {
+	if value, ok := _u.mutation.OriginalName(); ok {
 		_spec.SetField(file.FieldOriginalName, field.TypeString, value)
 	}
-	if value, ok := fu.mutation.NormalizedName(); ok {
+	if value, ok := _u.mutation.NormalizedName(); ok {
 		_spec.SetField(file.FieldNormalizedName, field.TypeString, value)
 	}
-	if value, ok := fu.mutation.SetKey(); ok {
+	if value, ok := _u.mutation.SetKey(); ok {
 		_spec.SetField(file.FieldSetKey, field.TypeString, value)
 	}
-	if fu.mutation.SetKeyCleared() {
+	if _u.mutation.SetKeyCleared() {
 		_spec.ClearField(file.FieldSetKey, field.TypeString)
 	}
-	if value, ok := fu.mutation.Checksum(); ok {
+	if value, ok := _u.mutation.Checksum(); ok {
 		_spec.SetField(file.FieldChecksum, field.TypeString, value)
 	}
-	if value, ok := fu.mutation.SizeBytes(); ok {
+	if value, ok := _u.mutation.SizeBytes(); ok {
 		_spec.SetField(file.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := fu.mutation.AddedSizeBytes(); ok {
+	if value, ok := _u.mutation.AddedSizeBytes(); ok {
 		_spec.AddField(file.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := fu.mutation.MimeType(); ok {
+	if value, ok := _u.mutation.MimeType(); ok {
 		_spec.SetField(file.FieldMimeType, field.TypeString, value)
 	}
-	if fu.mutation.MimeTypeCleared() {
+	if _u.mutation.MimeTypeCleared() {
 		_spec.ClearField(file.FieldMimeType, field.TypeString)
 	}
-	if value, ok := fu.mutation.Format(); ok {
+	if value, ok := _u.mutation.Format(); ok {
 		_spec.SetField(file.FieldFormat, field.TypeString, value)
 	}
-	if fu.mutation.FormatCleared() {
+	if _u.mutation.FormatCleared() {
 		_spec.ClearField(file.FieldFormat, field.TypeString)
 	}
-	if value, ok := fu.mutation.Source(); ok {
+	if value, ok := _u.mutation.Source(); ok {
 		_spec.SetField(file.FieldSource, field.TypeString, value)
 	}
-	if value, ok := fu.mutation.Quarantine(); ok {
+	if value, ok := _u.mutation.Quarantine(); ok {
 		_spec.SetField(file.FieldQuarantine, field.TypeBool, value)
 	}
-	if value, ok := fu.mutation.NeedsReview(); ok {
+	if value, ok := _u.mutation.NeedsReview(); ok {
 		_spec.SetField(file.FieldNeedsReview, field.TypeBool, value)
 	}
-	if value, ok := fu.mutation.DiskNumber(); ok {
+	if value, ok := _u.mutation.DiskNumber(); ok {
 		_spec.SetField(file.FieldDiskNumber, field.TypeInt, value)
 	}
-	if value, ok := fu.mutation.AddedDiskNumber(); ok {
+	if value, ok := _u.mutation.AddedDiskNumber(); ok {
 		_spec.AddField(file.FieldDiskNumber, field.TypeInt, value)
 	}
-	if fu.mutation.DiskNumberCleared() {
+	if _u.mutation.DiskNumberCleared() {
 		_spec.ClearField(file.FieldDiskNumber, field.TypeInt)
 	}
-	if value, ok := fu.mutation.Side(); ok {
+	if value, ok := _u.mutation.Side(); ok {
 		_spec.SetField(file.FieldSide, field.TypeString, value)
 	}
-	if fu.mutation.SideCleared() {
+	if _u.mutation.SideCleared() {
 		_spec.ClearField(file.FieldSide, field.TypeString)
 	}
-	if fu.mutation.GameCleared() {
+	if _u.mutation.GameCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -396,7 +396,7 @@ func (fu *FileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fu.mutation.GameIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.GameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -412,7 +412,7 @@ func (fu *FileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, fu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{file.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -420,8 +420,8 @@ func (fu *FileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	fu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // FileUpdateOne is the builder for updating a single File entity.
@@ -433,274 +433,274 @@ type FileUpdateOne struct {
 }
 
 // SetPath sets the "path" field.
-func (fuo *FileUpdateOne) SetPath(s string) *FileUpdateOne {
-	fuo.mutation.SetPath(s)
-	return fuo
+func (_u *FileUpdateOne) SetPath(v string) *FileUpdateOne {
+	_u.mutation.SetPath(v)
+	return _u
 }
 
 // SetNillablePath sets the "path" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillablePath(s *string) *FileUpdateOne {
-	if s != nil {
-		fuo.SetPath(*s)
+func (_u *FileUpdateOne) SetNillablePath(v *string) *FileUpdateOne {
+	if v != nil {
+		_u.SetPath(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetOriginalName sets the "original_name" field.
-func (fuo *FileUpdateOne) SetOriginalName(s string) *FileUpdateOne {
-	fuo.mutation.SetOriginalName(s)
-	return fuo
+func (_u *FileUpdateOne) SetOriginalName(v string) *FileUpdateOne {
+	_u.mutation.SetOriginalName(v)
+	return _u
 }
 
 // SetNillableOriginalName sets the "original_name" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillableOriginalName(s *string) *FileUpdateOne {
-	if s != nil {
-		fuo.SetOriginalName(*s)
+func (_u *FileUpdateOne) SetNillableOriginalName(v *string) *FileUpdateOne {
+	if v != nil {
+		_u.SetOriginalName(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetNormalizedName sets the "normalized_name" field.
-func (fuo *FileUpdateOne) SetNormalizedName(s string) *FileUpdateOne {
-	fuo.mutation.SetNormalizedName(s)
-	return fuo
+func (_u *FileUpdateOne) SetNormalizedName(v string) *FileUpdateOne {
+	_u.mutation.SetNormalizedName(v)
+	return _u
 }
 
 // SetNillableNormalizedName sets the "normalized_name" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillableNormalizedName(s *string) *FileUpdateOne {
-	if s != nil {
-		fuo.SetNormalizedName(*s)
+func (_u *FileUpdateOne) SetNillableNormalizedName(v *string) *FileUpdateOne {
+	if v != nil {
+		_u.SetNormalizedName(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetSetKey sets the "set_key" field.
-func (fuo *FileUpdateOne) SetSetKey(s string) *FileUpdateOne {
-	fuo.mutation.SetSetKey(s)
-	return fuo
+func (_u *FileUpdateOne) SetSetKey(v string) *FileUpdateOne {
+	_u.mutation.SetSetKey(v)
+	return _u
 }
 
 // SetNillableSetKey sets the "set_key" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillableSetKey(s *string) *FileUpdateOne {
-	if s != nil {
-		fuo.SetSetKey(*s)
+func (_u *FileUpdateOne) SetNillableSetKey(v *string) *FileUpdateOne {
+	if v != nil {
+		_u.SetSetKey(*v)
 	}
-	return fuo
+	return _u
 }
 
 // ClearSetKey clears the value of the "set_key" field.
-func (fuo *FileUpdateOne) ClearSetKey() *FileUpdateOne {
-	fuo.mutation.ClearSetKey()
-	return fuo
+func (_u *FileUpdateOne) ClearSetKey() *FileUpdateOne {
+	_u.mutation.ClearSetKey()
+	return _u
 }
 
 // SetChecksum sets the "checksum" field.
-func (fuo *FileUpdateOne) SetChecksum(s string) *FileUpdateOne {
-	fuo.mutation.SetChecksum(s)
-	return fuo
+func (_u *FileUpdateOne) SetChecksum(v string) *FileUpdateOne {
+	_u.mutation.SetChecksum(v)
+	return _u
 }
 
 // SetNillableChecksum sets the "checksum" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillableChecksum(s *string) *FileUpdateOne {
-	if s != nil {
-		fuo.SetChecksum(*s)
+func (_u *FileUpdateOne) SetNillableChecksum(v *string) *FileUpdateOne {
+	if v != nil {
+		_u.SetChecksum(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetSizeBytes sets the "size_bytes" field.
-func (fuo *FileUpdateOne) SetSizeBytes(i int64) *FileUpdateOne {
-	fuo.mutation.ResetSizeBytes()
-	fuo.mutation.SetSizeBytes(i)
-	return fuo
+func (_u *FileUpdateOne) SetSizeBytes(v int64) *FileUpdateOne {
+	_u.mutation.ResetSizeBytes()
+	_u.mutation.SetSizeBytes(v)
+	return _u
 }
 
 // SetNillableSizeBytes sets the "size_bytes" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillableSizeBytes(i *int64) *FileUpdateOne {
-	if i != nil {
-		fuo.SetSizeBytes(*i)
+func (_u *FileUpdateOne) SetNillableSizeBytes(v *int64) *FileUpdateOne {
+	if v != nil {
+		_u.SetSizeBytes(*v)
 	}
-	return fuo
+	return _u
 }
 
-// AddSizeBytes adds i to the "size_bytes" field.
-func (fuo *FileUpdateOne) AddSizeBytes(i int64) *FileUpdateOne {
-	fuo.mutation.AddSizeBytes(i)
-	return fuo
+// AddSizeBytes adds value to the "size_bytes" field.
+func (_u *FileUpdateOne) AddSizeBytes(v int64) *FileUpdateOne {
+	_u.mutation.AddSizeBytes(v)
+	return _u
 }
 
 // SetMimeType sets the "mime_type" field.
-func (fuo *FileUpdateOne) SetMimeType(s string) *FileUpdateOne {
-	fuo.mutation.SetMimeType(s)
-	return fuo
+func (_u *FileUpdateOne) SetMimeType(v string) *FileUpdateOne {
+	_u.mutation.SetMimeType(v)
+	return _u
 }
 
 // SetNillableMimeType sets the "mime_type" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillableMimeType(s *string) *FileUpdateOne {
-	if s != nil {
-		fuo.SetMimeType(*s)
+func (_u *FileUpdateOne) SetNillableMimeType(v *string) *FileUpdateOne {
+	if v != nil {
+		_u.SetMimeType(*v)
 	}
-	return fuo
+	return _u
 }
 
 // ClearMimeType clears the value of the "mime_type" field.
-func (fuo *FileUpdateOne) ClearMimeType() *FileUpdateOne {
-	fuo.mutation.ClearMimeType()
-	return fuo
+func (_u *FileUpdateOne) ClearMimeType() *FileUpdateOne {
+	_u.mutation.ClearMimeType()
+	return _u
 }
 
 // SetFormat sets the "format" field.
-func (fuo *FileUpdateOne) SetFormat(s string) *FileUpdateOne {
-	fuo.mutation.SetFormat(s)
-	return fuo
+func (_u *FileUpdateOne) SetFormat(v string) *FileUpdateOne {
+	_u.mutation.SetFormat(v)
+	return _u
 }
 
 // SetNillableFormat sets the "format" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillableFormat(s *string) *FileUpdateOne {
-	if s != nil {
-		fuo.SetFormat(*s)
+func (_u *FileUpdateOne) SetNillableFormat(v *string) *FileUpdateOne {
+	if v != nil {
+		_u.SetFormat(*v)
 	}
-	return fuo
+	return _u
 }
 
 // ClearFormat clears the value of the "format" field.
-func (fuo *FileUpdateOne) ClearFormat() *FileUpdateOne {
-	fuo.mutation.ClearFormat()
-	return fuo
+func (_u *FileUpdateOne) ClearFormat() *FileUpdateOne {
+	_u.mutation.ClearFormat()
+	return _u
 }
 
 // SetSource sets the "source" field.
-func (fuo *FileUpdateOne) SetSource(s string) *FileUpdateOne {
-	fuo.mutation.SetSource(s)
-	return fuo
+func (_u *FileUpdateOne) SetSource(v string) *FileUpdateOne {
+	_u.mutation.SetSource(v)
+	return _u
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillableSource(s *string) *FileUpdateOne {
-	if s != nil {
-		fuo.SetSource(*s)
+func (_u *FileUpdateOne) SetNillableSource(v *string) *FileUpdateOne {
+	if v != nil {
+		_u.SetSource(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetQuarantine sets the "quarantine" field.
-func (fuo *FileUpdateOne) SetQuarantine(b bool) *FileUpdateOne {
-	fuo.mutation.SetQuarantine(b)
-	return fuo
+func (_u *FileUpdateOne) SetQuarantine(v bool) *FileUpdateOne {
+	_u.mutation.SetQuarantine(v)
+	return _u
 }
 
 // SetNillableQuarantine sets the "quarantine" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillableQuarantine(b *bool) *FileUpdateOne {
-	if b != nil {
-		fuo.SetQuarantine(*b)
+func (_u *FileUpdateOne) SetNillableQuarantine(v *bool) *FileUpdateOne {
+	if v != nil {
+		_u.SetQuarantine(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetNeedsReview sets the "needs_review" field.
-func (fuo *FileUpdateOne) SetNeedsReview(b bool) *FileUpdateOne {
-	fuo.mutation.SetNeedsReview(b)
-	return fuo
+func (_u *FileUpdateOne) SetNeedsReview(v bool) *FileUpdateOne {
+	_u.mutation.SetNeedsReview(v)
+	return _u
 }
 
 // SetNillableNeedsReview sets the "needs_review" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillableNeedsReview(b *bool) *FileUpdateOne {
-	if b != nil {
-		fuo.SetNeedsReview(*b)
+func (_u *FileUpdateOne) SetNillableNeedsReview(v *bool) *FileUpdateOne {
+	if v != nil {
+		_u.SetNeedsReview(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetDiskNumber sets the "disk_number" field.
-func (fuo *FileUpdateOne) SetDiskNumber(i int) *FileUpdateOne {
-	fuo.mutation.ResetDiskNumber()
-	fuo.mutation.SetDiskNumber(i)
-	return fuo
+func (_u *FileUpdateOne) SetDiskNumber(v int) *FileUpdateOne {
+	_u.mutation.ResetDiskNumber()
+	_u.mutation.SetDiskNumber(v)
+	return _u
 }
 
 // SetNillableDiskNumber sets the "disk_number" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillableDiskNumber(i *int) *FileUpdateOne {
-	if i != nil {
-		fuo.SetDiskNumber(*i)
+func (_u *FileUpdateOne) SetNillableDiskNumber(v *int) *FileUpdateOne {
+	if v != nil {
+		_u.SetDiskNumber(*v)
 	}
-	return fuo
+	return _u
 }
 
-// AddDiskNumber adds i to the "disk_number" field.
-func (fuo *FileUpdateOne) AddDiskNumber(i int) *FileUpdateOne {
-	fuo.mutation.AddDiskNumber(i)
-	return fuo
+// AddDiskNumber adds value to the "disk_number" field.
+func (_u *FileUpdateOne) AddDiskNumber(v int) *FileUpdateOne {
+	_u.mutation.AddDiskNumber(v)
+	return _u
 }
 
 // ClearDiskNumber clears the value of the "disk_number" field.
-func (fuo *FileUpdateOne) ClearDiskNumber() *FileUpdateOne {
-	fuo.mutation.ClearDiskNumber()
-	return fuo
+func (_u *FileUpdateOne) ClearDiskNumber() *FileUpdateOne {
+	_u.mutation.ClearDiskNumber()
+	return _u
 }
 
 // SetSide sets the "side" field.
-func (fuo *FileUpdateOne) SetSide(s string) *FileUpdateOne {
-	fuo.mutation.SetSide(s)
-	return fuo
+func (_u *FileUpdateOne) SetSide(v string) *FileUpdateOne {
+	_u.mutation.SetSide(v)
+	return _u
 }
 
 // SetNillableSide sets the "side" field if the given value is not nil.
-func (fuo *FileUpdateOne) SetNillableSide(s *string) *FileUpdateOne {
-	if s != nil {
-		fuo.SetSide(*s)
+func (_u *FileUpdateOne) SetNillableSide(v *string) *FileUpdateOne {
+	if v != nil {
+		_u.SetSide(*v)
 	}
-	return fuo
+	return _u
 }
 
 // ClearSide clears the value of the "side" field.
-func (fuo *FileUpdateOne) ClearSide() *FileUpdateOne {
-	fuo.mutation.ClearSide()
-	return fuo
+func (_u *FileUpdateOne) ClearSide() *FileUpdateOne {
+	_u.mutation.ClearSide()
+	return _u
 }
 
 // SetGameID sets the "game" edge to the Game entity by ID.
-func (fuo *FileUpdateOne) SetGameID(id string) *FileUpdateOne {
-	fuo.mutation.SetGameID(id)
-	return fuo
+func (_u *FileUpdateOne) SetGameID(id string) *FileUpdateOne {
+	_u.mutation.SetGameID(id)
+	return _u
 }
 
 // SetGame sets the "game" edge to the Game entity.
-func (fuo *FileUpdateOne) SetGame(g *Game) *FileUpdateOne {
-	return fuo.SetGameID(g.ID)
+func (_u *FileUpdateOne) SetGame(v *Game) *FileUpdateOne {
+	return _u.SetGameID(v.ID)
 }
 
 // Mutation returns the FileMutation object of the builder.
-func (fuo *FileUpdateOne) Mutation() *FileMutation {
-	return fuo.mutation
+func (_u *FileUpdateOne) Mutation() *FileMutation {
+	return _u.mutation
 }
 
 // ClearGame clears the "game" edge to the Game entity.
-func (fuo *FileUpdateOne) ClearGame() *FileUpdateOne {
-	fuo.mutation.ClearGame()
-	return fuo
+func (_u *FileUpdateOne) ClearGame() *FileUpdateOne {
+	_u.mutation.ClearGame()
+	return _u
 }
 
 // Where appends a list predicates to the FileUpdate builder.
-func (fuo *FileUpdateOne) Where(ps ...predicate.File) *FileUpdateOne {
-	fuo.mutation.Where(ps...)
-	return fuo
+func (_u *FileUpdateOne) Where(ps ...predicate.File) *FileUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (fuo *FileUpdateOne) Select(field string, fields ...string) *FileUpdateOne {
-	fuo.fields = append([]string{field}, fields...)
-	return fuo
+func (_u *FileUpdateOne) Select(field string, fields ...string) *FileUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated File entity.
-func (fuo *FileUpdateOne) Save(ctx context.Context) (*File, error) {
-	return withHooks(ctx, fuo.sqlSave, fuo.mutation, fuo.hooks)
+func (_u *FileUpdateOne) Save(ctx context.Context) (*File, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fuo *FileUpdateOne) SaveX(ctx context.Context) *File {
-	node, err := fuo.Save(ctx)
+func (_u *FileUpdateOne) SaveX(ctx context.Context) *File {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -708,37 +708,37 @@ func (fuo *FileUpdateOne) SaveX(ctx context.Context) *File {
 }
 
 // Exec executes the query on the entity.
-func (fuo *FileUpdateOne) Exec(ctx context.Context) error {
-	_, err := fuo.Save(ctx)
+func (_u *FileUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fuo *FileUpdateOne) ExecX(ctx context.Context) {
-	if err := fuo.Exec(ctx); err != nil {
+func (_u *FileUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fuo *FileUpdateOne) check() error {
-	if fuo.mutation.GameCleared() && len(fuo.mutation.GameIDs()) > 0 {
+func (_u *FileUpdateOne) check() error {
+	if _u.mutation.GameCleared() && len(_u.mutation.GameIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "File.game"`)
 	}
 	return nil
 }
 
-func (fuo *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) {
-	if err := fuo.check(); err != nil {
+func (_u *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(file.Table, file.Columns, sqlgraph.NewFieldSpec(file.FieldID, field.TypeString))
-	id, ok := fuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "File.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := fuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, file.FieldID)
 		for _, f := range fields {
@@ -750,74 +750,74 @@ func (fuo *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) 
 			}
 		}
 	}
-	if ps := fuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := fuo.mutation.Path(); ok {
+	if value, ok := _u.mutation.Path(); ok {
 		_spec.SetField(file.FieldPath, field.TypeString, value)
 	}
-	if value, ok := fuo.mutation.OriginalName(); ok {
+	if value, ok := _u.mutation.OriginalName(); ok {
 		_spec.SetField(file.FieldOriginalName, field.TypeString, value)
 	}
-	if value, ok := fuo.mutation.NormalizedName(); ok {
+	if value, ok := _u.mutation.NormalizedName(); ok {
 		_spec.SetField(file.FieldNormalizedName, field.TypeString, value)
 	}
-	if value, ok := fuo.mutation.SetKey(); ok {
+	if value, ok := _u.mutation.SetKey(); ok {
 		_spec.SetField(file.FieldSetKey, field.TypeString, value)
 	}
-	if fuo.mutation.SetKeyCleared() {
+	if _u.mutation.SetKeyCleared() {
 		_spec.ClearField(file.FieldSetKey, field.TypeString)
 	}
-	if value, ok := fuo.mutation.Checksum(); ok {
+	if value, ok := _u.mutation.Checksum(); ok {
 		_spec.SetField(file.FieldChecksum, field.TypeString, value)
 	}
-	if value, ok := fuo.mutation.SizeBytes(); ok {
+	if value, ok := _u.mutation.SizeBytes(); ok {
 		_spec.SetField(file.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := fuo.mutation.AddedSizeBytes(); ok {
+	if value, ok := _u.mutation.AddedSizeBytes(); ok {
 		_spec.AddField(file.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := fuo.mutation.MimeType(); ok {
+	if value, ok := _u.mutation.MimeType(); ok {
 		_spec.SetField(file.FieldMimeType, field.TypeString, value)
 	}
-	if fuo.mutation.MimeTypeCleared() {
+	if _u.mutation.MimeTypeCleared() {
 		_spec.ClearField(file.FieldMimeType, field.TypeString)
 	}
-	if value, ok := fuo.mutation.Format(); ok {
+	if value, ok := _u.mutation.Format(); ok {
 		_spec.SetField(file.FieldFormat, field.TypeString, value)
 	}
-	if fuo.mutation.FormatCleared() {
+	if _u.mutation.FormatCleared() {
 		_spec.ClearField(file.FieldFormat, field.TypeString)
 	}
-	if value, ok := fuo.mutation.Source(); ok {
+	if value, ok := _u.mutation.Source(); ok {
 		_spec.SetField(file.FieldSource, field.TypeString, value)
 	}
-	if value, ok := fuo.mutation.Quarantine(); ok {
+	if value, ok := _u.mutation.Quarantine(); ok {
 		_spec.SetField(file.FieldQuarantine, field.TypeBool, value)
 	}
-	if value, ok := fuo.mutation.NeedsReview(); ok {
+	if value, ok := _u.mutation.NeedsReview(); ok {
 		_spec.SetField(file.FieldNeedsReview, field.TypeBool, value)
 	}
-	if value, ok := fuo.mutation.DiskNumber(); ok {
+	if value, ok := _u.mutation.DiskNumber(); ok {
 		_spec.SetField(file.FieldDiskNumber, field.TypeInt, value)
 	}
-	if value, ok := fuo.mutation.AddedDiskNumber(); ok {
+	if value, ok := _u.mutation.AddedDiskNumber(); ok {
 		_spec.AddField(file.FieldDiskNumber, field.TypeInt, value)
 	}
-	if fuo.mutation.DiskNumberCleared() {
+	if _u.mutation.DiskNumberCleared() {
 		_spec.ClearField(file.FieldDiskNumber, field.TypeInt)
 	}
-	if value, ok := fuo.mutation.Side(); ok {
+	if value, ok := _u.mutation.Side(); ok {
 		_spec.SetField(file.FieldSide, field.TypeString, value)
 	}
-	if fuo.mutation.SideCleared() {
+	if _u.mutation.SideCleared() {
 		_spec.ClearField(file.FieldSide, field.TypeString)
 	}
-	if fuo.mutation.GameCleared() {
+	if _u.mutation.GameCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -830,7 +830,7 @@ func (fuo *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fuo.mutation.GameIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.GameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -846,10 +846,10 @@ func (fuo *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &File{config: fuo.config}
+	_node = &File{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, fuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{file.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -857,6 +857,6 @@ func (fuo *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) 
 		}
 		return nil, err
 	}
-	fuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

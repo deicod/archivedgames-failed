@@ -22,123 +22,123 @@ type GameCreate struct {
 }
 
 // SetSlug sets the "slug" field.
-func (gc *GameCreate) SetSlug(s string) *GameCreate {
-	gc.mutation.SetSlug(s)
-	return gc
+func (_c *GameCreate) SetSlug(v string) *GameCreate {
+	_c.mutation.SetSlug(v)
+	return _c
 }
 
 // SetPlatform sets the "platform" field.
-func (gc *GameCreate) SetPlatform(ga game.Platform) *GameCreate {
-	gc.mutation.SetPlatform(ga)
-	return gc
+func (_c *GameCreate) SetPlatform(v game.Platform) *GameCreate {
+	_c.mutation.SetPlatform(v)
+	return _c
 }
 
 // SetTitle sets the "title" field.
-func (gc *GameCreate) SetTitle(s string) *GameCreate {
-	gc.mutation.SetTitle(s)
-	return gc
+func (_c *GameCreate) SetTitle(v string) *GameCreate {
+	_c.mutation.SetTitle(v)
+	return _c
 }
 
 // SetYear sets the "year" field.
-func (gc *GameCreate) SetYear(i int) *GameCreate {
-	gc.mutation.SetYear(i)
-	return gc
+func (_c *GameCreate) SetYear(v int) *GameCreate {
+	_c.mutation.SetYear(v)
+	return _c
 }
 
 // SetNillableYear sets the "year" field if the given value is not nil.
-func (gc *GameCreate) SetNillableYear(i *int) *GameCreate {
-	if i != nil {
-		gc.SetYear(*i)
+func (_c *GameCreate) SetNillableYear(v *int) *GameCreate {
+	if v != nil {
+		_c.SetYear(*v)
 	}
-	return gc
+	return _c
 }
 
 // SetPublisher sets the "publisher" field.
-func (gc *GameCreate) SetPublisher(s string) *GameCreate {
-	gc.mutation.SetPublisher(s)
-	return gc
+func (_c *GameCreate) SetPublisher(v string) *GameCreate {
+	_c.mutation.SetPublisher(v)
+	return _c
 }
 
 // SetNillablePublisher sets the "publisher" field if the given value is not nil.
-func (gc *GameCreate) SetNillablePublisher(s *string) *GameCreate {
-	if s != nil {
-		gc.SetPublisher(*s)
+func (_c *GameCreate) SetNillablePublisher(v *string) *GameCreate {
+	if v != nil {
+		_c.SetPublisher(*v)
 	}
-	return gc
+	return _c
 }
 
 // SetDeveloper sets the "developer" field.
-func (gc *GameCreate) SetDeveloper(s string) *GameCreate {
-	gc.mutation.SetDeveloper(s)
-	return gc
+func (_c *GameCreate) SetDeveloper(v string) *GameCreate {
+	_c.mutation.SetDeveloper(v)
+	return _c
 }
 
 // SetNillableDeveloper sets the "developer" field if the given value is not nil.
-func (gc *GameCreate) SetNillableDeveloper(s *string) *GameCreate {
-	if s != nil {
-		gc.SetDeveloper(*s)
+func (_c *GameCreate) SetNillableDeveloper(v *string) *GameCreate {
+	if v != nil {
+		_c.SetDeveloper(*v)
 	}
-	return gc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (gc *GameCreate) SetID(s string) *GameCreate {
-	gc.mutation.SetID(s)
-	return gc
+func (_c *GameCreate) SetID(v string) *GameCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (gc *GameCreate) SetNillableID(s *string) *GameCreate {
-	if s != nil {
-		gc.SetID(*s)
+func (_c *GameCreate) SetNillableID(v *string) *GameCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return gc
+	return _c
 }
 
 // AddFileIDs adds the "files" edge to the File entity by IDs.
-func (gc *GameCreate) AddFileIDs(ids ...string) *GameCreate {
-	gc.mutation.AddFileIDs(ids...)
-	return gc
+func (_c *GameCreate) AddFileIDs(ids ...string) *GameCreate {
+	_c.mutation.AddFileIDs(ids...)
+	return _c
 }
 
 // AddFiles adds the "files" edges to the File entity.
-func (gc *GameCreate) AddFiles(f ...*File) *GameCreate {
-	ids := make([]string, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_c *GameCreate) AddFiles(v ...*File) *GameCreate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return gc.AddFileIDs(ids...)
+	return _c.AddFileIDs(ids...)
 }
 
 // AddImageIDs adds the "images" edge to the Image entity by IDs.
-func (gc *GameCreate) AddImageIDs(ids ...string) *GameCreate {
-	gc.mutation.AddImageIDs(ids...)
-	return gc
+func (_c *GameCreate) AddImageIDs(ids ...string) *GameCreate {
+	_c.mutation.AddImageIDs(ids...)
+	return _c
 }
 
 // AddImages adds the "images" edges to the Image entity.
-func (gc *GameCreate) AddImages(i ...*Image) *GameCreate {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_c *GameCreate) AddImages(v ...*Image) *GameCreate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return gc.AddImageIDs(ids...)
+	return _c.AddImageIDs(ids...)
 }
 
 // Mutation returns the GameMutation object of the builder.
-func (gc *GameCreate) Mutation() *GameMutation {
-	return gc.mutation
+func (_c *GameCreate) Mutation() *GameMutation {
+	return _c.mutation
 }
 
 // Save creates the Game in the database.
-func (gc *GameCreate) Save(ctx context.Context) (*Game, error) {
-	gc.defaults()
-	return withHooks(ctx, gc.sqlSave, gc.mutation, gc.hooks)
+func (_c *GameCreate) Save(ctx context.Context) (*Game, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (gc *GameCreate) SaveX(ctx context.Context) *Game {
-	v, err := gc.Save(ctx)
+func (_c *GameCreate) SaveX(ctx context.Context) *Game {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -146,51 +146,51 @@ func (gc *GameCreate) SaveX(ctx context.Context) *Game {
 }
 
 // Exec executes the query.
-func (gc *GameCreate) Exec(ctx context.Context) error {
-	_, err := gc.Save(ctx)
+func (_c *GameCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gc *GameCreate) ExecX(ctx context.Context) {
-	if err := gc.Exec(ctx); err != nil {
+func (_c *GameCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (gc *GameCreate) defaults() {
-	if _, ok := gc.mutation.ID(); !ok {
+func (_c *GameCreate) defaults() {
+	if _, ok := _c.mutation.ID(); !ok {
 		v := game.DefaultID()
-		gc.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (gc *GameCreate) check() error {
-	if _, ok := gc.mutation.Slug(); !ok {
+func (_c *GameCreate) check() error {
+	if _, ok := _c.mutation.Slug(); !ok {
 		return &ValidationError{Name: "slug", err: errors.New(`ent: missing required field "Game.slug"`)}
 	}
-	if _, ok := gc.mutation.Platform(); !ok {
+	if _, ok := _c.mutation.Platform(); !ok {
 		return &ValidationError{Name: "platform", err: errors.New(`ent: missing required field "Game.platform"`)}
 	}
-	if v, ok := gc.mutation.Platform(); ok {
+	if v, ok := _c.mutation.Platform(); ok {
 		if err := game.PlatformValidator(v); err != nil {
 			return &ValidationError{Name: "platform", err: fmt.Errorf(`ent: validator failed for field "Game.platform": %w`, err)}
 		}
 	}
-	if _, ok := gc.mutation.Title(); !ok {
+	if _, ok := _c.mutation.Title(); !ok {
 		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "Game.title"`)}
 	}
 	return nil
 }
 
-func (gc *GameCreate) sqlSave(ctx context.Context) (*Game, error) {
-	if err := gc.check(); err != nil {
+func (_c *GameCreate) sqlSave(ctx context.Context) (*Game, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := gc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, gc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -203,45 +203,45 @@ func (gc *GameCreate) sqlSave(ctx context.Context) (*Game, error) {
 			return nil, fmt.Errorf("unexpected Game.ID type: %T", _spec.ID.Value)
 		}
 	}
-	gc.mutation.id = &_node.ID
-	gc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (gc *GameCreate) createSpec() (*Game, *sqlgraph.CreateSpec) {
+func (_c *GameCreate) createSpec() (*Game, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Game{config: gc.config}
+		_node = &Game{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(game.Table, sqlgraph.NewFieldSpec(game.FieldID, field.TypeString))
 	)
-	if id, ok := gc.mutation.ID(); ok {
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := gc.mutation.Slug(); ok {
+	if value, ok := _c.mutation.Slug(); ok {
 		_spec.SetField(game.FieldSlug, field.TypeString, value)
 		_node.Slug = value
 	}
-	if value, ok := gc.mutation.Platform(); ok {
+	if value, ok := _c.mutation.Platform(); ok {
 		_spec.SetField(game.FieldPlatform, field.TypeEnum, value)
 		_node.Platform = value
 	}
-	if value, ok := gc.mutation.Title(); ok {
+	if value, ok := _c.mutation.Title(); ok {
 		_spec.SetField(game.FieldTitle, field.TypeString, value)
 		_node.Title = value
 	}
-	if value, ok := gc.mutation.Year(); ok {
+	if value, ok := _c.mutation.Year(); ok {
 		_spec.SetField(game.FieldYear, field.TypeInt, value)
 		_node.Year = &value
 	}
-	if value, ok := gc.mutation.Publisher(); ok {
+	if value, ok := _c.mutation.Publisher(); ok {
 		_spec.SetField(game.FieldPublisher, field.TypeString, value)
 		_node.Publisher = value
 	}
-	if value, ok := gc.mutation.Developer(); ok {
+	if value, ok := _c.mutation.Developer(); ok {
 		_spec.SetField(game.FieldDeveloper, field.TypeString, value)
 		_node.Developer = value
 	}
-	if nodes := gc.mutation.FilesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.FilesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -257,7 +257,7 @@ func (gc *GameCreate) createSpec() (*Game, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := gc.mutation.ImagesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ImagesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -284,16 +284,16 @@ type GameCreateBulk struct {
 }
 
 // Save creates the Game entities in the database.
-func (gcb *GameCreateBulk) Save(ctx context.Context) ([]*Game, error) {
-	if gcb.err != nil {
-		return nil, gcb.err
+func (_c *GameCreateBulk) Save(ctx context.Context) ([]*Game, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(gcb.builders))
-	nodes := make([]*Game, len(gcb.builders))
-	mutators := make([]Mutator, len(gcb.builders))
-	for i := range gcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Game, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := gcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*GameMutation)
@@ -307,11 +307,11 @@ func (gcb *GameCreateBulk) Save(ctx context.Context) ([]*Game, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, gcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, gcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -331,7 +331,7 @@ func (gcb *GameCreateBulk) Save(ctx context.Context) ([]*Game, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, gcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -339,8 +339,8 @@ func (gcb *GameCreateBulk) Save(ctx context.Context) ([]*Game, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (gcb *GameCreateBulk) SaveX(ctx context.Context) []*Game {
-	v, err := gcb.Save(ctx)
+func (_c *GameCreateBulk) SaveX(ctx context.Context) []*Game {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -348,14 +348,14 @@ func (gcb *GameCreateBulk) SaveX(ctx context.Context) []*Game {
 }
 
 // Exec executes the query.
-func (gcb *GameCreateBulk) Exec(ctx context.Context) error {
-	_, err := gcb.Save(ctx)
+func (_c *GameCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gcb *GameCreateBulk) ExecX(ctx context.Context) {
-	if err := gcb.Exec(ctx); err != nil {
+func (_c *GameCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

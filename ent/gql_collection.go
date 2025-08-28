@@ -19,18 +19,18 @@ import (
 )
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (f *FileQuery) CollectFields(ctx context.Context, satisfies ...string) (*FileQuery, error) {
+func (_q *FileQuery) CollectFields(ctx context.Context, satisfies ...string) (*FileQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return f, nil
+		return _q, nil
 	}
-	if err := f.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return f, nil
+	return _q, nil
 }
 
-func (f *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -44,12 +44,12 @@ func (f *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&GameClient{config: f.config}).Query()
+				query = (&GameClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, gameImplementors)...); err != nil {
 				return err
 			}
-			f.withGame = query
+			_q.withGame = query
 		case "path":
 			if _, ok := fieldSeen[file.FieldPath]; !ok {
 				selectedFields = append(selectedFields, file.FieldPath)
@@ -122,7 +122,7 @@ func (f *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 		}
 	}
 	if !unknownSeen {
-		f.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -157,18 +157,18 @@ func newFilePaginateArgs(rv map[string]any) *filePaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (ga *GameQuery) CollectFields(ctx context.Context, satisfies ...string) (*GameQuery, error) {
+func (_q *GameQuery) CollectFields(ctx context.Context, satisfies ...string) (*GameQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return ga, nil
+		return _q, nil
 	}
-	if err := ga.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return ga, nil
+	return _q, nil
 }
 
-func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -182,7 +182,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&FileClient{config: ga.config}).Query()
+				query = (&FileClient{config: _q.config}).Query()
 			)
 			args := newFilePaginateArgs(fieldArgs(ctx, new(FileWhereInput), path...))
 			if err := validateFirstLast(args.first, args.last); err != nil {
@@ -200,7 +200,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
 				if hasPagination || ignoredEdges {
 					query := query.Clone()
-					ga.loadTotal = append(ga.loadTotal, func(ctx context.Context, nodes []*Game) error {
+					_q.loadTotal = append(_q.loadTotal, func(ctx context.Context, nodes []*Game) error {
 						ids := make([]driver.Value, len(nodes))
 						for i := range nodes {
 							ids[i] = nodes[i].ID
@@ -229,7 +229,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 						return nil
 					})
 				} else {
-					ga.loadTotal = append(ga.loadTotal, func(_ context.Context, nodes []*Game) error {
+					_q.loadTotal = append(_q.loadTotal, func(_ context.Context, nodes []*Game) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Files)
 							if nodes[i].Edges.totalCount[0] == nil {
@@ -263,7 +263,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			} else {
 				query = pager.applyOrder(query)
 			}
-			ga.WithNamedFiles(alias, func(wq *FileQuery) {
+			_q.WithNamedFiles(alias, func(wq *FileQuery) {
 				*wq = *query
 			})
 
@@ -271,7 +271,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ImageClient{config: ga.config}).Query()
+				query = (&ImageClient{config: _q.config}).Query()
 			)
 			args := newImagePaginateArgs(fieldArgs(ctx, new(ImageWhereInput), path...))
 			if err := validateFirstLast(args.first, args.last); err != nil {
@@ -289,7 +289,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
 				if hasPagination || ignoredEdges {
 					query := query.Clone()
-					ga.loadTotal = append(ga.loadTotal, func(ctx context.Context, nodes []*Game) error {
+					_q.loadTotal = append(_q.loadTotal, func(ctx context.Context, nodes []*Game) error {
 						ids := make([]driver.Value, len(nodes))
 						for i := range nodes {
 							ids[i] = nodes[i].ID
@@ -318,7 +318,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 						return nil
 					})
 				} else {
-					ga.loadTotal = append(ga.loadTotal, func(_ context.Context, nodes []*Game) error {
+					_q.loadTotal = append(_q.loadTotal, func(_ context.Context, nodes []*Game) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Images)
 							if nodes[i].Edges.totalCount[1] == nil {
@@ -352,7 +352,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			} else {
 				query = pager.applyOrder(query)
 			}
-			ga.WithNamedImages(alias, func(wq *ImageQuery) {
+			_q.WithNamedImages(alias, func(wq *ImageQuery) {
 				*wq = *query
 			})
 		case "slug":
@@ -392,7 +392,7 @@ func (ga *GameQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 		}
 	}
 	if !unknownSeen {
-		ga.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -427,18 +427,18 @@ func newGamePaginateArgs(rv map[string]any) *gamePaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (i *ImageQuery) CollectFields(ctx context.Context, satisfies ...string) (*ImageQuery, error) {
+func (_q *ImageQuery) CollectFields(ctx context.Context, satisfies ...string) (*ImageQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return i, nil
+		return _q, nil
 	}
-	if err := i.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return i, nil
+	return _q, nil
 }
 
-func (i *ImageQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *ImageQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -452,12 +452,12 @@ func (i *ImageQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&GameClient{config: i.config}).Query()
+				query = (&GameClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, gameImplementors)...); err != nil {
 				return err
 			}
-			i.withGame = query
+			_q.withGame = query
 		case "kind":
 			if _, ok := fieldSeen[image.FieldKind]; !ok {
 				selectedFields = append(selectedFields, image.FieldKind)
@@ -490,7 +490,7 @@ func (i *ImageQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 		}
 	}
 	if !unknownSeen {
-		i.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -525,18 +525,18 @@ func newImagePaginateArgs(rv map[string]any) *imagePaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (r *ReportQuery) CollectFields(ctx context.Context, satisfies ...string) (*ReportQuery, error) {
+func (_q *ReportQuery) CollectFields(ctx context.Context, satisfies ...string) (*ReportQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return r, nil
+		return _q, nil
 	}
-	if err := r.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return r, nil
+	return _q, nil
 }
 
-func (r *ReportQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *ReportQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -582,7 +582,7 @@ func (r *ReportQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 		}
 	}
 	if !unknownSeen {
-		r.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -617,18 +617,18 @@ func newReportPaginateArgs(rv map[string]any) *reportPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (ss *SiteSettingQuery) CollectFields(ctx context.Context, satisfies ...string) (*SiteSettingQuery, error) {
+func (_q *SiteSettingQuery) CollectFields(ctx context.Context, satisfies ...string) (*SiteSettingQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return ss, nil
+		return _q, nil
 	}
-	if err := ss.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return ss, nil
+	return _q, nil
 }
 
-func (ss *SiteSettingQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *SiteSettingQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -659,7 +659,7 @@ func (ss *SiteSettingQuery) collectField(ctx context.Context, oneNode bool, opCt
 		}
 	}
 	if !unknownSeen {
-		ss.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -694,18 +694,18 @@ func newSiteSettingPaginateArgs(rv map[string]any) *sitesettingPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (us *UserShadowQuery) CollectFields(ctx context.Context, satisfies ...string) (*UserShadowQuery, error) {
+func (_q *UserShadowQuery) CollectFields(ctx context.Context, satisfies ...string) (*UserShadowQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return us, nil
+		return _q, nil
 	}
-	if err := us.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return us, nil
+	return _q, nil
 }
 
-func (us *UserShadowQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *UserShadowQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -736,7 +736,7 @@ func (us *UserShadowQuery) collectField(ctx context.Context, oneNode bool, opCtx
 		}
 	}
 	if !unknownSeen {
-		us.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -795,7 +795,7 @@ func fieldArgs(ctx context.Context, whereInput any, path ...string) map[string]a
 func unmarshalArgs(ctx context.Context, whereInput any, args map[string]any) map[string]any {
 	for _, k := range []string{firstField, lastField} {
 		v, ok := args[k]
-		if !ok {
+		if !ok || v == nil {
 			continue
 		}
 		i, err := graphql.UnmarshalInt(v)

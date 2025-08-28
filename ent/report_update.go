@@ -22,120 +22,120 @@ type ReportUpdate struct {
 }
 
 // Where appends a list predicates to the ReportUpdate builder.
-func (ru *ReportUpdate) Where(ps ...predicate.Report) *ReportUpdate {
-	ru.mutation.Where(ps...)
-	return ru
+func (_u *ReportUpdate) Where(ps ...predicate.Report) *ReportUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetSubjectType sets the "subject_type" field.
-func (ru *ReportUpdate) SetSubjectType(s string) *ReportUpdate {
-	ru.mutation.SetSubjectType(s)
-	return ru
+func (_u *ReportUpdate) SetSubjectType(v string) *ReportUpdate {
+	_u.mutation.SetSubjectType(v)
+	return _u
 }
 
 // SetNillableSubjectType sets the "subject_type" field if the given value is not nil.
-func (ru *ReportUpdate) SetNillableSubjectType(s *string) *ReportUpdate {
-	if s != nil {
-		ru.SetSubjectType(*s)
+func (_u *ReportUpdate) SetNillableSubjectType(v *string) *ReportUpdate {
+	if v != nil {
+		_u.SetSubjectType(*v)
 	}
-	return ru
+	return _u
 }
 
 // SetSubjectID sets the "subject_id" field.
-func (ru *ReportUpdate) SetSubjectID(s string) *ReportUpdate {
-	ru.mutation.SetSubjectID(s)
-	return ru
+func (_u *ReportUpdate) SetSubjectID(v string) *ReportUpdate {
+	_u.mutation.SetSubjectID(v)
+	return _u
 }
 
 // SetNillableSubjectID sets the "subject_id" field if the given value is not nil.
-func (ru *ReportUpdate) SetNillableSubjectID(s *string) *ReportUpdate {
-	if s != nil {
-		ru.SetSubjectID(*s)
+func (_u *ReportUpdate) SetNillableSubjectID(v *string) *ReportUpdate {
+	if v != nil {
+		_u.SetSubjectID(*v)
 	}
-	return ru
+	return _u
 }
 
 // SetReporterID sets the "reporter_id" field.
-func (ru *ReportUpdate) SetReporterID(s string) *ReportUpdate {
-	ru.mutation.SetReporterID(s)
-	return ru
+func (_u *ReportUpdate) SetReporterID(v string) *ReportUpdate {
+	_u.mutation.SetReporterID(v)
+	return _u
 }
 
 // SetNillableReporterID sets the "reporter_id" field if the given value is not nil.
-func (ru *ReportUpdate) SetNillableReporterID(s *string) *ReportUpdate {
-	if s != nil {
-		ru.SetReporterID(*s)
+func (_u *ReportUpdate) SetNillableReporterID(v *string) *ReportUpdate {
+	if v != nil {
+		_u.SetReporterID(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearReporterID clears the value of the "reporter_id" field.
-func (ru *ReportUpdate) ClearReporterID() *ReportUpdate {
-	ru.mutation.ClearReporterID()
-	return ru
+func (_u *ReportUpdate) ClearReporterID() *ReportUpdate {
+	_u.mutation.ClearReporterID()
+	return _u
 }
 
 // SetReason sets the "reason" field.
-func (ru *ReportUpdate) SetReason(s string) *ReportUpdate {
-	ru.mutation.SetReason(s)
-	return ru
+func (_u *ReportUpdate) SetReason(v string) *ReportUpdate {
+	_u.mutation.SetReason(v)
+	return _u
 }
 
 // SetNillableReason sets the "reason" field if the given value is not nil.
-func (ru *ReportUpdate) SetNillableReason(s *string) *ReportUpdate {
-	if s != nil {
-		ru.SetReason(*s)
+func (_u *ReportUpdate) SetNillableReason(v *string) *ReportUpdate {
+	if v != nil {
+		_u.SetReason(*v)
 	}
-	return ru
+	return _u
 }
 
 // SetNote sets the "note" field.
-func (ru *ReportUpdate) SetNote(s string) *ReportUpdate {
-	ru.mutation.SetNote(s)
-	return ru
+func (_u *ReportUpdate) SetNote(v string) *ReportUpdate {
+	_u.mutation.SetNote(v)
+	return _u
 }
 
 // SetNillableNote sets the "note" field if the given value is not nil.
-func (ru *ReportUpdate) SetNillableNote(s *string) *ReportUpdate {
-	if s != nil {
-		ru.SetNote(*s)
+func (_u *ReportUpdate) SetNillableNote(v *string) *ReportUpdate {
+	if v != nil {
+		_u.SetNote(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearNote clears the value of the "note" field.
-func (ru *ReportUpdate) ClearNote() *ReportUpdate {
-	ru.mutation.ClearNote()
-	return ru
+func (_u *ReportUpdate) ClearNote() *ReportUpdate {
+	_u.mutation.ClearNote()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (ru *ReportUpdate) SetStatus(r report.Status) *ReportUpdate {
-	ru.mutation.SetStatus(r)
-	return ru
+func (_u *ReportUpdate) SetStatus(v report.Status) *ReportUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ru *ReportUpdate) SetNillableStatus(r *report.Status) *ReportUpdate {
-	if r != nil {
-		ru.SetStatus(*r)
+func (_u *ReportUpdate) SetNillableStatus(v *report.Status) *ReportUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return ru
+	return _u
 }
 
 // Mutation returns the ReportMutation object of the builder.
-func (ru *ReportUpdate) Mutation() *ReportMutation {
-	return ru.mutation
+func (_u *ReportUpdate) Mutation() *ReportMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ru *ReportUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, ru.sqlSave, ru.mutation, ru.hooks)
+func (_u *ReportUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ru *ReportUpdate) SaveX(ctx context.Context) int {
-	affected, err := ru.Save(ctx)
+func (_u *ReportUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -143,21 +143,21 @@ func (ru *ReportUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ru *ReportUpdate) Exec(ctx context.Context) error {
-	_, err := ru.Save(ctx)
+func (_u *ReportUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ru *ReportUpdate) ExecX(ctx context.Context) {
-	if err := ru.Exec(ctx); err != nil {
+func (_u *ReportUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ru *ReportUpdate) check() error {
-	if v, ok := ru.mutation.Status(); ok {
+func (_u *ReportUpdate) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := report.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Report.status": %w`, err)}
 		}
@@ -165,43 +165,43 @@ func (ru *ReportUpdate) check() error {
 	return nil
 }
 
-func (ru *ReportUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := ru.check(); err != nil {
-		return n, err
+func (_u *ReportUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(report.Table, report.Columns, sqlgraph.NewFieldSpec(report.FieldID, field.TypeString))
-	if ps := ru.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ru.mutation.SubjectType(); ok {
+	if value, ok := _u.mutation.SubjectType(); ok {
 		_spec.SetField(report.FieldSubjectType, field.TypeString, value)
 	}
-	if value, ok := ru.mutation.SubjectID(); ok {
+	if value, ok := _u.mutation.SubjectID(); ok {
 		_spec.SetField(report.FieldSubjectID, field.TypeString, value)
 	}
-	if value, ok := ru.mutation.ReporterID(); ok {
+	if value, ok := _u.mutation.ReporterID(); ok {
 		_spec.SetField(report.FieldReporterID, field.TypeString, value)
 	}
-	if ru.mutation.ReporterIDCleared() {
+	if _u.mutation.ReporterIDCleared() {
 		_spec.ClearField(report.FieldReporterID, field.TypeString)
 	}
-	if value, ok := ru.mutation.Reason(); ok {
+	if value, ok := _u.mutation.Reason(); ok {
 		_spec.SetField(report.FieldReason, field.TypeString, value)
 	}
-	if value, ok := ru.mutation.Note(); ok {
+	if value, ok := _u.mutation.Note(); ok {
 		_spec.SetField(report.FieldNote, field.TypeString, value)
 	}
-	if ru.mutation.NoteCleared() {
+	if _u.mutation.NoteCleared() {
 		_spec.ClearField(report.FieldNote, field.TypeString)
 	}
-	if value, ok := ru.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(report.FieldStatus, field.TypeEnum, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ru.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{report.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -209,8 +209,8 @@ func (ru *ReportUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	ru.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // ReportUpdateOne is the builder for updating a single Report entity.
@@ -222,127 +222,127 @@ type ReportUpdateOne struct {
 }
 
 // SetSubjectType sets the "subject_type" field.
-func (ruo *ReportUpdateOne) SetSubjectType(s string) *ReportUpdateOne {
-	ruo.mutation.SetSubjectType(s)
-	return ruo
+func (_u *ReportUpdateOne) SetSubjectType(v string) *ReportUpdateOne {
+	_u.mutation.SetSubjectType(v)
+	return _u
 }
 
 // SetNillableSubjectType sets the "subject_type" field if the given value is not nil.
-func (ruo *ReportUpdateOne) SetNillableSubjectType(s *string) *ReportUpdateOne {
-	if s != nil {
-		ruo.SetSubjectType(*s)
+func (_u *ReportUpdateOne) SetNillableSubjectType(v *string) *ReportUpdateOne {
+	if v != nil {
+		_u.SetSubjectType(*v)
 	}
-	return ruo
+	return _u
 }
 
 // SetSubjectID sets the "subject_id" field.
-func (ruo *ReportUpdateOne) SetSubjectID(s string) *ReportUpdateOne {
-	ruo.mutation.SetSubjectID(s)
-	return ruo
+func (_u *ReportUpdateOne) SetSubjectID(v string) *ReportUpdateOne {
+	_u.mutation.SetSubjectID(v)
+	return _u
 }
 
 // SetNillableSubjectID sets the "subject_id" field if the given value is not nil.
-func (ruo *ReportUpdateOne) SetNillableSubjectID(s *string) *ReportUpdateOne {
-	if s != nil {
-		ruo.SetSubjectID(*s)
+func (_u *ReportUpdateOne) SetNillableSubjectID(v *string) *ReportUpdateOne {
+	if v != nil {
+		_u.SetSubjectID(*v)
 	}
-	return ruo
+	return _u
 }
 
 // SetReporterID sets the "reporter_id" field.
-func (ruo *ReportUpdateOne) SetReporterID(s string) *ReportUpdateOne {
-	ruo.mutation.SetReporterID(s)
-	return ruo
+func (_u *ReportUpdateOne) SetReporterID(v string) *ReportUpdateOne {
+	_u.mutation.SetReporterID(v)
+	return _u
 }
 
 // SetNillableReporterID sets the "reporter_id" field if the given value is not nil.
-func (ruo *ReportUpdateOne) SetNillableReporterID(s *string) *ReportUpdateOne {
-	if s != nil {
-		ruo.SetReporterID(*s)
+func (_u *ReportUpdateOne) SetNillableReporterID(v *string) *ReportUpdateOne {
+	if v != nil {
+		_u.SetReporterID(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearReporterID clears the value of the "reporter_id" field.
-func (ruo *ReportUpdateOne) ClearReporterID() *ReportUpdateOne {
-	ruo.mutation.ClearReporterID()
-	return ruo
+func (_u *ReportUpdateOne) ClearReporterID() *ReportUpdateOne {
+	_u.mutation.ClearReporterID()
+	return _u
 }
 
 // SetReason sets the "reason" field.
-func (ruo *ReportUpdateOne) SetReason(s string) *ReportUpdateOne {
-	ruo.mutation.SetReason(s)
-	return ruo
+func (_u *ReportUpdateOne) SetReason(v string) *ReportUpdateOne {
+	_u.mutation.SetReason(v)
+	return _u
 }
 
 // SetNillableReason sets the "reason" field if the given value is not nil.
-func (ruo *ReportUpdateOne) SetNillableReason(s *string) *ReportUpdateOne {
-	if s != nil {
-		ruo.SetReason(*s)
+func (_u *ReportUpdateOne) SetNillableReason(v *string) *ReportUpdateOne {
+	if v != nil {
+		_u.SetReason(*v)
 	}
-	return ruo
+	return _u
 }
 
 // SetNote sets the "note" field.
-func (ruo *ReportUpdateOne) SetNote(s string) *ReportUpdateOne {
-	ruo.mutation.SetNote(s)
-	return ruo
+func (_u *ReportUpdateOne) SetNote(v string) *ReportUpdateOne {
+	_u.mutation.SetNote(v)
+	return _u
 }
 
 // SetNillableNote sets the "note" field if the given value is not nil.
-func (ruo *ReportUpdateOne) SetNillableNote(s *string) *ReportUpdateOne {
-	if s != nil {
-		ruo.SetNote(*s)
+func (_u *ReportUpdateOne) SetNillableNote(v *string) *ReportUpdateOne {
+	if v != nil {
+		_u.SetNote(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearNote clears the value of the "note" field.
-func (ruo *ReportUpdateOne) ClearNote() *ReportUpdateOne {
-	ruo.mutation.ClearNote()
-	return ruo
+func (_u *ReportUpdateOne) ClearNote() *ReportUpdateOne {
+	_u.mutation.ClearNote()
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (ruo *ReportUpdateOne) SetStatus(r report.Status) *ReportUpdateOne {
-	ruo.mutation.SetStatus(r)
-	return ruo
+func (_u *ReportUpdateOne) SetStatus(v report.Status) *ReportUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ruo *ReportUpdateOne) SetNillableStatus(r *report.Status) *ReportUpdateOne {
-	if r != nil {
-		ruo.SetStatus(*r)
+func (_u *ReportUpdateOne) SetNillableStatus(v *report.Status) *ReportUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return ruo
+	return _u
 }
 
 // Mutation returns the ReportMutation object of the builder.
-func (ruo *ReportUpdateOne) Mutation() *ReportMutation {
-	return ruo.mutation
+func (_u *ReportUpdateOne) Mutation() *ReportMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the ReportUpdate builder.
-func (ruo *ReportUpdateOne) Where(ps ...predicate.Report) *ReportUpdateOne {
-	ruo.mutation.Where(ps...)
-	return ruo
+func (_u *ReportUpdateOne) Where(ps ...predicate.Report) *ReportUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ruo *ReportUpdateOne) Select(field string, fields ...string) *ReportUpdateOne {
-	ruo.fields = append([]string{field}, fields...)
-	return ruo
+func (_u *ReportUpdateOne) Select(field string, fields ...string) *ReportUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Report entity.
-func (ruo *ReportUpdateOne) Save(ctx context.Context) (*Report, error) {
-	return withHooks(ctx, ruo.sqlSave, ruo.mutation, ruo.hooks)
+func (_u *ReportUpdateOne) Save(ctx context.Context) (*Report, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ruo *ReportUpdateOne) SaveX(ctx context.Context) *Report {
-	node, err := ruo.Save(ctx)
+func (_u *ReportUpdateOne) SaveX(ctx context.Context) *Report {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -350,21 +350,21 @@ func (ruo *ReportUpdateOne) SaveX(ctx context.Context) *Report {
 }
 
 // Exec executes the query on the entity.
-func (ruo *ReportUpdateOne) Exec(ctx context.Context) error {
-	_, err := ruo.Save(ctx)
+func (_u *ReportUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ruo *ReportUpdateOne) ExecX(ctx context.Context) {
-	if err := ruo.Exec(ctx); err != nil {
+func (_u *ReportUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ruo *ReportUpdateOne) check() error {
-	if v, ok := ruo.mutation.Status(); ok {
+func (_u *ReportUpdateOne) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := report.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Report.status": %w`, err)}
 		}
@@ -372,17 +372,17 @@ func (ruo *ReportUpdateOne) check() error {
 	return nil
 }
 
-func (ruo *ReportUpdateOne) sqlSave(ctx context.Context) (_node *Report, err error) {
-	if err := ruo.check(); err != nil {
+func (_u *ReportUpdateOne) sqlSave(ctx context.Context) (_node *Report, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(report.Table, report.Columns, sqlgraph.NewFieldSpec(report.FieldID, field.TypeString))
-	id, ok := ruo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Report.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ruo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, report.FieldID)
 		for _, f := range fields {
@@ -394,41 +394,41 @@ func (ruo *ReportUpdateOne) sqlSave(ctx context.Context) (_node *Report, err err
 			}
 		}
 	}
-	if ps := ruo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ruo.mutation.SubjectType(); ok {
+	if value, ok := _u.mutation.SubjectType(); ok {
 		_spec.SetField(report.FieldSubjectType, field.TypeString, value)
 	}
-	if value, ok := ruo.mutation.SubjectID(); ok {
+	if value, ok := _u.mutation.SubjectID(); ok {
 		_spec.SetField(report.FieldSubjectID, field.TypeString, value)
 	}
-	if value, ok := ruo.mutation.ReporterID(); ok {
+	if value, ok := _u.mutation.ReporterID(); ok {
 		_spec.SetField(report.FieldReporterID, field.TypeString, value)
 	}
-	if ruo.mutation.ReporterIDCleared() {
+	if _u.mutation.ReporterIDCleared() {
 		_spec.ClearField(report.FieldReporterID, field.TypeString)
 	}
-	if value, ok := ruo.mutation.Reason(); ok {
+	if value, ok := _u.mutation.Reason(); ok {
 		_spec.SetField(report.FieldReason, field.TypeString, value)
 	}
-	if value, ok := ruo.mutation.Note(); ok {
+	if value, ok := _u.mutation.Note(); ok {
 		_spec.SetField(report.FieldNote, field.TypeString, value)
 	}
-	if ruo.mutation.NoteCleared() {
+	if _u.mutation.NoteCleared() {
 		_spec.ClearField(report.FieldNote, field.TypeString)
 	}
-	if value, ok := ruo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(report.FieldStatus, field.TypeEnum, value)
 	}
-	_node = &Report{config: ruo.config}
+	_node = &Report{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ruo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{report.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -436,6 +436,6 @@ func (ruo *ReportUpdateOne) sqlSave(ctx context.Context) (_node *Report, err err
 		}
 		return nil, err
 	}
-	ruo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

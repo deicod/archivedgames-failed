@@ -23,132 +23,132 @@ type ImageUpdate struct {
 }
 
 // Where appends a list predicates to the ImageUpdate builder.
-func (iu *ImageUpdate) Where(ps ...predicate.Image) *ImageUpdate {
-	iu.mutation.Where(ps...)
-	return iu
+func (_u *ImageUpdate) Where(ps ...predicate.Image) *ImageUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetKind sets the "kind" field.
-func (iu *ImageUpdate) SetKind(i image.Kind) *ImageUpdate {
-	iu.mutation.SetKind(i)
-	return iu
+func (_u *ImageUpdate) SetKind(v image.Kind) *ImageUpdate {
+	_u.mutation.SetKind(v)
+	return _u
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (iu *ImageUpdate) SetNillableKind(i *image.Kind) *ImageUpdate {
-	if i != nil {
-		iu.SetKind(*i)
+func (_u *ImageUpdate) SetNillableKind(v *image.Kind) *ImageUpdate {
+	if v != nil {
+		_u.SetKind(*v)
 	}
-	return iu
+	return _u
 }
 
 // SetPosition sets the "position" field.
-func (iu *ImageUpdate) SetPosition(i int) *ImageUpdate {
-	iu.mutation.ResetPosition()
-	iu.mutation.SetPosition(i)
-	return iu
+func (_u *ImageUpdate) SetPosition(v int) *ImageUpdate {
+	_u.mutation.ResetPosition()
+	_u.mutation.SetPosition(v)
+	return _u
 }
 
 // SetNillablePosition sets the "position" field if the given value is not nil.
-func (iu *ImageUpdate) SetNillablePosition(i *int) *ImageUpdate {
-	if i != nil {
-		iu.SetPosition(*i)
+func (_u *ImageUpdate) SetNillablePosition(v *int) *ImageUpdate {
+	if v != nil {
+		_u.SetPosition(*v)
 	}
-	return iu
+	return _u
 }
 
-// AddPosition adds i to the "position" field.
-func (iu *ImageUpdate) AddPosition(i int) *ImageUpdate {
-	iu.mutation.AddPosition(i)
-	return iu
+// AddPosition adds value to the "position" field.
+func (_u *ImageUpdate) AddPosition(v int) *ImageUpdate {
+	_u.mutation.AddPosition(v)
+	return _u
 }
 
 // SetS3Key sets the "s3_key" field.
-func (iu *ImageUpdate) SetS3Key(s string) *ImageUpdate {
-	iu.mutation.SetS3Key(s)
-	return iu
+func (_u *ImageUpdate) SetS3Key(v string) *ImageUpdate {
+	_u.mutation.SetS3Key(v)
+	return _u
 }
 
 // SetNillableS3Key sets the "s3_key" field if the given value is not nil.
-func (iu *ImageUpdate) SetNillableS3Key(s *string) *ImageUpdate {
-	if s != nil {
-		iu.SetS3Key(*s)
+func (_u *ImageUpdate) SetNillableS3Key(v *string) *ImageUpdate {
+	if v != nil {
+		_u.SetS3Key(*v)
 	}
-	return iu
+	return _u
 }
 
 // SetWidth sets the "width" field.
-func (iu *ImageUpdate) SetWidth(i int) *ImageUpdate {
-	iu.mutation.ResetWidth()
-	iu.mutation.SetWidth(i)
-	return iu
+func (_u *ImageUpdate) SetWidth(v int) *ImageUpdate {
+	_u.mutation.ResetWidth()
+	_u.mutation.SetWidth(v)
+	return _u
 }
 
 // SetNillableWidth sets the "width" field if the given value is not nil.
-func (iu *ImageUpdate) SetNillableWidth(i *int) *ImageUpdate {
-	if i != nil {
-		iu.SetWidth(*i)
+func (_u *ImageUpdate) SetNillableWidth(v *int) *ImageUpdate {
+	if v != nil {
+		_u.SetWidth(*v)
 	}
-	return iu
+	return _u
 }
 
-// AddWidth adds i to the "width" field.
-func (iu *ImageUpdate) AddWidth(i int) *ImageUpdate {
-	iu.mutation.AddWidth(i)
-	return iu
+// AddWidth adds value to the "width" field.
+func (_u *ImageUpdate) AddWidth(v int) *ImageUpdate {
+	_u.mutation.AddWidth(v)
+	return _u
 }
 
 // SetHeight sets the "height" field.
-func (iu *ImageUpdate) SetHeight(i int) *ImageUpdate {
-	iu.mutation.ResetHeight()
-	iu.mutation.SetHeight(i)
-	return iu
+func (_u *ImageUpdate) SetHeight(v int) *ImageUpdate {
+	_u.mutation.ResetHeight()
+	_u.mutation.SetHeight(v)
+	return _u
 }
 
 // SetNillableHeight sets the "height" field if the given value is not nil.
-func (iu *ImageUpdate) SetNillableHeight(i *int) *ImageUpdate {
-	if i != nil {
-		iu.SetHeight(*i)
+func (_u *ImageUpdate) SetNillableHeight(v *int) *ImageUpdate {
+	if v != nil {
+		_u.SetHeight(*v)
 	}
-	return iu
+	return _u
 }
 
-// AddHeight adds i to the "height" field.
-func (iu *ImageUpdate) AddHeight(i int) *ImageUpdate {
-	iu.mutation.AddHeight(i)
-	return iu
+// AddHeight adds value to the "height" field.
+func (_u *ImageUpdate) AddHeight(v int) *ImageUpdate {
+	_u.mutation.AddHeight(v)
+	return _u
 }
 
 // SetGameID sets the "game" edge to the Game entity by ID.
-func (iu *ImageUpdate) SetGameID(id string) *ImageUpdate {
-	iu.mutation.SetGameID(id)
-	return iu
+func (_u *ImageUpdate) SetGameID(id string) *ImageUpdate {
+	_u.mutation.SetGameID(id)
+	return _u
 }
 
 // SetGame sets the "game" edge to the Game entity.
-func (iu *ImageUpdate) SetGame(g *Game) *ImageUpdate {
-	return iu.SetGameID(g.ID)
+func (_u *ImageUpdate) SetGame(v *Game) *ImageUpdate {
+	return _u.SetGameID(v.ID)
 }
 
 // Mutation returns the ImageMutation object of the builder.
-func (iu *ImageUpdate) Mutation() *ImageMutation {
-	return iu.mutation
+func (_u *ImageUpdate) Mutation() *ImageMutation {
+	return _u.mutation
 }
 
 // ClearGame clears the "game" edge to the Game entity.
-func (iu *ImageUpdate) ClearGame() *ImageUpdate {
-	iu.mutation.ClearGame()
-	return iu
+func (_u *ImageUpdate) ClearGame() *ImageUpdate {
+	_u.mutation.ClearGame()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (iu *ImageUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, iu.sqlSave, iu.mutation, iu.hooks)
+func (_u *ImageUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (iu *ImageUpdate) SaveX(ctx context.Context) int {
-	affected, err := iu.Save(ctx)
+func (_u *ImageUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -156,68 +156,68 @@ func (iu *ImageUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (iu *ImageUpdate) Exec(ctx context.Context) error {
-	_, err := iu.Save(ctx)
+func (_u *ImageUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iu *ImageUpdate) ExecX(ctx context.Context) {
-	if err := iu.Exec(ctx); err != nil {
+func (_u *ImageUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (iu *ImageUpdate) check() error {
-	if v, ok := iu.mutation.Kind(); ok {
+func (_u *ImageUpdate) check() error {
+	if v, ok := _u.mutation.Kind(); ok {
 		if err := image.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "Image.kind": %w`, err)}
 		}
 	}
-	if iu.mutation.GameCleared() && len(iu.mutation.GameIDs()) > 0 {
+	if _u.mutation.GameCleared() && len(_u.mutation.GameIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Image.game"`)
 	}
 	return nil
 }
 
-func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := iu.check(); err != nil {
-		return n, err
+func (_u *ImageUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(image.Table, image.Columns, sqlgraph.NewFieldSpec(image.FieldID, field.TypeString))
-	if ps := iu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := iu.mutation.Kind(); ok {
+	if value, ok := _u.mutation.Kind(); ok {
 		_spec.SetField(image.FieldKind, field.TypeEnum, value)
 	}
-	if value, ok := iu.mutation.Position(); ok {
+	if value, ok := _u.mutation.Position(); ok {
 		_spec.SetField(image.FieldPosition, field.TypeInt, value)
 	}
-	if value, ok := iu.mutation.AddedPosition(); ok {
+	if value, ok := _u.mutation.AddedPosition(); ok {
 		_spec.AddField(image.FieldPosition, field.TypeInt, value)
 	}
-	if value, ok := iu.mutation.S3Key(); ok {
+	if value, ok := _u.mutation.S3Key(); ok {
 		_spec.SetField(image.FieldS3Key, field.TypeString, value)
 	}
-	if value, ok := iu.mutation.Width(); ok {
+	if value, ok := _u.mutation.Width(); ok {
 		_spec.SetField(image.FieldWidth, field.TypeInt, value)
 	}
-	if value, ok := iu.mutation.AddedWidth(); ok {
+	if value, ok := _u.mutation.AddedWidth(); ok {
 		_spec.AddField(image.FieldWidth, field.TypeInt, value)
 	}
-	if value, ok := iu.mutation.Height(); ok {
+	if value, ok := _u.mutation.Height(); ok {
 		_spec.SetField(image.FieldHeight, field.TypeInt, value)
 	}
-	if value, ok := iu.mutation.AddedHeight(); ok {
+	if value, ok := _u.mutation.AddedHeight(); ok {
 		_spec.AddField(image.FieldHeight, field.TypeInt, value)
 	}
-	if iu.mutation.GameCleared() {
+	if _u.mutation.GameCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -230,7 +230,7 @@ func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := iu.mutation.GameIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.GameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -246,7 +246,7 @@ func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, iu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{image.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -254,8 +254,8 @@ func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	iu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // ImageUpdateOne is the builder for updating a single Image entity.
@@ -267,139 +267,139 @@ type ImageUpdateOne struct {
 }
 
 // SetKind sets the "kind" field.
-func (iuo *ImageUpdateOne) SetKind(i image.Kind) *ImageUpdateOne {
-	iuo.mutation.SetKind(i)
-	return iuo
+func (_u *ImageUpdateOne) SetKind(v image.Kind) *ImageUpdateOne {
+	_u.mutation.SetKind(v)
+	return _u
 }
 
 // SetNillableKind sets the "kind" field if the given value is not nil.
-func (iuo *ImageUpdateOne) SetNillableKind(i *image.Kind) *ImageUpdateOne {
-	if i != nil {
-		iuo.SetKind(*i)
+func (_u *ImageUpdateOne) SetNillableKind(v *image.Kind) *ImageUpdateOne {
+	if v != nil {
+		_u.SetKind(*v)
 	}
-	return iuo
+	return _u
 }
 
 // SetPosition sets the "position" field.
-func (iuo *ImageUpdateOne) SetPosition(i int) *ImageUpdateOne {
-	iuo.mutation.ResetPosition()
-	iuo.mutation.SetPosition(i)
-	return iuo
+func (_u *ImageUpdateOne) SetPosition(v int) *ImageUpdateOne {
+	_u.mutation.ResetPosition()
+	_u.mutation.SetPosition(v)
+	return _u
 }
 
 // SetNillablePosition sets the "position" field if the given value is not nil.
-func (iuo *ImageUpdateOne) SetNillablePosition(i *int) *ImageUpdateOne {
-	if i != nil {
-		iuo.SetPosition(*i)
+func (_u *ImageUpdateOne) SetNillablePosition(v *int) *ImageUpdateOne {
+	if v != nil {
+		_u.SetPosition(*v)
 	}
-	return iuo
+	return _u
 }
 
-// AddPosition adds i to the "position" field.
-func (iuo *ImageUpdateOne) AddPosition(i int) *ImageUpdateOne {
-	iuo.mutation.AddPosition(i)
-	return iuo
+// AddPosition adds value to the "position" field.
+func (_u *ImageUpdateOne) AddPosition(v int) *ImageUpdateOne {
+	_u.mutation.AddPosition(v)
+	return _u
 }
 
 // SetS3Key sets the "s3_key" field.
-func (iuo *ImageUpdateOne) SetS3Key(s string) *ImageUpdateOne {
-	iuo.mutation.SetS3Key(s)
-	return iuo
+func (_u *ImageUpdateOne) SetS3Key(v string) *ImageUpdateOne {
+	_u.mutation.SetS3Key(v)
+	return _u
 }
 
 // SetNillableS3Key sets the "s3_key" field if the given value is not nil.
-func (iuo *ImageUpdateOne) SetNillableS3Key(s *string) *ImageUpdateOne {
-	if s != nil {
-		iuo.SetS3Key(*s)
+func (_u *ImageUpdateOne) SetNillableS3Key(v *string) *ImageUpdateOne {
+	if v != nil {
+		_u.SetS3Key(*v)
 	}
-	return iuo
+	return _u
 }
 
 // SetWidth sets the "width" field.
-func (iuo *ImageUpdateOne) SetWidth(i int) *ImageUpdateOne {
-	iuo.mutation.ResetWidth()
-	iuo.mutation.SetWidth(i)
-	return iuo
+func (_u *ImageUpdateOne) SetWidth(v int) *ImageUpdateOne {
+	_u.mutation.ResetWidth()
+	_u.mutation.SetWidth(v)
+	return _u
 }
 
 // SetNillableWidth sets the "width" field if the given value is not nil.
-func (iuo *ImageUpdateOne) SetNillableWidth(i *int) *ImageUpdateOne {
-	if i != nil {
-		iuo.SetWidth(*i)
+func (_u *ImageUpdateOne) SetNillableWidth(v *int) *ImageUpdateOne {
+	if v != nil {
+		_u.SetWidth(*v)
 	}
-	return iuo
+	return _u
 }
 
-// AddWidth adds i to the "width" field.
-func (iuo *ImageUpdateOne) AddWidth(i int) *ImageUpdateOne {
-	iuo.mutation.AddWidth(i)
-	return iuo
+// AddWidth adds value to the "width" field.
+func (_u *ImageUpdateOne) AddWidth(v int) *ImageUpdateOne {
+	_u.mutation.AddWidth(v)
+	return _u
 }
 
 // SetHeight sets the "height" field.
-func (iuo *ImageUpdateOne) SetHeight(i int) *ImageUpdateOne {
-	iuo.mutation.ResetHeight()
-	iuo.mutation.SetHeight(i)
-	return iuo
+func (_u *ImageUpdateOne) SetHeight(v int) *ImageUpdateOne {
+	_u.mutation.ResetHeight()
+	_u.mutation.SetHeight(v)
+	return _u
 }
 
 // SetNillableHeight sets the "height" field if the given value is not nil.
-func (iuo *ImageUpdateOne) SetNillableHeight(i *int) *ImageUpdateOne {
-	if i != nil {
-		iuo.SetHeight(*i)
+func (_u *ImageUpdateOne) SetNillableHeight(v *int) *ImageUpdateOne {
+	if v != nil {
+		_u.SetHeight(*v)
 	}
-	return iuo
+	return _u
 }
 
-// AddHeight adds i to the "height" field.
-func (iuo *ImageUpdateOne) AddHeight(i int) *ImageUpdateOne {
-	iuo.mutation.AddHeight(i)
-	return iuo
+// AddHeight adds value to the "height" field.
+func (_u *ImageUpdateOne) AddHeight(v int) *ImageUpdateOne {
+	_u.mutation.AddHeight(v)
+	return _u
 }
 
 // SetGameID sets the "game" edge to the Game entity by ID.
-func (iuo *ImageUpdateOne) SetGameID(id string) *ImageUpdateOne {
-	iuo.mutation.SetGameID(id)
-	return iuo
+func (_u *ImageUpdateOne) SetGameID(id string) *ImageUpdateOne {
+	_u.mutation.SetGameID(id)
+	return _u
 }
 
 // SetGame sets the "game" edge to the Game entity.
-func (iuo *ImageUpdateOne) SetGame(g *Game) *ImageUpdateOne {
-	return iuo.SetGameID(g.ID)
+func (_u *ImageUpdateOne) SetGame(v *Game) *ImageUpdateOne {
+	return _u.SetGameID(v.ID)
 }
 
 // Mutation returns the ImageMutation object of the builder.
-func (iuo *ImageUpdateOne) Mutation() *ImageMutation {
-	return iuo.mutation
+func (_u *ImageUpdateOne) Mutation() *ImageMutation {
+	return _u.mutation
 }
 
 // ClearGame clears the "game" edge to the Game entity.
-func (iuo *ImageUpdateOne) ClearGame() *ImageUpdateOne {
-	iuo.mutation.ClearGame()
-	return iuo
+func (_u *ImageUpdateOne) ClearGame() *ImageUpdateOne {
+	_u.mutation.ClearGame()
+	return _u
 }
 
 // Where appends a list predicates to the ImageUpdate builder.
-func (iuo *ImageUpdateOne) Where(ps ...predicate.Image) *ImageUpdateOne {
-	iuo.mutation.Where(ps...)
-	return iuo
+func (_u *ImageUpdateOne) Where(ps ...predicate.Image) *ImageUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (iuo *ImageUpdateOne) Select(field string, fields ...string) *ImageUpdateOne {
-	iuo.fields = append([]string{field}, fields...)
-	return iuo
+func (_u *ImageUpdateOne) Select(field string, fields ...string) *ImageUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Image entity.
-func (iuo *ImageUpdateOne) Save(ctx context.Context) (*Image, error) {
-	return withHooks(ctx, iuo.sqlSave, iuo.mutation, iuo.hooks)
+func (_u *ImageUpdateOne) Save(ctx context.Context) (*Image, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (iuo *ImageUpdateOne) SaveX(ctx context.Context) *Image {
-	node, err := iuo.Save(ctx)
+func (_u *ImageUpdateOne) SaveX(ctx context.Context) *Image {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -407,42 +407,42 @@ func (iuo *ImageUpdateOne) SaveX(ctx context.Context) *Image {
 }
 
 // Exec executes the query on the entity.
-func (iuo *ImageUpdateOne) Exec(ctx context.Context) error {
-	_, err := iuo.Save(ctx)
+func (_u *ImageUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iuo *ImageUpdateOne) ExecX(ctx context.Context) {
-	if err := iuo.Exec(ctx); err != nil {
+func (_u *ImageUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (iuo *ImageUpdateOne) check() error {
-	if v, ok := iuo.mutation.Kind(); ok {
+func (_u *ImageUpdateOne) check() error {
+	if v, ok := _u.mutation.Kind(); ok {
 		if err := image.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "Image.kind": %w`, err)}
 		}
 	}
-	if iuo.mutation.GameCleared() && len(iuo.mutation.GameIDs()) > 0 {
+	if _u.mutation.GameCleared() && len(_u.mutation.GameIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Image.game"`)
 	}
 	return nil
 }
 
-func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error) {
-	if err := iuo.check(); err != nil {
+func (_u *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(image.Table, image.Columns, sqlgraph.NewFieldSpec(image.FieldID, field.TypeString))
-	id, ok := iuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Image.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := iuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, image.FieldID)
 		for _, f := range fields {
@@ -454,38 +454,38 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 			}
 		}
 	}
-	if ps := iuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := iuo.mutation.Kind(); ok {
+	if value, ok := _u.mutation.Kind(); ok {
 		_spec.SetField(image.FieldKind, field.TypeEnum, value)
 	}
-	if value, ok := iuo.mutation.Position(); ok {
+	if value, ok := _u.mutation.Position(); ok {
 		_spec.SetField(image.FieldPosition, field.TypeInt, value)
 	}
-	if value, ok := iuo.mutation.AddedPosition(); ok {
+	if value, ok := _u.mutation.AddedPosition(); ok {
 		_spec.AddField(image.FieldPosition, field.TypeInt, value)
 	}
-	if value, ok := iuo.mutation.S3Key(); ok {
+	if value, ok := _u.mutation.S3Key(); ok {
 		_spec.SetField(image.FieldS3Key, field.TypeString, value)
 	}
-	if value, ok := iuo.mutation.Width(); ok {
+	if value, ok := _u.mutation.Width(); ok {
 		_spec.SetField(image.FieldWidth, field.TypeInt, value)
 	}
-	if value, ok := iuo.mutation.AddedWidth(); ok {
+	if value, ok := _u.mutation.AddedWidth(); ok {
 		_spec.AddField(image.FieldWidth, field.TypeInt, value)
 	}
-	if value, ok := iuo.mutation.Height(); ok {
+	if value, ok := _u.mutation.Height(); ok {
 		_spec.SetField(image.FieldHeight, field.TypeInt, value)
 	}
-	if value, ok := iuo.mutation.AddedHeight(); ok {
+	if value, ok := _u.mutation.AddedHeight(); ok {
 		_spec.AddField(image.FieldHeight, field.TypeInt, value)
 	}
-	if iuo.mutation.GameCleared() {
+	if _u.mutation.GameCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -498,7 +498,7 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := iuo.mutation.GameIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.GameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -514,10 +514,10 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Image{config: iuo.config}
+	_node = &Image{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, iuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{image.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -525,6 +525,6 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 		}
 		return nil, err
 	}
-	iuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

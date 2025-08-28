@@ -86,7 +86,7 @@ func (*Game) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Game fields.
-func (ga *Game) assignValues(columns []string, values []any) error {
+func (_m *Game) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -96,47 +96,47 @@ func (ga *Game) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				ga.ID = value.String
+				_m.ID = value.String
 			}
 		case game.FieldSlug:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field slug", values[i])
 			} else if value.Valid {
-				ga.Slug = value.String
+				_m.Slug = value.String
 			}
 		case game.FieldPlatform:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field platform", values[i])
 			} else if value.Valid {
-				ga.Platform = game.Platform(value.String)
+				_m.Platform = game.Platform(value.String)
 			}
 		case game.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
-				ga.Title = value.String
+				_m.Title = value.String
 			}
 		case game.FieldYear:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field year", values[i])
 			} else if value.Valid {
-				ga.Year = new(int)
-				*ga.Year = int(value.Int64)
+				_m.Year = new(int)
+				*_m.Year = int(value.Int64)
 			}
 		case game.FieldPublisher:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field publisher", values[i])
 			} else if value.Valid {
-				ga.Publisher = value.String
+				_m.Publisher = value.String
 			}
 		case game.FieldDeveloper:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field developer", values[i])
 			} else if value.Valid {
-				ga.Developer = value.String
+				_m.Developer = value.String
 			}
 		default:
-			ga.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -144,111 +144,111 @@ func (ga *Game) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Game.
 // This includes values selected through modifiers, order, etc.
-func (ga *Game) Value(name string) (ent.Value, error) {
-	return ga.selectValues.Get(name)
+func (_m *Game) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryFiles queries the "files" edge of the Game entity.
-func (ga *Game) QueryFiles() *FileQuery {
-	return NewGameClient(ga.config).QueryFiles(ga)
+func (_m *Game) QueryFiles() *FileQuery {
+	return NewGameClient(_m.config).QueryFiles(_m)
 }
 
 // QueryImages queries the "images" edge of the Game entity.
-func (ga *Game) QueryImages() *ImageQuery {
-	return NewGameClient(ga.config).QueryImages(ga)
+func (_m *Game) QueryImages() *ImageQuery {
+	return NewGameClient(_m.config).QueryImages(_m)
 }
 
 // Update returns a builder for updating this Game.
 // Note that you need to call Game.Unwrap() before calling this method if this Game
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ga *Game) Update() *GameUpdateOne {
-	return NewGameClient(ga.config).UpdateOne(ga)
+func (_m *Game) Update() *GameUpdateOne {
+	return NewGameClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Game entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ga *Game) Unwrap() *Game {
-	_tx, ok := ga.config.driver.(*txDriver)
+func (_m *Game) Unwrap() *Game {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Game is not a transactional entity")
 	}
-	ga.config.driver = _tx.drv
-	return ga
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ga *Game) String() string {
+func (_m *Game) String() string {
 	var builder strings.Builder
 	builder.WriteString("Game(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ga.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("slug=")
-	builder.WriteString(ga.Slug)
+	builder.WriteString(_m.Slug)
 	builder.WriteString(", ")
 	builder.WriteString("platform=")
-	builder.WriteString(fmt.Sprintf("%v", ga.Platform))
+	builder.WriteString(fmt.Sprintf("%v", _m.Platform))
 	builder.WriteString(", ")
 	builder.WriteString("title=")
-	builder.WriteString(ga.Title)
+	builder.WriteString(_m.Title)
 	builder.WriteString(", ")
-	if v := ga.Year; v != nil {
+	if v := _m.Year; v != nil {
 		builder.WriteString("year=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
 	builder.WriteString("publisher=")
-	builder.WriteString(ga.Publisher)
+	builder.WriteString(_m.Publisher)
 	builder.WriteString(", ")
 	builder.WriteString("developer=")
-	builder.WriteString(ga.Developer)
+	builder.WriteString(_m.Developer)
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedFiles returns the Files named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (ga *Game) NamedFiles(name string) ([]*File, error) {
-	if ga.Edges.namedFiles == nil {
+func (_m *Game) NamedFiles(name string) ([]*File, error) {
+	if _m.Edges.namedFiles == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := ga.Edges.namedFiles[name]
+	nodes, ok := _m.Edges.namedFiles[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (ga *Game) appendNamedFiles(name string, edges ...*File) {
-	if ga.Edges.namedFiles == nil {
-		ga.Edges.namedFiles = make(map[string][]*File)
+func (_m *Game) appendNamedFiles(name string, edges ...*File) {
+	if _m.Edges.namedFiles == nil {
+		_m.Edges.namedFiles = make(map[string][]*File)
 	}
 	if len(edges) == 0 {
-		ga.Edges.namedFiles[name] = []*File{}
+		_m.Edges.namedFiles[name] = []*File{}
 	} else {
-		ga.Edges.namedFiles[name] = append(ga.Edges.namedFiles[name], edges...)
+		_m.Edges.namedFiles[name] = append(_m.Edges.namedFiles[name], edges...)
 	}
 }
 
 // NamedImages returns the Images named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (ga *Game) NamedImages(name string) ([]*Image, error) {
-	if ga.Edges.namedImages == nil {
+func (_m *Game) NamedImages(name string) ([]*Image, error) {
+	if _m.Edges.namedImages == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := ga.Edges.namedImages[name]
+	nodes, ok := _m.Edges.namedImages[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (ga *Game) appendNamedImages(name string, edges ...*Image) {
-	if ga.Edges.namedImages == nil {
-		ga.Edges.namedImages = make(map[string][]*Image)
+func (_m *Game) appendNamedImages(name string, edges ...*Image) {
+	if _m.Edges.namedImages == nil {
+		_m.Edges.namedImages = make(map[string][]*Image)
 	}
 	if len(edges) == 0 {
-		ga.Edges.namedImages[name] = []*Image{}
+		_m.Edges.namedImages[name] = []*Image{}
 	} else {
-		ga.Edges.namedImages[name] = append(ga.Edges.namedImages[name], edges...)
+		_m.Edges.namedImages[name] = append(_m.Edges.namedImages[name], edges...)
 	}
 }
 

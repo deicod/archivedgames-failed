@@ -24,205 +24,205 @@ type GameUpdate struct {
 }
 
 // Where appends a list predicates to the GameUpdate builder.
-func (gu *GameUpdate) Where(ps ...predicate.Game) *GameUpdate {
-	gu.mutation.Where(ps...)
-	return gu
+func (_u *GameUpdate) Where(ps ...predicate.Game) *GameUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetSlug sets the "slug" field.
-func (gu *GameUpdate) SetSlug(s string) *GameUpdate {
-	gu.mutation.SetSlug(s)
-	return gu
+func (_u *GameUpdate) SetSlug(v string) *GameUpdate {
+	_u.mutation.SetSlug(v)
+	return _u
 }
 
 // SetNillableSlug sets the "slug" field if the given value is not nil.
-func (gu *GameUpdate) SetNillableSlug(s *string) *GameUpdate {
-	if s != nil {
-		gu.SetSlug(*s)
+func (_u *GameUpdate) SetNillableSlug(v *string) *GameUpdate {
+	if v != nil {
+		_u.SetSlug(*v)
 	}
-	return gu
+	return _u
 }
 
 // SetPlatform sets the "platform" field.
-func (gu *GameUpdate) SetPlatform(ga game.Platform) *GameUpdate {
-	gu.mutation.SetPlatform(ga)
-	return gu
+func (_u *GameUpdate) SetPlatform(v game.Platform) *GameUpdate {
+	_u.mutation.SetPlatform(v)
+	return _u
 }
 
 // SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (gu *GameUpdate) SetNillablePlatform(ga *game.Platform) *GameUpdate {
-	if ga != nil {
-		gu.SetPlatform(*ga)
+func (_u *GameUpdate) SetNillablePlatform(v *game.Platform) *GameUpdate {
+	if v != nil {
+		_u.SetPlatform(*v)
 	}
-	return gu
+	return _u
 }
 
 // SetTitle sets the "title" field.
-func (gu *GameUpdate) SetTitle(s string) *GameUpdate {
-	gu.mutation.SetTitle(s)
-	return gu
+func (_u *GameUpdate) SetTitle(v string) *GameUpdate {
+	_u.mutation.SetTitle(v)
+	return _u
 }
 
 // SetNillableTitle sets the "title" field if the given value is not nil.
-func (gu *GameUpdate) SetNillableTitle(s *string) *GameUpdate {
-	if s != nil {
-		gu.SetTitle(*s)
+func (_u *GameUpdate) SetNillableTitle(v *string) *GameUpdate {
+	if v != nil {
+		_u.SetTitle(*v)
 	}
-	return gu
+	return _u
 }
 
 // SetYear sets the "year" field.
-func (gu *GameUpdate) SetYear(i int) *GameUpdate {
-	gu.mutation.ResetYear()
-	gu.mutation.SetYear(i)
-	return gu
+func (_u *GameUpdate) SetYear(v int) *GameUpdate {
+	_u.mutation.ResetYear()
+	_u.mutation.SetYear(v)
+	return _u
 }
 
 // SetNillableYear sets the "year" field if the given value is not nil.
-func (gu *GameUpdate) SetNillableYear(i *int) *GameUpdate {
-	if i != nil {
-		gu.SetYear(*i)
+func (_u *GameUpdate) SetNillableYear(v *int) *GameUpdate {
+	if v != nil {
+		_u.SetYear(*v)
 	}
-	return gu
+	return _u
 }
 
-// AddYear adds i to the "year" field.
-func (gu *GameUpdate) AddYear(i int) *GameUpdate {
-	gu.mutation.AddYear(i)
-	return gu
+// AddYear adds value to the "year" field.
+func (_u *GameUpdate) AddYear(v int) *GameUpdate {
+	_u.mutation.AddYear(v)
+	return _u
 }
 
 // ClearYear clears the value of the "year" field.
-func (gu *GameUpdate) ClearYear() *GameUpdate {
-	gu.mutation.ClearYear()
-	return gu
+func (_u *GameUpdate) ClearYear() *GameUpdate {
+	_u.mutation.ClearYear()
+	return _u
 }
 
 // SetPublisher sets the "publisher" field.
-func (gu *GameUpdate) SetPublisher(s string) *GameUpdate {
-	gu.mutation.SetPublisher(s)
-	return gu
+func (_u *GameUpdate) SetPublisher(v string) *GameUpdate {
+	_u.mutation.SetPublisher(v)
+	return _u
 }
 
 // SetNillablePublisher sets the "publisher" field if the given value is not nil.
-func (gu *GameUpdate) SetNillablePublisher(s *string) *GameUpdate {
-	if s != nil {
-		gu.SetPublisher(*s)
+func (_u *GameUpdate) SetNillablePublisher(v *string) *GameUpdate {
+	if v != nil {
+		_u.SetPublisher(*v)
 	}
-	return gu
+	return _u
 }
 
 // ClearPublisher clears the value of the "publisher" field.
-func (gu *GameUpdate) ClearPublisher() *GameUpdate {
-	gu.mutation.ClearPublisher()
-	return gu
+func (_u *GameUpdate) ClearPublisher() *GameUpdate {
+	_u.mutation.ClearPublisher()
+	return _u
 }
 
 // SetDeveloper sets the "developer" field.
-func (gu *GameUpdate) SetDeveloper(s string) *GameUpdate {
-	gu.mutation.SetDeveloper(s)
-	return gu
+func (_u *GameUpdate) SetDeveloper(v string) *GameUpdate {
+	_u.mutation.SetDeveloper(v)
+	return _u
 }
 
 // SetNillableDeveloper sets the "developer" field if the given value is not nil.
-func (gu *GameUpdate) SetNillableDeveloper(s *string) *GameUpdate {
-	if s != nil {
-		gu.SetDeveloper(*s)
+func (_u *GameUpdate) SetNillableDeveloper(v *string) *GameUpdate {
+	if v != nil {
+		_u.SetDeveloper(*v)
 	}
-	return gu
+	return _u
 }
 
 // ClearDeveloper clears the value of the "developer" field.
-func (gu *GameUpdate) ClearDeveloper() *GameUpdate {
-	gu.mutation.ClearDeveloper()
-	return gu
+func (_u *GameUpdate) ClearDeveloper() *GameUpdate {
+	_u.mutation.ClearDeveloper()
+	return _u
 }
 
 // AddFileIDs adds the "files" edge to the File entity by IDs.
-func (gu *GameUpdate) AddFileIDs(ids ...string) *GameUpdate {
-	gu.mutation.AddFileIDs(ids...)
-	return gu
+func (_u *GameUpdate) AddFileIDs(ids ...string) *GameUpdate {
+	_u.mutation.AddFileIDs(ids...)
+	return _u
 }
 
 // AddFiles adds the "files" edges to the File entity.
-func (gu *GameUpdate) AddFiles(f ...*File) *GameUpdate {
-	ids := make([]string, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *GameUpdate) AddFiles(v ...*File) *GameUpdate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return gu.AddFileIDs(ids...)
+	return _u.AddFileIDs(ids...)
 }
 
 // AddImageIDs adds the "images" edge to the Image entity by IDs.
-func (gu *GameUpdate) AddImageIDs(ids ...string) *GameUpdate {
-	gu.mutation.AddImageIDs(ids...)
-	return gu
+func (_u *GameUpdate) AddImageIDs(ids ...string) *GameUpdate {
+	_u.mutation.AddImageIDs(ids...)
+	return _u
 }
 
 // AddImages adds the "images" edges to the Image entity.
-func (gu *GameUpdate) AddImages(i ...*Image) *GameUpdate {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_u *GameUpdate) AddImages(v ...*Image) *GameUpdate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return gu.AddImageIDs(ids...)
+	return _u.AddImageIDs(ids...)
 }
 
 // Mutation returns the GameMutation object of the builder.
-func (gu *GameUpdate) Mutation() *GameMutation {
-	return gu.mutation
+func (_u *GameUpdate) Mutation() *GameMutation {
+	return _u.mutation
 }
 
 // ClearFiles clears all "files" edges to the File entity.
-func (gu *GameUpdate) ClearFiles() *GameUpdate {
-	gu.mutation.ClearFiles()
-	return gu
+func (_u *GameUpdate) ClearFiles() *GameUpdate {
+	_u.mutation.ClearFiles()
+	return _u
 }
 
 // RemoveFileIDs removes the "files" edge to File entities by IDs.
-func (gu *GameUpdate) RemoveFileIDs(ids ...string) *GameUpdate {
-	gu.mutation.RemoveFileIDs(ids...)
-	return gu
+func (_u *GameUpdate) RemoveFileIDs(ids ...string) *GameUpdate {
+	_u.mutation.RemoveFileIDs(ids...)
+	return _u
 }
 
 // RemoveFiles removes "files" edges to File entities.
-func (gu *GameUpdate) RemoveFiles(f ...*File) *GameUpdate {
-	ids := make([]string, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *GameUpdate) RemoveFiles(v ...*File) *GameUpdate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return gu.RemoveFileIDs(ids...)
+	return _u.RemoveFileIDs(ids...)
 }
 
 // ClearImages clears all "images" edges to the Image entity.
-func (gu *GameUpdate) ClearImages() *GameUpdate {
-	gu.mutation.ClearImages()
-	return gu
+func (_u *GameUpdate) ClearImages() *GameUpdate {
+	_u.mutation.ClearImages()
+	return _u
 }
 
 // RemoveImageIDs removes the "images" edge to Image entities by IDs.
-func (gu *GameUpdate) RemoveImageIDs(ids ...string) *GameUpdate {
-	gu.mutation.RemoveImageIDs(ids...)
-	return gu
+func (_u *GameUpdate) RemoveImageIDs(ids ...string) *GameUpdate {
+	_u.mutation.RemoveImageIDs(ids...)
+	return _u
 }
 
 // RemoveImages removes "images" edges to Image entities.
-func (gu *GameUpdate) RemoveImages(i ...*Image) *GameUpdate {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_u *GameUpdate) RemoveImages(v ...*Image) *GameUpdate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return gu.RemoveImageIDs(ids...)
+	return _u.RemoveImageIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (gu *GameUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, gu.sqlSave, gu.mutation, gu.hooks)
+func (_u *GameUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (gu *GameUpdate) SaveX(ctx context.Context) int {
-	affected, err := gu.Save(ctx)
+func (_u *GameUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -230,21 +230,21 @@ func (gu *GameUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (gu *GameUpdate) Exec(ctx context.Context) error {
-	_, err := gu.Save(ctx)
+func (_u *GameUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gu *GameUpdate) ExecX(ctx context.Context) {
-	if err := gu.Exec(ctx); err != nil {
+func (_u *GameUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (gu *GameUpdate) check() error {
-	if v, ok := gu.mutation.Platform(); ok {
+func (_u *GameUpdate) check() error {
+	if v, ok := _u.mutation.Platform(); ok {
 		if err := game.PlatformValidator(v); err != nil {
 			return &ValidationError{Name: "platform", err: fmt.Errorf(`ent: validator failed for field "Game.platform": %w`, err)}
 		}
@@ -252,49 +252,49 @@ func (gu *GameUpdate) check() error {
 	return nil
 }
 
-func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := gu.check(); err != nil {
-		return n, err
+func (_u *GameUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(game.Table, game.Columns, sqlgraph.NewFieldSpec(game.FieldID, field.TypeString))
-	if ps := gu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := gu.mutation.Slug(); ok {
+	if value, ok := _u.mutation.Slug(); ok {
 		_spec.SetField(game.FieldSlug, field.TypeString, value)
 	}
-	if value, ok := gu.mutation.Platform(); ok {
+	if value, ok := _u.mutation.Platform(); ok {
 		_spec.SetField(game.FieldPlatform, field.TypeEnum, value)
 	}
-	if value, ok := gu.mutation.Title(); ok {
+	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(game.FieldTitle, field.TypeString, value)
 	}
-	if value, ok := gu.mutation.Year(); ok {
+	if value, ok := _u.mutation.Year(); ok {
 		_spec.SetField(game.FieldYear, field.TypeInt, value)
 	}
-	if value, ok := gu.mutation.AddedYear(); ok {
+	if value, ok := _u.mutation.AddedYear(); ok {
 		_spec.AddField(game.FieldYear, field.TypeInt, value)
 	}
-	if gu.mutation.YearCleared() {
+	if _u.mutation.YearCleared() {
 		_spec.ClearField(game.FieldYear, field.TypeInt)
 	}
-	if value, ok := gu.mutation.Publisher(); ok {
+	if value, ok := _u.mutation.Publisher(); ok {
 		_spec.SetField(game.FieldPublisher, field.TypeString, value)
 	}
-	if gu.mutation.PublisherCleared() {
+	if _u.mutation.PublisherCleared() {
 		_spec.ClearField(game.FieldPublisher, field.TypeString)
 	}
-	if value, ok := gu.mutation.Developer(); ok {
+	if value, ok := _u.mutation.Developer(); ok {
 		_spec.SetField(game.FieldDeveloper, field.TypeString, value)
 	}
-	if gu.mutation.DeveloperCleared() {
+	if _u.mutation.DeveloperCleared() {
 		_spec.ClearField(game.FieldDeveloper, field.TypeString)
 	}
-	if gu.mutation.FilesCleared() {
+	if _u.mutation.FilesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -307,7 +307,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := gu.mutation.RemovedFilesIDs(); len(nodes) > 0 && !gu.mutation.FilesCleared() {
+	if nodes := _u.mutation.RemovedFilesIDs(); len(nodes) > 0 && !_u.mutation.FilesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -323,7 +323,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := gu.mutation.FilesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FilesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -339,7 +339,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if gu.mutation.ImagesCleared() {
+	if _u.mutation.ImagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -352,7 +352,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := gu.mutation.RemovedImagesIDs(); len(nodes) > 0 && !gu.mutation.ImagesCleared() {
+	if nodes := _u.mutation.RemovedImagesIDs(); len(nodes) > 0 && !_u.mutation.ImagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -368,7 +368,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := gu.mutation.ImagesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ImagesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -384,7 +384,7 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, gu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{game.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -392,8 +392,8 @@ func (gu *GameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	gu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // GameUpdateOne is the builder for updating a single Game entity.
@@ -405,212 +405,212 @@ type GameUpdateOne struct {
 }
 
 // SetSlug sets the "slug" field.
-func (guo *GameUpdateOne) SetSlug(s string) *GameUpdateOne {
-	guo.mutation.SetSlug(s)
-	return guo
+func (_u *GameUpdateOne) SetSlug(v string) *GameUpdateOne {
+	_u.mutation.SetSlug(v)
+	return _u
 }
 
 // SetNillableSlug sets the "slug" field if the given value is not nil.
-func (guo *GameUpdateOne) SetNillableSlug(s *string) *GameUpdateOne {
-	if s != nil {
-		guo.SetSlug(*s)
+func (_u *GameUpdateOne) SetNillableSlug(v *string) *GameUpdateOne {
+	if v != nil {
+		_u.SetSlug(*v)
 	}
-	return guo
+	return _u
 }
 
 // SetPlatform sets the "platform" field.
-func (guo *GameUpdateOne) SetPlatform(ga game.Platform) *GameUpdateOne {
-	guo.mutation.SetPlatform(ga)
-	return guo
+func (_u *GameUpdateOne) SetPlatform(v game.Platform) *GameUpdateOne {
+	_u.mutation.SetPlatform(v)
+	return _u
 }
 
 // SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (guo *GameUpdateOne) SetNillablePlatform(ga *game.Platform) *GameUpdateOne {
-	if ga != nil {
-		guo.SetPlatform(*ga)
+func (_u *GameUpdateOne) SetNillablePlatform(v *game.Platform) *GameUpdateOne {
+	if v != nil {
+		_u.SetPlatform(*v)
 	}
-	return guo
+	return _u
 }
 
 // SetTitle sets the "title" field.
-func (guo *GameUpdateOne) SetTitle(s string) *GameUpdateOne {
-	guo.mutation.SetTitle(s)
-	return guo
+func (_u *GameUpdateOne) SetTitle(v string) *GameUpdateOne {
+	_u.mutation.SetTitle(v)
+	return _u
 }
 
 // SetNillableTitle sets the "title" field if the given value is not nil.
-func (guo *GameUpdateOne) SetNillableTitle(s *string) *GameUpdateOne {
-	if s != nil {
-		guo.SetTitle(*s)
+func (_u *GameUpdateOne) SetNillableTitle(v *string) *GameUpdateOne {
+	if v != nil {
+		_u.SetTitle(*v)
 	}
-	return guo
+	return _u
 }
 
 // SetYear sets the "year" field.
-func (guo *GameUpdateOne) SetYear(i int) *GameUpdateOne {
-	guo.mutation.ResetYear()
-	guo.mutation.SetYear(i)
-	return guo
+func (_u *GameUpdateOne) SetYear(v int) *GameUpdateOne {
+	_u.mutation.ResetYear()
+	_u.mutation.SetYear(v)
+	return _u
 }
 
 // SetNillableYear sets the "year" field if the given value is not nil.
-func (guo *GameUpdateOne) SetNillableYear(i *int) *GameUpdateOne {
-	if i != nil {
-		guo.SetYear(*i)
+func (_u *GameUpdateOne) SetNillableYear(v *int) *GameUpdateOne {
+	if v != nil {
+		_u.SetYear(*v)
 	}
-	return guo
+	return _u
 }
 
-// AddYear adds i to the "year" field.
-func (guo *GameUpdateOne) AddYear(i int) *GameUpdateOne {
-	guo.mutation.AddYear(i)
-	return guo
+// AddYear adds value to the "year" field.
+func (_u *GameUpdateOne) AddYear(v int) *GameUpdateOne {
+	_u.mutation.AddYear(v)
+	return _u
 }
 
 // ClearYear clears the value of the "year" field.
-func (guo *GameUpdateOne) ClearYear() *GameUpdateOne {
-	guo.mutation.ClearYear()
-	return guo
+func (_u *GameUpdateOne) ClearYear() *GameUpdateOne {
+	_u.mutation.ClearYear()
+	return _u
 }
 
 // SetPublisher sets the "publisher" field.
-func (guo *GameUpdateOne) SetPublisher(s string) *GameUpdateOne {
-	guo.mutation.SetPublisher(s)
-	return guo
+func (_u *GameUpdateOne) SetPublisher(v string) *GameUpdateOne {
+	_u.mutation.SetPublisher(v)
+	return _u
 }
 
 // SetNillablePublisher sets the "publisher" field if the given value is not nil.
-func (guo *GameUpdateOne) SetNillablePublisher(s *string) *GameUpdateOne {
-	if s != nil {
-		guo.SetPublisher(*s)
+func (_u *GameUpdateOne) SetNillablePublisher(v *string) *GameUpdateOne {
+	if v != nil {
+		_u.SetPublisher(*v)
 	}
-	return guo
+	return _u
 }
 
 // ClearPublisher clears the value of the "publisher" field.
-func (guo *GameUpdateOne) ClearPublisher() *GameUpdateOne {
-	guo.mutation.ClearPublisher()
-	return guo
+func (_u *GameUpdateOne) ClearPublisher() *GameUpdateOne {
+	_u.mutation.ClearPublisher()
+	return _u
 }
 
 // SetDeveloper sets the "developer" field.
-func (guo *GameUpdateOne) SetDeveloper(s string) *GameUpdateOne {
-	guo.mutation.SetDeveloper(s)
-	return guo
+func (_u *GameUpdateOne) SetDeveloper(v string) *GameUpdateOne {
+	_u.mutation.SetDeveloper(v)
+	return _u
 }
 
 // SetNillableDeveloper sets the "developer" field if the given value is not nil.
-func (guo *GameUpdateOne) SetNillableDeveloper(s *string) *GameUpdateOne {
-	if s != nil {
-		guo.SetDeveloper(*s)
+func (_u *GameUpdateOne) SetNillableDeveloper(v *string) *GameUpdateOne {
+	if v != nil {
+		_u.SetDeveloper(*v)
 	}
-	return guo
+	return _u
 }
 
 // ClearDeveloper clears the value of the "developer" field.
-func (guo *GameUpdateOne) ClearDeveloper() *GameUpdateOne {
-	guo.mutation.ClearDeveloper()
-	return guo
+func (_u *GameUpdateOne) ClearDeveloper() *GameUpdateOne {
+	_u.mutation.ClearDeveloper()
+	return _u
 }
 
 // AddFileIDs adds the "files" edge to the File entity by IDs.
-func (guo *GameUpdateOne) AddFileIDs(ids ...string) *GameUpdateOne {
-	guo.mutation.AddFileIDs(ids...)
-	return guo
+func (_u *GameUpdateOne) AddFileIDs(ids ...string) *GameUpdateOne {
+	_u.mutation.AddFileIDs(ids...)
+	return _u
 }
 
 // AddFiles adds the "files" edges to the File entity.
-func (guo *GameUpdateOne) AddFiles(f ...*File) *GameUpdateOne {
-	ids := make([]string, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *GameUpdateOne) AddFiles(v ...*File) *GameUpdateOne {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return guo.AddFileIDs(ids...)
+	return _u.AddFileIDs(ids...)
 }
 
 // AddImageIDs adds the "images" edge to the Image entity by IDs.
-func (guo *GameUpdateOne) AddImageIDs(ids ...string) *GameUpdateOne {
-	guo.mutation.AddImageIDs(ids...)
-	return guo
+func (_u *GameUpdateOne) AddImageIDs(ids ...string) *GameUpdateOne {
+	_u.mutation.AddImageIDs(ids...)
+	return _u
 }
 
 // AddImages adds the "images" edges to the Image entity.
-func (guo *GameUpdateOne) AddImages(i ...*Image) *GameUpdateOne {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_u *GameUpdateOne) AddImages(v ...*Image) *GameUpdateOne {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return guo.AddImageIDs(ids...)
+	return _u.AddImageIDs(ids...)
 }
 
 // Mutation returns the GameMutation object of the builder.
-func (guo *GameUpdateOne) Mutation() *GameMutation {
-	return guo.mutation
+func (_u *GameUpdateOne) Mutation() *GameMutation {
+	return _u.mutation
 }
 
 // ClearFiles clears all "files" edges to the File entity.
-func (guo *GameUpdateOne) ClearFiles() *GameUpdateOne {
-	guo.mutation.ClearFiles()
-	return guo
+func (_u *GameUpdateOne) ClearFiles() *GameUpdateOne {
+	_u.mutation.ClearFiles()
+	return _u
 }
 
 // RemoveFileIDs removes the "files" edge to File entities by IDs.
-func (guo *GameUpdateOne) RemoveFileIDs(ids ...string) *GameUpdateOne {
-	guo.mutation.RemoveFileIDs(ids...)
-	return guo
+func (_u *GameUpdateOne) RemoveFileIDs(ids ...string) *GameUpdateOne {
+	_u.mutation.RemoveFileIDs(ids...)
+	return _u
 }
 
 // RemoveFiles removes "files" edges to File entities.
-func (guo *GameUpdateOne) RemoveFiles(f ...*File) *GameUpdateOne {
-	ids := make([]string, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *GameUpdateOne) RemoveFiles(v ...*File) *GameUpdateOne {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return guo.RemoveFileIDs(ids...)
+	return _u.RemoveFileIDs(ids...)
 }
 
 // ClearImages clears all "images" edges to the Image entity.
-func (guo *GameUpdateOne) ClearImages() *GameUpdateOne {
-	guo.mutation.ClearImages()
-	return guo
+func (_u *GameUpdateOne) ClearImages() *GameUpdateOne {
+	_u.mutation.ClearImages()
+	return _u
 }
 
 // RemoveImageIDs removes the "images" edge to Image entities by IDs.
-func (guo *GameUpdateOne) RemoveImageIDs(ids ...string) *GameUpdateOne {
-	guo.mutation.RemoveImageIDs(ids...)
-	return guo
+func (_u *GameUpdateOne) RemoveImageIDs(ids ...string) *GameUpdateOne {
+	_u.mutation.RemoveImageIDs(ids...)
+	return _u
 }
 
 // RemoveImages removes "images" edges to Image entities.
-func (guo *GameUpdateOne) RemoveImages(i ...*Image) *GameUpdateOne {
-	ids := make([]string, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_u *GameUpdateOne) RemoveImages(v ...*Image) *GameUpdateOne {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return guo.RemoveImageIDs(ids...)
+	return _u.RemoveImageIDs(ids...)
 }
 
 // Where appends a list predicates to the GameUpdate builder.
-func (guo *GameUpdateOne) Where(ps ...predicate.Game) *GameUpdateOne {
-	guo.mutation.Where(ps...)
-	return guo
+func (_u *GameUpdateOne) Where(ps ...predicate.Game) *GameUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (guo *GameUpdateOne) Select(field string, fields ...string) *GameUpdateOne {
-	guo.fields = append([]string{field}, fields...)
-	return guo
+func (_u *GameUpdateOne) Select(field string, fields ...string) *GameUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Game entity.
-func (guo *GameUpdateOne) Save(ctx context.Context) (*Game, error) {
-	return withHooks(ctx, guo.sqlSave, guo.mutation, guo.hooks)
+func (_u *GameUpdateOne) Save(ctx context.Context) (*Game, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (guo *GameUpdateOne) SaveX(ctx context.Context) *Game {
-	node, err := guo.Save(ctx)
+func (_u *GameUpdateOne) SaveX(ctx context.Context) *Game {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -618,21 +618,21 @@ func (guo *GameUpdateOne) SaveX(ctx context.Context) *Game {
 }
 
 // Exec executes the query on the entity.
-func (guo *GameUpdateOne) Exec(ctx context.Context) error {
-	_, err := guo.Save(ctx)
+func (_u *GameUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (guo *GameUpdateOne) ExecX(ctx context.Context) {
-	if err := guo.Exec(ctx); err != nil {
+func (_u *GameUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (guo *GameUpdateOne) check() error {
-	if v, ok := guo.mutation.Platform(); ok {
+func (_u *GameUpdateOne) check() error {
+	if v, ok := _u.mutation.Platform(); ok {
 		if err := game.PlatformValidator(v); err != nil {
 			return &ValidationError{Name: "platform", err: fmt.Errorf(`ent: validator failed for field "Game.platform": %w`, err)}
 		}
@@ -640,17 +640,17 @@ func (guo *GameUpdateOne) check() error {
 	return nil
 }
 
-func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) {
-	if err := guo.check(); err != nil {
+func (_u *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(game.Table, game.Columns, sqlgraph.NewFieldSpec(game.FieldID, field.TypeString))
-	id, ok := guo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Game.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := guo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, game.FieldID)
 		for _, f := range fields {
@@ -662,44 +662,44 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 			}
 		}
 	}
-	if ps := guo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := guo.mutation.Slug(); ok {
+	if value, ok := _u.mutation.Slug(); ok {
 		_spec.SetField(game.FieldSlug, field.TypeString, value)
 	}
-	if value, ok := guo.mutation.Platform(); ok {
+	if value, ok := _u.mutation.Platform(); ok {
 		_spec.SetField(game.FieldPlatform, field.TypeEnum, value)
 	}
-	if value, ok := guo.mutation.Title(); ok {
+	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(game.FieldTitle, field.TypeString, value)
 	}
-	if value, ok := guo.mutation.Year(); ok {
+	if value, ok := _u.mutation.Year(); ok {
 		_spec.SetField(game.FieldYear, field.TypeInt, value)
 	}
-	if value, ok := guo.mutation.AddedYear(); ok {
+	if value, ok := _u.mutation.AddedYear(); ok {
 		_spec.AddField(game.FieldYear, field.TypeInt, value)
 	}
-	if guo.mutation.YearCleared() {
+	if _u.mutation.YearCleared() {
 		_spec.ClearField(game.FieldYear, field.TypeInt)
 	}
-	if value, ok := guo.mutation.Publisher(); ok {
+	if value, ok := _u.mutation.Publisher(); ok {
 		_spec.SetField(game.FieldPublisher, field.TypeString, value)
 	}
-	if guo.mutation.PublisherCleared() {
+	if _u.mutation.PublisherCleared() {
 		_spec.ClearField(game.FieldPublisher, field.TypeString)
 	}
-	if value, ok := guo.mutation.Developer(); ok {
+	if value, ok := _u.mutation.Developer(); ok {
 		_spec.SetField(game.FieldDeveloper, field.TypeString, value)
 	}
-	if guo.mutation.DeveloperCleared() {
+	if _u.mutation.DeveloperCleared() {
 		_spec.ClearField(game.FieldDeveloper, field.TypeString)
 	}
-	if guo.mutation.FilesCleared() {
+	if _u.mutation.FilesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -712,7 +712,7 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := guo.mutation.RemovedFilesIDs(); len(nodes) > 0 && !guo.mutation.FilesCleared() {
+	if nodes := _u.mutation.RemovedFilesIDs(); len(nodes) > 0 && !_u.mutation.FilesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -728,7 +728,7 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := guo.mutation.FilesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FilesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -744,7 +744,7 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if guo.mutation.ImagesCleared() {
+	if _u.mutation.ImagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -757,7 +757,7 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := guo.mutation.RemovedImagesIDs(); len(nodes) > 0 && !guo.mutation.ImagesCleared() {
+	if nodes := _u.mutation.RemovedImagesIDs(); len(nodes) > 0 && !_u.mutation.ImagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -773,7 +773,7 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := guo.mutation.ImagesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ImagesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -789,10 +789,10 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Game{config: guo.config}
+	_node = &Game{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, guo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{game.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -800,6 +800,6 @@ func (guo *GameUpdateOne) sqlSave(ctx context.Context) (_node *Game, err error) 
 		}
 		return nil, err
 	}
-	guo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

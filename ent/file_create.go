@@ -21,178 +21,178 @@ type FileCreate struct {
 }
 
 // SetPath sets the "path" field.
-func (fc *FileCreate) SetPath(s string) *FileCreate {
-	fc.mutation.SetPath(s)
-	return fc
+func (_c *FileCreate) SetPath(v string) *FileCreate {
+	_c.mutation.SetPath(v)
+	return _c
 }
 
 // SetOriginalName sets the "original_name" field.
-func (fc *FileCreate) SetOriginalName(s string) *FileCreate {
-	fc.mutation.SetOriginalName(s)
-	return fc
+func (_c *FileCreate) SetOriginalName(v string) *FileCreate {
+	_c.mutation.SetOriginalName(v)
+	return _c
 }
 
 // SetNormalizedName sets the "normalized_name" field.
-func (fc *FileCreate) SetNormalizedName(s string) *FileCreate {
-	fc.mutation.SetNormalizedName(s)
-	return fc
+func (_c *FileCreate) SetNormalizedName(v string) *FileCreate {
+	_c.mutation.SetNormalizedName(v)
+	return _c
 }
 
 // SetSetKey sets the "set_key" field.
-func (fc *FileCreate) SetSetKey(s string) *FileCreate {
-	fc.mutation.SetSetKey(s)
-	return fc
+func (_c *FileCreate) SetSetKey(v string) *FileCreate {
+	_c.mutation.SetSetKey(v)
+	return _c
 }
 
 // SetNillableSetKey sets the "set_key" field if the given value is not nil.
-func (fc *FileCreate) SetNillableSetKey(s *string) *FileCreate {
-	if s != nil {
-		fc.SetSetKey(*s)
+func (_c *FileCreate) SetNillableSetKey(v *string) *FileCreate {
+	if v != nil {
+		_c.SetSetKey(*v)
 	}
-	return fc
+	return _c
 }
 
 // SetChecksum sets the "checksum" field.
-func (fc *FileCreate) SetChecksum(s string) *FileCreate {
-	fc.mutation.SetChecksum(s)
-	return fc
+func (_c *FileCreate) SetChecksum(v string) *FileCreate {
+	_c.mutation.SetChecksum(v)
+	return _c
 }
 
 // SetSizeBytes sets the "size_bytes" field.
-func (fc *FileCreate) SetSizeBytes(i int64) *FileCreate {
-	fc.mutation.SetSizeBytes(i)
-	return fc
+func (_c *FileCreate) SetSizeBytes(v int64) *FileCreate {
+	_c.mutation.SetSizeBytes(v)
+	return _c
 }
 
 // SetMimeType sets the "mime_type" field.
-func (fc *FileCreate) SetMimeType(s string) *FileCreate {
-	fc.mutation.SetMimeType(s)
-	return fc
+func (_c *FileCreate) SetMimeType(v string) *FileCreate {
+	_c.mutation.SetMimeType(v)
+	return _c
 }
 
 // SetNillableMimeType sets the "mime_type" field if the given value is not nil.
-func (fc *FileCreate) SetNillableMimeType(s *string) *FileCreate {
-	if s != nil {
-		fc.SetMimeType(*s)
+func (_c *FileCreate) SetNillableMimeType(v *string) *FileCreate {
+	if v != nil {
+		_c.SetMimeType(*v)
 	}
-	return fc
+	return _c
 }
 
 // SetFormat sets the "format" field.
-func (fc *FileCreate) SetFormat(s string) *FileCreate {
-	fc.mutation.SetFormat(s)
-	return fc
+func (_c *FileCreate) SetFormat(v string) *FileCreate {
+	_c.mutation.SetFormat(v)
+	return _c
 }
 
 // SetNillableFormat sets the "format" field if the given value is not nil.
-func (fc *FileCreate) SetNillableFormat(s *string) *FileCreate {
-	if s != nil {
-		fc.SetFormat(*s)
+func (_c *FileCreate) SetNillableFormat(v *string) *FileCreate {
+	if v != nil {
+		_c.SetFormat(*v)
 	}
-	return fc
+	return _c
 }
 
 // SetSource sets the "source" field.
-func (fc *FileCreate) SetSource(s string) *FileCreate {
-	fc.mutation.SetSource(s)
-	return fc
+func (_c *FileCreate) SetSource(v string) *FileCreate {
+	_c.mutation.SetSource(v)
+	return _c
 }
 
 // SetQuarantine sets the "quarantine" field.
-func (fc *FileCreate) SetQuarantine(b bool) *FileCreate {
-	fc.mutation.SetQuarantine(b)
-	return fc
+func (_c *FileCreate) SetQuarantine(v bool) *FileCreate {
+	_c.mutation.SetQuarantine(v)
+	return _c
 }
 
 // SetNillableQuarantine sets the "quarantine" field if the given value is not nil.
-func (fc *FileCreate) SetNillableQuarantine(b *bool) *FileCreate {
-	if b != nil {
-		fc.SetQuarantine(*b)
+func (_c *FileCreate) SetNillableQuarantine(v *bool) *FileCreate {
+	if v != nil {
+		_c.SetQuarantine(*v)
 	}
-	return fc
+	return _c
 }
 
 // SetNeedsReview sets the "needs_review" field.
-func (fc *FileCreate) SetNeedsReview(b bool) *FileCreate {
-	fc.mutation.SetNeedsReview(b)
-	return fc
+func (_c *FileCreate) SetNeedsReview(v bool) *FileCreate {
+	_c.mutation.SetNeedsReview(v)
+	return _c
 }
 
 // SetNillableNeedsReview sets the "needs_review" field if the given value is not nil.
-func (fc *FileCreate) SetNillableNeedsReview(b *bool) *FileCreate {
-	if b != nil {
-		fc.SetNeedsReview(*b)
+func (_c *FileCreate) SetNillableNeedsReview(v *bool) *FileCreate {
+	if v != nil {
+		_c.SetNeedsReview(*v)
 	}
-	return fc
+	return _c
 }
 
 // SetDiskNumber sets the "disk_number" field.
-func (fc *FileCreate) SetDiskNumber(i int) *FileCreate {
-	fc.mutation.SetDiskNumber(i)
-	return fc
+func (_c *FileCreate) SetDiskNumber(v int) *FileCreate {
+	_c.mutation.SetDiskNumber(v)
+	return _c
 }
 
 // SetNillableDiskNumber sets the "disk_number" field if the given value is not nil.
-func (fc *FileCreate) SetNillableDiskNumber(i *int) *FileCreate {
-	if i != nil {
-		fc.SetDiskNumber(*i)
+func (_c *FileCreate) SetNillableDiskNumber(v *int) *FileCreate {
+	if v != nil {
+		_c.SetDiskNumber(*v)
 	}
-	return fc
+	return _c
 }
 
 // SetSide sets the "side" field.
-func (fc *FileCreate) SetSide(s string) *FileCreate {
-	fc.mutation.SetSide(s)
-	return fc
+func (_c *FileCreate) SetSide(v string) *FileCreate {
+	_c.mutation.SetSide(v)
+	return _c
 }
 
 // SetNillableSide sets the "side" field if the given value is not nil.
-func (fc *FileCreate) SetNillableSide(s *string) *FileCreate {
-	if s != nil {
-		fc.SetSide(*s)
+func (_c *FileCreate) SetNillableSide(v *string) *FileCreate {
+	if v != nil {
+		_c.SetSide(*v)
 	}
-	return fc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (fc *FileCreate) SetID(s string) *FileCreate {
-	fc.mutation.SetID(s)
-	return fc
+func (_c *FileCreate) SetID(v string) *FileCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (fc *FileCreate) SetNillableID(s *string) *FileCreate {
-	if s != nil {
-		fc.SetID(*s)
+func (_c *FileCreate) SetNillableID(v *string) *FileCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return fc
+	return _c
 }
 
 // SetGameID sets the "game" edge to the Game entity by ID.
-func (fc *FileCreate) SetGameID(id string) *FileCreate {
-	fc.mutation.SetGameID(id)
-	return fc
+func (_c *FileCreate) SetGameID(id string) *FileCreate {
+	_c.mutation.SetGameID(id)
+	return _c
 }
 
 // SetGame sets the "game" edge to the Game entity.
-func (fc *FileCreate) SetGame(g *Game) *FileCreate {
-	return fc.SetGameID(g.ID)
+func (_c *FileCreate) SetGame(v *Game) *FileCreate {
+	return _c.SetGameID(v.ID)
 }
 
 // Mutation returns the FileMutation object of the builder.
-func (fc *FileCreate) Mutation() *FileMutation {
-	return fc.mutation
+func (_c *FileCreate) Mutation() *FileMutation {
+	return _c.mutation
 }
 
 // Save creates the File in the database.
-func (fc *FileCreate) Save(ctx context.Context) (*File, error) {
-	fc.defaults()
-	return withHooks(ctx, fc.sqlSave, fc.mutation, fc.hooks)
+func (_c *FileCreate) Save(ctx context.Context) (*File, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (fc *FileCreate) SaveX(ctx context.Context) *File {
-	v, err := fc.Save(ctx)
+func (_c *FileCreate) SaveX(ctx context.Context) *File {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -200,72 +200,72 @@ func (fc *FileCreate) SaveX(ctx context.Context) *File {
 }
 
 // Exec executes the query.
-func (fc *FileCreate) Exec(ctx context.Context) error {
-	_, err := fc.Save(ctx)
+func (_c *FileCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fc *FileCreate) ExecX(ctx context.Context) {
-	if err := fc.Exec(ctx); err != nil {
+func (_c *FileCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (fc *FileCreate) defaults() {
-	if _, ok := fc.mutation.Quarantine(); !ok {
+func (_c *FileCreate) defaults() {
+	if _, ok := _c.mutation.Quarantine(); !ok {
 		v := file.DefaultQuarantine
-		fc.mutation.SetQuarantine(v)
+		_c.mutation.SetQuarantine(v)
 	}
-	if _, ok := fc.mutation.NeedsReview(); !ok {
+	if _, ok := _c.mutation.NeedsReview(); !ok {
 		v := file.DefaultNeedsReview
-		fc.mutation.SetNeedsReview(v)
+		_c.mutation.SetNeedsReview(v)
 	}
-	if _, ok := fc.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		v := file.DefaultID()
-		fc.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fc *FileCreate) check() error {
-	if _, ok := fc.mutation.Path(); !ok {
+func (_c *FileCreate) check() error {
+	if _, ok := _c.mutation.Path(); !ok {
 		return &ValidationError{Name: "path", err: errors.New(`ent: missing required field "File.path"`)}
 	}
-	if _, ok := fc.mutation.OriginalName(); !ok {
+	if _, ok := _c.mutation.OriginalName(); !ok {
 		return &ValidationError{Name: "original_name", err: errors.New(`ent: missing required field "File.original_name"`)}
 	}
-	if _, ok := fc.mutation.NormalizedName(); !ok {
+	if _, ok := _c.mutation.NormalizedName(); !ok {
 		return &ValidationError{Name: "normalized_name", err: errors.New(`ent: missing required field "File.normalized_name"`)}
 	}
-	if _, ok := fc.mutation.Checksum(); !ok {
+	if _, ok := _c.mutation.Checksum(); !ok {
 		return &ValidationError{Name: "checksum", err: errors.New(`ent: missing required field "File.checksum"`)}
 	}
-	if _, ok := fc.mutation.SizeBytes(); !ok {
+	if _, ok := _c.mutation.SizeBytes(); !ok {
 		return &ValidationError{Name: "size_bytes", err: errors.New(`ent: missing required field "File.size_bytes"`)}
 	}
-	if _, ok := fc.mutation.Source(); !ok {
+	if _, ok := _c.mutation.Source(); !ok {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "File.source"`)}
 	}
-	if _, ok := fc.mutation.Quarantine(); !ok {
+	if _, ok := _c.mutation.Quarantine(); !ok {
 		return &ValidationError{Name: "quarantine", err: errors.New(`ent: missing required field "File.quarantine"`)}
 	}
-	if _, ok := fc.mutation.NeedsReview(); !ok {
+	if _, ok := _c.mutation.NeedsReview(); !ok {
 		return &ValidationError{Name: "needs_review", err: errors.New(`ent: missing required field "File.needs_review"`)}
 	}
-	if len(fc.mutation.GameIDs()) == 0 {
+	if len(_c.mutation.GameIDs()) == 0 {
 		return &ValidationError{Name: "game", err: errors.New(`ent: missing required edge "File.game"`)}
 	}
 	return nil
 }
 
-func (fc *FileCreate) sqlSave(ctx context.Context) (*File, error) {
-	if err := fc.check(); err != nil {
+func (_c *FileCreate) sqlSave(ctx context.Context) (*File, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := fc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, fc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -278,73 +278,73 @@ func (fc *FileCreate) sqlSave(ctx context.Context) (*File, error) {
 			return nil, fmt.Errorf("unexpected File.ID type: %T", _spec.ID.Value)
 		}
 	}
-	fc.mutation.id = &_node.ID
-	fc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (fc *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
+func (_c *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 	var (
-		_node = &File{config: fc.config}
+		_node = &File{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(file.Table, sqlgraph.NewFieldSpec(file.FieldID, field.TypeString))
 	)
-	if id, ok := fc.mutation.ID(); ok {
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := fc.mutation.Path(); ok {
+	if value, ok := _c.mutation.Path(); ok {
 		_spec.SetField(file.FieldPath, field.TypeString, value)
 		_node.Path = value
 	}
-	if value, ok := fc.mutation.OriginalName(); ok {
+	if value, ok := _c.mutation.OriginalName(); ok {
 		_spec.SetField(file.FieldOriginalName, field.TypeString, value)
 		_node.OriginalName = value
 	}
-	if value, ok := fc.mutation.NormalizedName(); ok {
+	if value, ok := _c.mutation.NormalizedName(); ok {
 		_spec.SetField(file.FieldNormalizedName, field.TypeString, value)
 		_node.NormalizedName = value
 	}
-	if value, ok := fc.mutation.SetKey(); ok {
+	if value, ok := _c.mutation.SetKey(); ok {
 		_spec.SetField(file.FieldSetKey, field.TypeString, value)
 		_node.SetKey = value
 	}
-	if value, ok := fc.mutation.Checksum(); ok {
+	if value, ok := _c.mutation.Checksum(); ok {
 		_spec.SetField(file.FieldChecksum, field.TypeString, value)
 		_node.Checksum = value
 	}
-	if value, ok := fc.mutation.SizeBytes(); ok {
+	if value, ok := _c.mutation.SizeBytes(); ok {
 		_spec.SetField(file.FieldSizeBytes, field.TypeInt64, value)
 		_node.SizeBytes = value
 	}
-	if value, ok := fc.mutation.MimeType(); ok {
+	if value, ok := _c.mutation.MimeType(); ok {
 		_spec.SetField(file.FieldMimeType, field.TypeString, value)
 		_node.MimeType = value
 	}
-	if value, ok := fc.mutation.Format(); ok {
+	if value, ok := _c.mutation.Format(); ok {
 		_spec.SetField(file.FieldFormat, field.TypeString, value)
 		_node.Format = value
 	}
-	if value, ok := fc.mutation.Source(); ok {
+	if value, ok := _c.mutation.Source(); ok {
 		_spec.SetField(file.FieldSource, field.TypeString, value)
 		_node.Source = value
 	}
-	if value, ok := fc.mutation.Quarantine(); ok {
+	if value, ok := _c.mutation.Quarantine(); ok {
 		_spec.SetField(file.FieldQuarantine, field.TypeBool, value)
 		_node.Quarantine = value
 	}
-	if value, ok := fc.mutation.NeedsReview(); ok {
+	if value, ok := _c.mutation.NeedsReview(); ok {
 		_spec.SetField(file.FieldNeedsReview, field.TypeBool, value)
 		_node.NeedsReview = value
 	}
-	if value, ok := fc.mutation.DiskNumber(); ok {
+	if value, ok := _c.mutation.DiskNumber(); ok {
 		_spec.SetField(file.FieldDiskNumber, field.TypeInt, value)
 		_node.DiskNumber = &value
 	}
-	if value, ok := fc.mutation.Side(); ok {
+	if value, ok := _c.mutation.Side(); ok {
 		_spec.SetField(file.FieldSide, field.TypeString, value)
 		_node.Side = value
 	}
-	if nodes := fc.mutation.GameIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.GameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -372,16 +372,16 @@ type FileCreateBulk struct {
 }
 
 // Save creates the File entities in the database.
-func (fcb *FileCreateBulk) Save(ctx context.Context) ([]*File, error) {
-	if fcb.err != nil {
-		return nil, fcb.err
+func (_c *FileCreateBulk) Save(ctx context.Context) ([]*File, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(fcb.builders))
-	nodes := make([]*File, len(fcb.builders))
-	mutators := make([]Mutator, len(fcb.builders))
-	for i := range fcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*File, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := fcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*FileMutation)
@@ -395,11 +395,11 @@ func (fcb *FileCreateBulk) Save(ctx context.Context) ([]*File, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, fcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, fcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -419,7 +419,7 @@ func (fcb *FileCreateBulk) Save(ctx context.Context) ([]*File, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, fcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -427,8 +427,8 @@ func (fcb *FileCreateBulk) Save(ctx context.Context) ([]*File, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fcb *FileCreateBulk) SaveX(ctx context.Context) []*File {
-	v, err := fcb.Save(ctx)
+func (_c *FileCreateBulk) SaveX(ctx context.Context) []*File {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -436,14 +436,14 @@ func (fcb *FileCreateBulk) SaveX(ctx context.Context) []*File {
 }
 
 // Exec executes the query.
-func (fcb *FileCreateBulk) Exec(ctx context.Context) error {
-	_, err := fcb.Save(ctx)
+func (_c *FileCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fcb *FileCreateBulk) ExecX(ctx context.Context) {
-	if err := fcb.Exec(ctx); err != nil {
+func (_c *FileCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

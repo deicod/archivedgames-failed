@@ -22,78 +22,78 @@ type UserShadowUpdate struct {
 }
 
 // Where appends a list predicates to the UserShadowUpdate builder.
-func (usu *UserShadowUpdate) Where(ps ...predicate.UserShadow) *UserShadowUpdate {
-	usu.mutation.Where(ps...)
-	return usu
+func (_u *UserShadowUpdate) Where(ps ...predicate.UserShadow) *UserShadowUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetKeycloakSub sets the "keycloak_sub" field.
-func (usu *UserShadowUpdate) SetKeycloakSub(s string) *UserShadowUpdate {
-	usu.mutation.SetKeycloakSub(s)
-	return usu
+func (_u *UserShadowUpdate) SetKeycloakSub(v string) *UserShadowUpdate {
+	_u.mutation.SetKeycloakSub(v)
+	return _u
 }
 
 // SetNillableKeycloakSub sets the "keycloak_sub" field if the given value is not nil.
-func (usu *UserShadowUpdate) SetNillableKeycloakSub(s *string) *UserShadowUpdate {
-	if s != nil {
-		usu.SetKeycloakSub(*s)
+func (_u *UserShadowUpdate) SetNillableKeycloakSub(v *string) *UserShadowUpdate {
+	if v != nil {
+		_u.SetKeycloakSub(*v)
 	}
-	return usu
+	return _u
 }
 
 // SetHandle sets the "handle" field.
-func (usu *UserShadowUpdate) SetHandle(s string) *UserShadowUpdate {
-	usu.mutation.SetHandle(s)
-	return usu
+func (_u *UserShadowUpdate) SetHandle(v string) *UserShadowUpdate {
+	_u.mutation.SetHandle(v)
+	return _u
 }
 
 // SetNillableHandle sets the "handle" field if the given value is not nil.
-func (usu *UserShadowUpdate) SetNillableHandle(s *string) *UserShadowUpdate {
-	if s != nil {
-		usu.SetHandle(*s)
+func (_u *UserShadowUpdate) SetNillableHandle(v *string) *UserShadowUpdate {
+	if v != nil {
+		_u.SetHandle(*v)
 	}
-	return usu
+	return _u
 }
 
 // ClearHandle clears the value of the "handle" field.
-func (usu *UserShadowUpdate) ClearHandle() *UserShadowUpdate {
-	usu.mutation.ClearHandle()
-	return usu
+func (_u *UserShadowUpdate) ClearHandle() *UserShadowUpdate {
+	_u.mutation.ClearHandle()
+	return _u
 }
 
 // SetDisplayName sets the "display_name" field.
-func (usu *UserShadowUpdate) SetDisplayName(s string) *UserShadowUpdate {
-	usu.mutation.SetDisplayName(s)
-	return usu
+func (_u *UserShadowUpdate) SetDisplayName(v string) *UserShadowUpdate {
+	_u.mutation.SetDisplayName(v)
+	return _u
 }
 
 // SetNillableDisplayName sets the "display_name" field if the given value is not nil.
-func (usu *UserShadowUpdate) SetNillableDisplayName(s *string) *UserShadowUpdate {
-	if s != nil {
-		usu.SetDisplayName(*s)
+func (_u *UserShadowUpdate) SetNillableDisplayName(v *string) *UserShadowUpdate {
+	if v != nil {
+		_u.SetDisplayName(*v)
 	}
-	return usu
+	return _u
 }
 
 // ClearDisplayName clears the value of the "display_name" field.
-func (usu *UserShadowUpdate) ClearDisplayName() *UserShadowUpdate {
-	usu.mutation.ClearDisplayName()
-	return usu
+func (_u *UserShadowUpdate) ClearDisplayName() *UserShadowUpdate {
+	_u.mutation.ClearDisplayName()
+	return _u
 }
 
 // Mutation returns the UserShadowMutation object of the builder.
-func (usu *UserShadowUpdate) Mutation() *UserShadowMutation {
-	return usu.mutation
+func (_u *UserShadowUpdate) Mutation() *UserShadowMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (usu *UserShadowUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, usu.sqlSave, usu.mutation, usu.hooks)
+func (_u *UserShadowUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (usu *UserShadowUpdate) SaveX(ctx context.Context) int {
-	affected, err := usu.Save(ctx)
+func (_u *UserShadowUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -101,43 +101,43 @@ func (usu *UserShadowUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (usu *UserShadowUpdate) Exec(ctx context.Context) error {
-	_, err := usu.Save(ctx)
+func (_u *UserShadowUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (usu *UserShadowUpdate) ExecX(ctx context.Context) {
-	if err := usu.Exec(ctx); err != nil {
+func (_u *UserShadowUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (usu *UserShadowUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *UserShadowUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(usershadow.Table, usershadow.Columns, sqlgraph.NewFieldSpec(usershadow.FieldID, field.TypeString))
-	if ps := usu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := usu.mutation.KeycloakSub(); ok {
+	if value, ok := _u.mutation.KeycloakSub(); ok {
 		_spec.SetField(usershadow.FieldKeycloakSub, field.TypeString, value)
 	}
-	if value, ok := usu.mutation.Handle(); ok {
+	if value, ok := _u.mutation.Handle(); ok {
 		_spec.SetField(usershadow.FieldHandle, field.TypeString, value)
 	}
-	if usu.mutation.HandleCleared() {
+	if _u.mutation.HandleCleared() {
 		_spec.ClearField(usershadow.FieldHandle, field.TypeString)
 	}
-	if value, ok := usu.mutation.DisplayName(); ok {
+	if value, ok := _u.mutation.DisplayName(); ok {
 		_spec.SetField(usershadow.FieldDisplayName, field.TypeString, value)
 	}
-	if usu.mutation.DisplayNameCleared() {
+	if _u.mutation.DisplayNameCleared() {
 		_spec.ClearField(usershadow.FieldDisplayName, field.TypeString)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, usu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{usershadow.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -145,8 +145,8 @@ func (usu *UserShadowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	usu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // UserShadowUpdateOne is the builder for updating a single UserShadow entity.
@@ -158,85 +158,85 @@ type UserShadowUpdateOne struct {
 }
 
 // SetKeycloakSub sets the "keycloak_sub" field.
-func (usuo *UserShadowUpdateOne) SetKeycloakSub(s string) *UserShadowUpdateOne {
-	usuo.mutation.SetKeycloakSub(s)
-	return usuo
+func (_u *UserShadowUpdateOne) SetKeycloakSub(v string) *UserShadowUpdateOne {
+	_u.mutation.SetKeycloakSub(v)
+	return _u
 }
 
 // SetNillableKeycloakSub sets the "keycloak_sub" field if the given value is not nil.
-func (usuo *UserShadowUpdateOne) SetNillableKeycloakSub(s *string) *UserShadowUpdateOne {
-	if s != nil {
-		usuo.SetKeycloakSub(*s)
+func (_u *UserShadowUpdateOne) SetNillableKeycloakSub(v *string) *UserShadowUpdateOne {
+	if v != nil {
+		_u.SetKeycloakSub(*v)
 	}
-	return usuo
+	return _u
 }
 
 // SetHandle sets the "handle" field.
-func (usuo *UserShadowUpdateOne) SetHandle(s string) *UserShadowUpdateOne {
-	usuo.mutation.SetHandle(s)
-	return usuo
+func (_u *UserShadowUpdateOne) SetHandle(v string) *UserShadowUpdateOne {
+	_u.mutation.SetHandle(v)
+	return _u
 }
 
 // SetNillableHandle sets the "handle" field if the given value is not nil.
-func (usuo *UserShadowUpdateOne) SetNillableHandle(s *string) *UserShadowUpdateOne {
-	if s != nil {
-		usuo.SetHandle(*s)
+func (_u *UserShadowUpdateOne) SetNillableHandle(v *string) *UserShadowUpdateOne {
+	if v != nil {
+		_u.SetHandle(*v)
 	}
-	return usuo
+	return _u
 }
 
 // ClearHandle clears the value of the "handle" field.
-func (usuo *UserShadowUpdateOne) ClearHandle() *UserShadowUpdateOne {
-	usuo.mutation.ClearHandle()
-	return usuo
+func (_u *UserShadowUpdateOne) ClearHandle() *UserShadowUpdateOne {
+	_u.mutation.ClearHandle()
+	return _u
 }
 
 // SetDisplayName sets the "display_name" field.
-func (usuo *UserShadowUpdateOne) SetDisplayName(s string) *UserShadowUpdateOne {
-	usuo.mutation.SetDisplayName(s)
-	return usuo
+func (_u *UserShadowUpdateOne) SetDisplayName(v string) *UserShadowUpdateOne {
+	_u.mutation.SetDisplayName(v)
+	return _u
 }
 
 // SetNillableDisplayName sets the "display_name" field if the given value is not nil.
-func (usuo *UserShadowUpdateOne) SetNillableDisplayName(s *string) *UserShadowUpdateOne {
-	if s != nil {
-		usuo.SetDisplayName(*s)
+func (_u *UserShadowUpdateOne) SetNillableDisplayName(v *string) *UserShadowUpdateOne {
+	if v != nil {
+		_u.SetDisplayName(*v)
 	}
-	return usuo
+	return _u
 }
 
 // ClearDisplayName clears the value of the "display_name" field.
-func (usuo *UserShadowUpdateOne) ClearDisplayName() *UserShadowUpdateOne {
-	usuo.mutation.ClearDisplayName()
-	return usuo
+func (_u *UserShadowUpdateOne) ClearDisplayName() *UserShadowUpdateOne {
+	_u.mutation.ClearDisplayName()
+	return _u
 }
 
 // Mutation returns the UserShadowMutation object of the builder.
-func (usuo *UserShadowUpdateOne) Mutation() *UserShadowMutation {
-	return usuo.mutation
+func (_u *UserShadowUpdateOne) Mutation() *UserShadowMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the UserShadowUpdate builder.
-func (usuo *UserShadowUpdateOne) Where(ps ...predicate.UserShadow) *UserShadowUpdateOne {
-	usuo.mutation.Where(ps...)
-	return usuo
+func (_u *UserShadowUpdateOne) Where(ps ...predicate.UserShadow) *UserShadowUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (usuo *UserShadowUpdateOne) Select(field string, fields ...string) *UserShadowUpdateOne {
-	usuo.fields = append([]string{field}, fields...)
-	return usuo
+func (_u *UserShadowUpdateOne) Select(field string, fields ...string) *UserShadowUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated UserShadow entity.
-func (usuo *UserShadowUpdateOne) Save(ctx context.Context) (*UserShadow, error) {
-	return withHooks(ctx, usuo.sqlSave, usuo.mutation, usuo.hooks)
+func (_u *UserShadowUpdateOne) Save(ctx context.Context) (*UserShadow, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (usuo *UserShadowUpdateOne) SaveX(ctx context.Context) *UserShadow {
-	node, err := usuo.Save(ctx)
+func (_u *UserShadowUpdateOne) SaveX(ctx context.Context) *UserShadow {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,26 +244,26 @@ func (usuo *UserShadowUpdateOne) SaveX(ctx context.Context) *UserShadow {
 }
 
 // Exec executes the query on the entity.
-func (usuo *UserShadowUpdateOne) Exec(ctx context.Context) error {
-	_, err := usuo.Save(ctx)
+func (_u *UserShadowUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (usuo *UserShadowUpdateOne) ExecX(ctx context.Context) {
-	if err := usuo.Exec(ctx); err != nil {
+func (_u *UserShadowUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (usuo *UserShadowUpdateOne) sqlSave(ctx context.Context) (_node *UserShadow, err error) {
+func (_u *UserShadowUpdateOne) sqlSave(ctx context.Context) (_node *UserShadow, err error) {
 	_spec := sqlgraph.NewUpdateSpec(usershadow.Table, usershadow.Columns, sqlgraph.NewFieldSpec(usershadow.FieldID, field.TypeString))
-	id, ok := usuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "UserShadow.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := usuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, usershadow.FieldID)
 		for _, f := range fields {
@@ -275,32 +275,32 @@ func (usuo *UserShadowUpdateOne) sqlSave(ctx context.Context) (_node *UserShadow
 			}
 		}
 	}
-	if ps := usuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := usuo.mutation.KeycloakSub(); ok {
+	if value, ok := _u.mutation.KeycloakSub(); ok {
 		_spec.SetField(usershadow.FieldKeycloakSub, field.TypeString, value)
 	}
-	if value, ok := usuo.mutation.Handle(); ok {
+	if value, ok := _u.mutation.Handle(); ok {
 		_spec.SetField(usershadow.FieldHandle, field.TypeString, value)
 	}
-	if usuo.mutation.HandleCleared() {
+	if _u.mutation.HandleCleared() {
 		_spec.ClearField(usershadow.FieldHandle, field.TypeString)
 	}
-	if value, ok := usuo.mutation.DisplayName(); ok {
+	if value, ok := _u.mutation.DisplayName(); ok {
 		_spec.SetField(usershadow.FieldDisplayName, field.TypeString, value)
 	}
-	if usuo.mutation.DisplayNameCleared() {
+	if _u.mutation.DisplayNameCleared() {
 		_spec.ClearField(usershadow.FieldDisplayName, field.TypeString)
 	}
-	_node = &UserShadow{config: usuo.config}
+	_node = &UserShadow{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, usuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{usershadow.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -308,6 +308,6 @@ func (usuo *UserShadowUpdateOne) sqlSave(ctx context.Context) (_node *UserShadow
 		}
 		return nil, err
 	}
-	usuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

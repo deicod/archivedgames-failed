@@ -8,23 +8,23 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
-func (f *File) Game(ctx context.Context) (*Game, error) {
-	result, err := f.Edges.GameOrErr()
+func (_m *File) Game(ctx context.Context) (*Game, error) {
+	result, err := _m.Edges.GameOrErr()
 	if IsNotLoaded(err) {
-		result, err = f.QueryGame().Only(ctx)
+		result, err = _m.QueryGame().Only(ctx)
 	}
 	return result, err
 }
 
-func (ga *Game) Files(
+func (_m *Game) Files(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *FileWhereInput,
 ) (*FileConnection, error) {
 	opts := []FilePaginateOption{
 		WithFileFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := ga.Edges.totalCount[0][alias]
-	if nodes, err := ga.NamedFiles(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[0][alias]
+	if nodes, err := _m.NamedFiles(alias); err == nil || hasTotalCount {
 		pager, err := newFilePager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -33,18 +33,18 @@ func (ga *Game) Files(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return ga.QueryFiles().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryFiles().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (ga *Game) Images(
+func (_m *Game) Images(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *ImageWhereInput,
 ) (*ImageConnection, error) {
 	opts := []ImagePaginateOption{
 		WithImageFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := ga.Edges.totalCount[1][alias]
-	if nodes, err := ga.NamedImages(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[1][alias]
+	if nodes, err := _m.NamedImages(alias); err == nil || hasTotalCount {
 		pager, err := newImagePager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -53,13 +53,13 @@ func (ga *Game) Images(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return ga.QueryImages().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryImages().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (i *Image) Game(ctx context.Context) (*Game, error) {
-	result, err := i.Edges.GameOrErr()
+func (_m *Image) Game(ctx context.Context) (*Game, error) {
+	result, err := _m.Edges.GameOrErr()
 	if IsNotLoaded(err) {
-		result, err = i.QueryGame().Only(ctx)
+		result, err = _m.QueryGame().Only(ctx)
 	}
 	return result, err
 }

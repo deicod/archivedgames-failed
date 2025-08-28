@@ -94,7 +94,7 @@ func (*File) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the File fields.
-func (f *File) assignValues(columns []string, values []any) error {
+func (_m *File) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -104,96 +104,96 @@ func (f *File) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				f.ID = value.String
+				_m.ID = value.String
 			}
 		case file.FieldPath:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field path", values[i])
 			} else if value.Valid {
-				f.Path = value.String
+				_m.Path = value.String
 			}
 		case file.FieldOriginalName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field original_name", values[i])
 			} else if value.Valid {
-				f.OriginalName = value.String
+				_m.OriginalName = value.String
 			}
 		case file.FieldNormalizedName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field normalized_name", values[i])
 			} else if value.Valid {
-				f.NormalizedName = value.String
+				_m.NormalizedName = value.String
 			}
 		case file.FieldSetKey:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field set_key", values[i])
 			} else if value.Valid {
-				f.SetKey = value.String
+				_m.SetKey = value.String
 			}
 		case file.FieldChecksum:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field checksum", values[i])
 			} else if value.Valid {
-				f.Checksum = value.String
+				_m.Checksum = value.String
 			}
 		case file.FieldSizeBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field size_bytes", values[i])
 			} else if value.Valid {
-				f.SizeBytes = value.Int64
+				_m.SizeBytes = value.Int64
 			}
 		case file.FieldMimeType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field mime_type", values[i])
 			} else if value.Valid {
-				f.MimeType = value.String
+				_m.MimeType = value.String
 			}
 		case file.FieldFormat:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field format", values[i])
 			} else if value.Valid {
-				f.Format = value.String
+				_m.Format = value.String
 			}
 		case file.FieldSource:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field source", values[i])
 			} else if value.Valid {
-				f.Source = value.String
+				_m.Source = value.String
 			}
 		case file.FieldQuarantine:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field quarantine", values[i])
 			} else if value.Valid {
-				f.Quarantine = value.Bool
+				_m.Quarantine = value.Bool
 			}
 		case file.FieldNeedsReview:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field needs_review", values[i])
 			} else if value.Valid {
-				f.NeedsReview = value.Bool
+				_m.NeedsReview = value.Bool
 			}
 		case file.FieldDiskNumber:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field disk_number", values[i])
 			} else if value.Valid {
-				f.DiskNumber = new(int)
-				*f.DiskNumber = int(value.Int64)
+				_m.DiskNumber = new(int)
+				*_m.DiskNumber = int(value.Int64)
 			}
 		case file.FieldSide:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field side", values[i])
 			} else if value.Valid {
-				f.Side = value.String
+				_m.Side = value.String
 			}
 		case file.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field game_files", values[i])
 			} else if value.Valid {
-				f.game_files = new(string)
-				*f.game_files = value.String
+				_m.game_files = new(string)
+				*_m.game_files = value.String
 			}
 		default:
-			f.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -201,78 +201,78 @@ func (f *File) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the File.
 // This includes values selected through modifiers, order, etc.
-func (f *File) Value(name string) (ent.Value, error) {
-	return f.selectValues.Get(name)
+func (_m *File) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryGame queries the "game" edge of the File entity.
-func (f *File) QueryGame() *GameQuery {
-	return NewFileClient(f.config).QueryGame(f)
+func (_m *File) QueryGame() *GameQuery {
+	return NewFileClient(_m.config).QueryGame(_m)
 }
 
 // Update returns a builder for updating this File.
 // Note that you need to call File.Unwrap() before calling this method if this File
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (f *File) Update() *FileUpdateOne {
-	return NewFileClient(f.config).UpdateOne(f)
+func (_m *File) Update() *FileUpdateOne {
+	return NewFileClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the File entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (f *File) Unwrap() *File {
-	_tx, ok := f.config.driver.(*txDriver)
+func (_m *File) Unwrap() *File {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: File is not a transactional entity")
 	}
-	f.config.driver = _tx.drv
-	return f
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (f *File) String() string {
+func (_m *File) String() string {
 	var builder strings.Builder
 	builder.WriteString("File(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", f.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("path=")
-	builder.WriteString(f.Path)
+	builder.WriteString(_m.Path)
 	builder.WriteString(", ")
 	builder.WriteString("original_name=")
-	builder.WriteString(f.OriginalName)
+	builder.WriteString(_m.OriginalName)
 	builder.WriteString(", ")
 	builder.WriteString("normalized_name=")
-	builder.WriteString(f.NormalizedName)
+	builder.WriteString(_m.NormalizedName)
 	builder.WriteString(", ")
 	builder.WriteString("set_key=")
-	builder.WriteString(f.SetKey)
+	builder.WriteString(_m.SetKey)
 	builder.WriteString(", ")
 	builder.WriteString("checksum=")
-	builder.WriteString(f.Checksum)
+	builder.WriteString(_m.Checksum)
 	builder.WriteString(", ")
 	builder.WriteString("size_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", f.SizeBytes))
+	builder.WriteString(fmt.Sprintf("%v", _m.SizeBytes))
 	builder.WriteString(", ")
 	builder.WriteString("mime_type=")
-	builder.WriteString(f.MimeType)
+	builder.WriteString(_m.MimeType)
 	builder.WriteString(", ")
 	builder.WriteString("format=")
-	builder.WriteString(f.Format)
+	builder.WriteString(_m.Format)
 	builder.WriteString(", ")
 	builder.WriteString("source=")
-	builder.WriteString(f.Source)
+	builder.WriteString(_m.Source)
 	builder.WriteString(", ")
 	builder.WriteString("quarantine=")
-	builder.WriteString(fmt.Sprintf("%v", f.Quarantine))
+	builder.WriteString(fmt.Sprintf("%v", _m.Quarantine))
 	builder.WriteString(", ")
 	builder.WriteString("needs_review=")
-	builder.WriteString(fmt.Sprintf("%v", f.NeedsReview))
+	builder.WriteString(fmt.Sprintf("%v", _m.NeedsReview))
 	builder.WriteString(", ")
-	if v := f.DiskNumber; v != nil {
+	if v := _m.DiskNumber; v != nil {
 		builder.WriteString("disk_number=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
 	builder.WriteString("side=")
-	builder.WriteString(f.Side)
+	builder.WriteString(_m.Side)
 	builder.WriteByte(')')
 	return builder.String()
 }

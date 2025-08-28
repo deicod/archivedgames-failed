@@ -20,93 +20,93 @@ type ReportCreate struct {
 }
 
 // SetSubjectType sets the "subject_type" field.
-func (rc *ReportCreate) SetSubjectType(s string) *ReportCreate {
-	rc.mutation.SetSubjectType(s)
-	return rc
+func (_c *ReportCreate) SetSubjectType(v string) *ReportCreate {
+	_c.mutation.SetSubjectType(v)
+	return _c
 }
 
 // SetSubjectID sets the "subject_id" field.
-func (rc *ReportCreate) SetSubjectID(s string) *ReportCreate {
-	rc.mutation.SetSubjectID(s)
-	return rc
+func (_c *ReportCreate) SetSubjectID(v string) *ReportCreate {
+	_c.mutation.SetSubjectID(v)
+	return _c
 }
 
 // SetReporterID sets the "reporter_id" field.
-func (rc *ReportCreate) SetReporterID(s string) *ReportCreate {
-	rc.mutation.SetReporterID(s)
-	return rc
+func (_c *ReportCreate) SetReporterID(v string) *ReportCreate {
+	_c.mutation.SetReporterID(v)
+	return _c
 }
 
 // SetNillableReporterID sets the "reporter_id" field if the given value is not nil.
-func (rc *ReportCreate) SetNillableReporterID(s *string) *ReportCreate {
-	if s != nil {
-		rc.SetReporterID(*s)
+func (_c *ReportCreate) SetNillableReporterID(v *string) *ReportCreate {
+	if v != nil {
+		_c.SetReporterID(*v)
 	}
-	return rc
+	return _c
 }
 
 // SetReason sets the "reason" field.
-func (rc *ReportCreate) SetReason(s string) *ReportCreate {
-	rc.mutation.SetReason(s)
-	return rc
+func (_c *ReportCreate) SetReason(v string) *ReportCreate {
+	_c.mutation.SetReason(v)
+	return _c
 }
 
 // SetNote sets the "note" field.
-func (rc *ReportCreate) SetNote(s string) *ReportCreate {
-	rc.mutation.SetNote(s)
-	return rc
+func (_c *ReportCreate) SetNote(v string) *ReportCreate {
+	_c.mutation.SetNote(v)
+	return _c
 }
 
 // SetNillableNote sets the "note" field if the given value is not nil.
-func (rc *ReportCreate) SetNillableNote(s *string) *ReportCreate {
-	if s != nil {
-		rc.SetNote(*s)
+func (_c *ReportCreate) SetNillableNote(v *string) *ReportCreate {
+	if v != nil {
+		_c.SetNote(*v)
 	}
-	return rc
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (rc *ReportCreate) SetStatus(r report.Status) *ReportCreate {
-	rc.mutation.SetStatus(r)
-	return rc
+func (_c *ReportCreate) SetStatus(v report.Status) *ReportCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (rc *ReportCreate) SetNillableStatus(r *report.Status) *ReportCreate {
-	if r != nil {
-		rc.SetStatus(*r)
+func (_c *ReportCreate) SetNillableStatus(v *report.Status) *ReportCreate {
+	if v != nil {
+		_c.SetStatus(*v)
 	}
-	return rc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (rc *ReportCreate) SetID(s string) *ReportCreate {
-	rc.mutation.SetID(s)
-	return rc
+func (_c *ReportCreate) SetID(v string) *ReportCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (rc *ReportCreate) SetNillableID(s *string) *ReportCreate {
-	if s != nil {
-		rc.SetID(*s)
+func (_c *ReportCreate) SetNillableID(v *string) *ReportCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return rc
+	return _c
 }
 
 // Mutation returns the ReportMutation object of the builder.
-func (rc *ReportCreate) Mutation() *ReportMutation {
-	return rc.mutation
+func (_c *ReportCreate) Mutation() *ReportMutation {
+	return _c.mutation
 }
 
 // Save creates the Report in the database.
-func (rc *ReportCreate) Save(ctx context.Context) (*Report, error) {
-	rc.defaults()
-	return withHooks(ctx, rc.sqlSave, rc.mutation, rc.hooks)
+func (_c *ReportCreate) Save(ctx context.Context) (*Report, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (rc *ReportCreate) SaveX(ctx context.Context) *Report {
-	v, err := rc.Save(ctx)
+func (_c *ReportCreate) SaveX(ctx context.Context) *Report {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -114,45 +114,45 @@ func (rc *ReportCreate) SaveX(ctx context.Context) *Report {
 }
 
 // Exec executes the query.
-func (rc *ReportCreate) Exec(ctx context.Context) error {
-	_, err := rc.Save(ctx)
+func (_c *ReportCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rc *ReportCreate) ExecX(ctx context.Context) {
-	if err := rc.Exec(ctx); err != nil {
+func (_c *ReportCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (rc *ReportCreate) defaults() {
-	if _, ok := rc.mutation.Status(); !ok {
+func (_c *ReportCreate) defaults() {
+	if _, ok := _c.mutation.Status(); !ok {
 		v := report.DefaultStatus
-		rc.mutation.SetStatus(v)
+		_c.mutation.SetStatus(v)
 	}
-	if _, ok := rc.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		v := report.DefaultID()
-		rc.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (rc *ReportCreate) check() error {
-	if _, ok := rc.mutation.SubjectType(); !ok {
+func (_c *ReportCreate) check() error {
+	if _, ok := _c.mutation.SubjectType(); !ok {
 		return &ValidationError{Name: "subject_type", err: errors.New(`ent: missing required field "Report.subject_type"`)}
 	}
-	if _, ok := rc.mutation.SubjectID(); !ok {
+	if _, ok := _c.mutation.SubjectID(); !ok {
 		return &ValidationError{Name: "subject_id", err: errors.New(`ent: missing required field "Report.subject_id"`)}
 	}
-	if _, ok := rc.mutation.Reason(); !ok {
+	if _, ok := _c.mutation.Reason(); !ok {
 		return &ValidationError{Name: "reason", err: errors.New(`ent: missing required field "Report.reason"`)}
 	}
-	if _, ok := rc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Report.status"`)}
 	}
-	if v, ok := rc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := report.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Report.status": %w`, err)}
 		}
@@ -160,12 +160,12 @@ func (rc *ReportCreate) check() error {
 	return nil
 }
 
-func (rc *ReportCreate) sqlSave(ctx context.Context) (*Report, error) {
-	if err := rc.check(); err != nil {
+func (_c *ReportCreate) sqlSave(ctx context.Context) (*Report, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := rc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, rc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -178,41 +178,41 @@ func (rc *ReportCreate) sqlSave(ctx context.Context) (*Report, error) {
 			return nil, fmt.Errorf("unexpected Report.ID type: %T", _spec.ID.Value)
 		}
 	}
-	rc.mutation.id = &_node.ID
-	rc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (rc *ReportCreate) createSpec() (*Report, *sqlgraph.CreateSpec) {
+func (_c *ReportCreate) createSpec() (*Report, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Report{config: rc.config}
+		_node = &Report{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(report.Table, sqlgraph.NewFieldSpec(report.FieldID, field.TypeString))
 	)
-	if id, ok := rc.mutation.ID(); ok {
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := rc.mutation.SubjectType(); ok {
+	if value, ok := _c.mutation.SubjectType(); ok {
 		_spec.SetField(report.FieldSubjectType, field.TypeString, value)
 		_node.SubjectType = value
 	}
-	if value, ok := rc.mutation.SubjectID(); ok {
+	if value, ok := _c.mutation.SubjectID(); ok {
 		_spec.SetField(report.FieldSubjectID, field.TypeString, value)
 		_node.SubjectID = value
 	}
-	if value, ok := rc.mutation.ReporterID(); ok {
+	if value, ok := _c.mutation.ReporterID(); ok {
 		_spec.SetField(report.FieldReporterID, field.TypeString, value)
 		_node.ReporterID = value
 	}
-	if value, ok := rc.mutation.Reason(); ok {
+	if value, ok := _c.mutation.Reason(); ok {
 		_spec.SetField(report.FieldReason, field.TypeString, value)
 		_node.Reason = value
 	}
-	if value, ok := rc.mutation.Note(); ok {
+	if value, ok := _c.mutation.Note(); ok {
 		_spec.SetField(report.FieldNote, field.TypeString, value)
 		_node.Note = value
 	}
-	if value, ok := rc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(report.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
@@ -227,16 +227,16 @@ type ReportCreateBulk struct {
 }
 
 // Save creates the Report entities in the database.
-func (rcb *ReportCreateBulk) Save(ctx context.Context) ([]*Report, error) {
-	if rcb.err != nil {
-		return nil, rcb.err
+func (_c *ReportCreateBulk) Save(ctx context.Context) ([]*Report, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(rcb.builders))
-	nodes := make([]*Report, len(rcb.builders))
-	mutators := make([]Mutator, len(rcb.builders))
-	for i := range rcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Report, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := rcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ReportMutation)
@@ -250,11 +250,11 @@ func (rcb *ReportCreateBulk) Save(ctx context.Context) ([]*Report, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, rcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, rcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -274,7 +274,7 @@ func (rcb *ReportCreateBulk) Save(ctx context.Context) ([]*Report, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, rcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -282,8 +282,8 @@ func (rcb *ReportCreateBulk) Save(ctx context.Context) ([]*Report, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (rcb *ReportCreateBulk) SaveX(ctx context.Context) []*Report {
-	v, err := rcb.Save(ctx)
+func (_c *ReportCreateBulk) SaveX(ctx context.Context) []*Report {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -291,14 +291,14 @@ func (rcb *ReportCreateBulk) SaveX(ctx context.Context) []*Report {
 }
 
 // Exec executes the query.
-func (rcb *ReportCreateBulk) Exec(ctx context.Context) error {
-	_, err := rcb.Save(ctx)
+func (_c *ReportCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rcb *ReportCreateBulk) ExecX(ctx context.Context) {
-	if err := rcb.Exec(ctx); err != nil {
+func (_c *ReportCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

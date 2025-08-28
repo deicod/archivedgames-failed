@@ -46,7 +46,7 @@ func (*SiteSetting) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the SiteSetting fields.
-func (ss *SiteSetting) assignValues(columns []string, values []any) error {
+func (_m *SiteSetting) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -56,19 +56,19 @@ func (ss *SiteSetting) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				ss.ID = value.String
+				_m.ID = value.String
 			}
 		case sitesetting.FieldKey:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field key", values[i])
 			} else if value.Valid {
-				ss.Key = value.String
+				_m.Key = value.String
 			}
 		case sitesetting.FieldValue:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field value", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &ss.Value); err != nil {
+				if err := json.Unmarshal(*value, &_m.Value); err != nil {
 					return fmt.Errorf("unmarshal field value: %w", err)
 				}
 			}
@@ -76,10 +76,10 @@ func (ss *SiteSetting) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field public", values[i])
 			} else if value.Valid {
-				ss.Public = value.Bool
+				_m.Public = value.Bool
 			}
 		default:
-			ss.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -87,41 +87,41 @@ func (ss *SiteSetting) assignValues(columns []string, values []any) error {
 
 // GetValue returns the ent.Value that was dynamically selected and assigned to the SiteSetting.
 // This includes values selected through modifiers, order, etc.
-func (ss *SiteSetting) GetValue(name string) (ent.Value, error) {
-	return ss.selectValues.Get(name)
+func (_m *SiteSetting) GetValue(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this SiteSetting.
 // Note that you need to call SiteSetting.Unwrap() before calling this method if this SiteSetting
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ss *SiteSetting) Update() *SiteSettingUpdateOne {
-	return NewSiteSettingClient(ss.config).UpdateOne(ss)
+func (_m *SiteSetting) Update() *SiteSettingUpdateOne {
+	return NewSiteSettingClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the SiteSetting entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ss *SiteSetting) Unwrap() *SiteSetting {
-	_tx, ok := ss.config.driver.(*txDriver)
+func (_m *SiteSetting) Unwrap() *SiteSetting {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: SiteSetting is not a transactional entity")
 	}
-	ss.config.driver = _tx.drv
-	return ss
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ss *SiteSetting) String() string {
+func (_m *SiteSetting) String() string {
 	var builder strings.Builder
 	builder.WriteString("SiteSetting(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ss.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("key=")
-	builder.WriteString(ss.Key)
+	builder.WriteString(_m.Key)
 	builder.WriteString(", ")
 	builder.WriteString("value=")
-	builder.WriteString(fmt.Sprintf("%v", ss.Value))
+	builder.WriteString(fmt.Sprintf("%v", _m.Value))
 	builder.WriteString(", ")
 	builder.WriteString("public=")
-	builder.WriteString(fmt.Sprintf("%v", ss.Public))
+	builder.WriteString(fmt.Sprintf("%v", _m.Public))
 	builder.WriteByte(')')
 	return builder.String()
 }

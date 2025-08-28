@@ -21,59 +21,59 @@ type SiteSettingCreate struct {
 }
 
 // SetKey sets the "key" field.
-func (ssc *SiteSettingCreate) SetKey(s string) *SiteSettingCreate {
-	ssc.mutation.SetKey(s)
-	return ssc
+func (_c *SiteSettingCreate) SetKey(v string) *SiteSettingCreate {
+	_c.mutation.SetKey(v)
+	return _c
 }
 
 // SetValue sets the "value" field.
-func (ssc *SiteSettingCreate) SetValue(jm json.RawMessage) *SiteSettingCreate {
-	ssc.mutation.SetValue(jm)
-	return ssc
+func (_c *SiteSettingCreate) SetValue(v json.RawMessage) *SiteSettingCreate {
+	_c.mutation.SetValue(v)
+	return _c
 }
 
 // SetPublic sets the "public" field.
-func (ssc *SiteSettingCreate) SetPublic(b bool) *SiteSettingCreate {
-	ssc.mutation.SetPublic(b)
-	return ssc
+func (_c *SiteSettingCreate) SetPublic(v bool) *SiteSettingCreate {
+	_c.mutation.SetPublic(v)
+	return _c
 }
 
 // SetNillablePublic sets the "public" field if the given value is not nil.
-func (ssc *SiteSettingCreate) SetNillablePublic(b *bool) *SiteSettingCreate {
-	if b != nil {
-		ssc.SetPublic(*b)
+func (_c *SiteSettingCreate) SetNillablePublic(v *bool) *SiteSettingCreate {
+	if v != nil {
+		_c.SetPublic(*v)
 	}
-	return ssc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (ssc *SiteSettingCreate) SetID(s string) *SiteSettingCreate {
-	ssc.mutation.SetID(s)
-	return ssc
+func (_c *SiteSettingCreate) SetID(v string) *SiteSettingCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (ssc *SiteSettingCreate) SetNillableID(s *string) *SiteSettingCreate {
-	if s != nil {
-		ssc.SetID(*s)
+func (_c *SiteSettingCreate) SetNillableID(v *string) *SiteSettingCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return ssc
+	return _c
 }
 
 // Mutation returns the SiteSettingMutation object of the builder.
-func (ssc *SiteSettingCreate) Mutation() *SiteSettingMutation {
-	return ssc.mutation
+func (_c *SiteSettingCreate) Mutation() *SiteSettingMutation {
+	return _c.mutation
 }
 
 // Save creates the SiteSetting in the database.
-func (ssc *SiteSettingCreate) Save(ctx context.Context) (*SiteSetting, error) {
-	ssc.defaults()
-	return withHooks(ctx, ssc.sqlSave, ssc.mutation, ssc.hooks)
+func (_c *SiteSettingCreate) Save(ctx context.Context) (*SiteSetting, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ssc *SiteSettingCreate) SaveX(ctx context.Context) *SiteSetting {
-	v, err := ssc.Save(ctx)
+func (_c *SiteSettingCreate) SaveX(ctx context.Context) *SiteSetting {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -81,47 +81,47 @@ func (ssc *SiteSettingCreate) SaveX(ctx context.Context) *SiteSetting {
 }
 
 // Exec executes the query.
-func (ssc *SiteSettingCreate) Exec(ctx context.Context) error {
-	_, err := ssc.Save(ctx)
+func (_c *SiteSettingCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ssc *SiteSettingCreate) ExecX(ctx context.Context) {
-	if err := ssc.Exec(ctx); err != nil {
+func (_c *SiteSettingCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ssc *SiteSettingCreate) defaults() {
-	if _, ok := ssc.mutation.Public(); !ok {
+func (_c *SiteSettingCreate) defaults() {
+	if _, ok := _c.mutation.Public(); !ok {
 		v := sitesetting.DefaultPublic
-		ssc.mutation.SetPublic(v)
+		_c.mutation.SetPublic(v)
 	}
-	if _, ok := ssc.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		v := sitesetting.DefaultID()
-		ssc.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ssc *SiteSettingCreate) check() error {
-	if _, ok := ssc.mutation.Key(); !ok {
+func (_c *SiteSettingCreate) check() error {
+	if _, ok := _c.mutation.Key(); !ok {
 		return &ValidationError{Name: "key", err: errors.New(`ent: missing required field "SiteSetting.key"`)}
 	}
-	if _, ok := ssc.mutation.Public(); !ok {
+	if _, ok := _c.mutation.Public(); !ok {
 		return &ValidationError{Name: "public", err: errors.New(`ent: missing required field "SiteSetting.public"`)}
 	}
 	return nil
 }
 
-func (ssc *SiteSettingCreate) sqlSave(ctx context.Context) (*SiteSetting, error) {
-	if err := ssc.check(); err != nil {
+func (_c *SiteSettingCreate) sqlSave(ctx context.Context) (*SiteSetting, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := ssc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, ssc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -134,29 +134,29 @@ func (ssc *SiteSettingCreate) sqlSave(ctx context.Context) (*SiteSetting, error)
 			return nil, fmt.Errorf("unexpected SiteSetting.ID type: %T", _spec.ID.Value)
 		}
 	}
-	ssc.mutation.id = &_node.ID
-	ssc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (ssc *SiteSettingCreate) createSpec() (*SiteSetting, *sqlgraph.CreateSpec) {
+func (_c *SiteSettingCreate) createSpec() (*SiteSetting, *sqlgraph.CreateSpec) {
 	var (
-		_node = &SiteSetting{config: ssc.config}
+		_node = &SiteSetting{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(sitesetting.Table, sqlgraph.NewFieldSpec(sitesetting.FieldID, field.TypeString))
 	)
-	if id, ok := ssc.mutation.ID(); ok {
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ssc.mutation.Key(); ok {
+	if value, ok := _c.mutation.Key(); ok {
 		_spec.SetField(sitesetting.FieldKey, field.TypeString, value)
 		_node.Key = value
 	}
-	if value, ok := ssc.mutation.Value(); ok {
+	if value, ok := _c.mutation.Value(); ok {
 		_spec.SetField(sitesetting.FieldValue, field.TypeJSON, value)
 		_node.Value = value
 	}
-	if value, ok := ssc.mutation.Public(); ok {
+	if value, ok := _c.mutation.Public(); ok {
 		_spec.SetField(sitesetting.FieldPublic, field.TypeBool, value)
 		_node.Public = value
 	}
@@ -171,16 +171,16 @@ type SiteSettingCreateBulk struct {
 }
 
 // Save creates the SiteSetting entities in the database.
-func (sscb *SiteSettingCreateBulk) Save(ctx context.Context) ([]*SiteSetting, error) {
-	if sscb.err != nil {
-		return nil, sscb.err
+func (_c *SiteSettingCreateBulk) Save(ctx context.Context) ([]*SiteSetting, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(sscb.builders))
-	nodes := make([]*SiteSetting, len(sscb.builders))
-	mutators := make([]Mutator, len(sscb.builders))
-	for i := range sscb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*SiteSetting, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := sscb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*SiteSettingMutation)
@@ -194,11 +194,11 @@ func (sscb *SiteSettingCreateBulk) Save(ctx context.Context) ([]*SiteSetting, er
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, sscb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, sscb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -218,7 +218,7 @@ func (sscb *SiteSettingCreateBulk) Save(ctx context.Context) ([]*SiteSetting, er
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, sscb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -226,8 +226,8 @@ func (sscb *SiteSettingCreateBulk) Save(ctx context.Context) ([]*SiteSetting, er
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sscb *SiteSettingCreateBulk) SaveX(ctx context.Context) []*SiteSetting {
-	v, err := sscb.Save(ctx)
+func (_c *SiteSettingCreateBulk) SaveX(ctx context.Context) []*SiteSetting {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -235,14 +235,14 @@ func (sscb *SiteSettingCreateBulk) SaveX(ctx context.Context) []*SiteSetting {
 }
 
 // Exec executes the query.
-func (sscb *SiteSettingCreateBulk) Exec(ctx context.Context) error {
-	_, err := sscb.Save(ctx)
+func (_c *SiteSettingCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sscb *SiteSettingCreateBulk) ExecX(ctx context.Context) {
-	if err := sscb.Exec(ctx); err != nil {
+func (_c *SiteSettingCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

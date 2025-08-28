@@ -24,70 +24,70 @@ type SiteSettingUpdate struct {
 }
 
 // Where appends a list predicates to the SiteSettingUpdate builder.
-func (ssu *SiteSettingUpdate) Where(ps ...predicate.SiteSetting) *SiteSettingUpdate {
-	ssu.mutation.Where(ps...)
-	return ssu
+func (_u *SiteSettingUpdate) Where(ps ...predicate.SiteSetting) *SiteSettingUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetKey sets the "key" field.
-func (ssu *SiteSettingUpdate) SetKey(s string) *SiteSettingUpdate {
-	ssu.mutation.SetKey(s)
-	return ssu
+func (_u *SiteSettingUpdate) SetKey(v string) *SiteSettingUpdate {
+	_u.mutation.SetKey(v)
+	return _u
 }
 
 // SetNillableKey sets the "key" field if the given value is not nil.
-func (ssu *SiteSettingUpdate) SetNillableKey(s *string) *SiteSettingUpdate {
-	if s != nil {
-		ssu.SetKey(*s)
+func (_u *SiteSettingUpdate) SetNillableKey(v *string) *SiteSettingUpdate {
+	if v != nil {
+		_u.SetKey(*v)
 	}
-	return ssu
+	return _u
 }
 
 // SetValue sets the "value" field.
-func (ssu *SiteSettingUpdate) SetValue(jm json.RawMessage) *SiteSettingUpdate {
-	ssu.mutation.SetValue(jm)
-	return ssu
+func (_u *SiteSettingUpdate) SetValue(v json.RawMessage) *SiteSettingUpdate {
+	_u.mutation.SetValue(v)
+	return _u
 }
 
-// AppendValue appends jm to the "value" field.
-func (ssu *SiteSettingUpdate) AppendValue(jm json.RawMessage) *SiteSettingUpdate {
-	ssu.mutation.AppendValue(jm)
-	return ssu
+// AppendValue appends value to the "value" field.
+func (_u *SiteSettingUpdate) AppendValue(v json.RawMessage) *SiteSettingUpdate {
+	_u.mutation.AppendValue(v)
+	return _u
 }
 
 // ClearValue clears the value of the "value" field.
-func (ssu *SiteSettingUpdate) ClearValue() *SiteSettingUpdate {
-	ssu.mutation.ClearValue()
-	return ssu
+func (_u *SiteSettingUpdate) ClearValue() *SiteSettingUpdate {
+	_u.mutation.ClearValue()
+	return _u
 }
 
 // SetPublic sets the "public" field.
-func (ssu *SiteSettingUpdate) SetPublic(b bool) *SiteSettingUpdate {
-	ssu.mutation.SetPublic(b)
-	return ssu
+func (_u *SiteSettingUpdate) SetPublic(v bool) *SiteSettingUpdate {
+	_u.mutation.SetPublic(v)
+	return _u
 }
 
 // SetNillablePublic sets the "public" field if the given value is not nil.
-func (ssu *SiteSettingUpdate) SetNillablePublic(b *bool) *SiteSettingUpdate {
-	if b != nil {
-		ssu.SetPublic(*b)
+func (_u *SiteSettingUpdate) SetNillablePublic(v *bool) *SiteSettingUpdate {
+	if v != nil {
+		_u.SetPublic(*v)
 	}
-	return ssu
+	return _u
 }
 
 // Mutation returns the SiteSettingMutation object of the builder.
-func (ssu *SiteSettingUpdate) Mutation() *SiteSettingMutation {
-	return ssu.mutation
+func (_u *SiteSettingUpdate) Mutation() *SiteSettingMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ssu *SiteSettingUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, ssu.sqlSave, ssu.mutation, ssu.hooks)
+func (_u *SiteSettingUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ssu *SiteSettingUpdate) SaveX(ctx context.Context) int {
-	affected, err := ssu.Save(ctx)
+func (_u *SiteSettingUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -95,45 +95,45 @@ func (ssu *SiteSettingUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ssu *SiteSettingUpdate) Exec(ctx context.Context) error {
-	_, err := ssu.Save(ctx)
+func (_u *SiteSettingUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ssu *SiteSettingUpdate) ExecX(ctx context.Context) {
-	if err := ssu.Exec(ctx); err != nil {
+func (_u *SiteSettingUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (ssu *SiteSettingUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *SiteSettingUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(sitesetting.Table, sitesetting.Columns, sqlgraph.NewFieldSpec(sitesetting.FieldID, field.TypeString))
-	if ps := ssu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ssu.mutation.Key(); ok {
+	if value, ok := _u.mutation.Key(); ok {
 		_spec.SetField(sitesetting.FieldKey, field.TypeString, value)
 	}
-	if value, ok := ssu.mutation.Value(); ok {
+	if value, ok := _u.mutation.Value(); ok {
 		_spec.SetField(sitesetting.FieldValue, field.TypeJSON, value)
 	}
-	if value, ok := ssu.mutation.AppendedValue(); ok {
+	if value, ok := _u.mutation.AppendedValue(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, sitesetting.FieldValue, value)
 		})
 	}
-	if ssu.mutation.ValueCleared() {
+	if _u.mutation.ValueCleared() {
 		_spec.ClearField(sitesetting.FieldValue, field.TypeJSON)
 	}
-	if value, ok := ssu.mutation.Public(); ok {
+	if value, ok := _u.mutation.Public(); ok {
 		_spec.SetField(sitesetting.FieldPublic, field.TypeBool, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ssu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sitesetting.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -141,8 +141,8 @@ func (ssu *SiteSettingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	ssu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // SiteSettingUpdateOne is the builder for updating a single SiteSetting entity.
@@ -154,77 +154,77 @@ type SiteSettingUpdateOne struct {
 }
 
 // SetKey sets the "key" field.
-func (ssuo *SiteSettingUpdateOne) SetKey(s string) *SiteSettingUpdateOne {
-	ssuo.mutation.SetKey(s)
-	return ssuo
+func (_u *SiteSettingUpdateOne) SetKey(v string) *SiteSettingUpdateOne {
+	_u.mutation.SetKey(v)
+	return _u
 }
 
 // SetNillableKey sets the "key" field if the given value is not nil.
-func (ssuo *SiteSettingUpdateOne) SetNillableKey(s *string) *SiteSettingUpdateOne {
-	if s != nil {
-		ssuo.SetKey(*s)
+func (_u *SiteSettingUpdateOne) SetNillableKey(v *string) *SiteSettingUpdateOne {
+	if v != nil {
+		_u.SetKey(*v)
 	}
-	return ssuo
+	return _u
 }
 
 // SetValue sets the "value" field.
-func (ssuo *SiteSettingUpdateOne) SetValue(jm json.RawMessage) *SiteSettingUpdateOne {
-	ssuo.mutation.SetValue(jm)
-	return ssuo
+func (_u *SiteSettingUpdateOne) SetValue(v json.RawMessage) *SiteSettingUpdateOne {
+	_u.mutation.SetValue(v)
+	return _u
 }
 
-// AppendValue appends jm to the "value" field.
-func (ssuo *SiteSettingUpdateOne) AppendValue(jm json.RawMessage) *SiteSettingUpdateOne {
-	ssuo.mutation.AppendValue(jm)
-	return ssuo
+// AppendValue appends value to the "value" field.
+func (_u *SiteSettingUpdateOne) AppendValue(v json.RawMessage) *SiteSettingUpdateOne {
+	_u.mutation.AppendValue(v)
+	return _u
 }
 
 // ClearValue clears the value of the "value" field.
-func (ssuo *SiteSettingUpdateOne) ClearValue() *SiteSettingUpdateOne {
-	ssuo.mutation.ClearValue()
-	return ssuo
+func (_u *SiteSettingUpdateOne) ClearValue() *SiteSettingUpdateOne {
+	_u.mutation.ClearValue()
+	return _u
 }
 
 // SetPublic sets the "public" field.
-func (ssuo *SiteSettingUpdateOne) SetPublic(b bool) *SiteSettingUpdateOne {
-	ssuo.mutation.SetPublic(b)
-	return ssuo
+func (_u *SiteSettingUpdateOne) SetPublic(v bool) *SiteSettingUpdateOne {
+	_u.mutation.SetPublic(v)
+	return _u
 }
 
 // SetNillablePublic sets the "public" field if the given value is not nil.
-func (ssuo *SiteSettingUpdateOne) SetNillablePublic(b *bool) *SiteSettingUpdateOne {
-	if b != nil {
-		ssuo.SetPublic(*b)
+func (_u *SiteSettingUpdateOne) SetNillablePublic(v *bool) *SiteSettingUpdateOne {
+	if v != nil {
+		_u.SetPublic(*v)
 	}
-	return ssuo
+	return _u
 }
 
 // Mutation returns the SiteSettingMutation object of the builder.
-func (ssuo *SiteSettingUpdateOne) Mutation() *SiteSettingMutation {
-	return ssuo.mutation
+func (_u *SiteSettingUpdateOne) Mutation() *SiteSettingMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the SiteSettingUpdate builder.
-func (ssuo *SiteSettingUpdateOne) Where(ps ...predicate.SiteSetting) *SiteSettingUpdateOne {
-	ssuo.mutation.Where(ps...)
-	return ssuo
+func (_u *SiteSettingUpdateOne) Where(ps ...predicate.SiteSetting) *SiteSettingUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ssuo *SiteSettingUpdateOne) Select(field string, fields ...string) *SiteSettingUpdateOne {
-	ssuo.fields = append([]string{field}, fields...)
-	return ssuo
+func (_u *SiteSettingUpdateOne) Select(field string, fields ...string) *SiteSettingUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated SiteSetting entity.
-func (ssuo *SiteSettingUpdateOne) Save(ctx context.Context) (*SiteSetting, error) {
-	return withHooks(ctx, ssuo.sqlSave, ssuo.mutation, ssuo.hooks)
+func (_u *SiteSettingUpdateOne) Save(ctx context.Context) (*SiteSetting, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ssuo *SiteSettingUpdateOne) SaveX(ctx context.Context) *SiteSetting {
-	node, err := ssuo.Save(ctx)
+func (_u *SiteSettingUpdateOne) SaveX(ctx context.Context) *SiteSetting {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -232,26 +232,26 @@ func (ssuo *SiteSettingUpdateOne) SaveX(ctx context.Context) *SiteSetting {
 }
 
 // Exec executes the query on the entity.
-func (ssuo *SiteSettingUpdateOne) Exec(ctx context.Context) error {
-	_, err := ssuo.Save(ctx)
+func (_u *SiteSettingUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ssuo *SiteSettingUpdateOne) ExecX(ctx context.Context) {
-	if err := ssuo.Exec(ctx); err != nil {
+func (_u *SiteSettingUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (ssuo *SiteSettingUpdateOne) sqlSave(ctx context.Context) (_node *SiteSetting, err error) {
+func (_u *SiteSettingUpdateOne) sqlSave(ctx context.Context) (_node *SiteSetting, err error) {
 	_spec := sqlgraph.NewUpdateSpec(sitesetting.Table, sitesetting.Columns, sqlgraph.NewFieldSpec(sitesetting.FieldID, field.TypeString))
-	id, ok := ssuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SiteSetting.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ssuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, sitesetting.FieldID)
 		for _, f := range fields {
@@ -263,34 +263,34 @@ func (ssuo *SiteSettingUpdateOne) sqlSave(ctx context.Context) (_node *SiteSetti
 			}
 		}
 	}
-	if ps := ssuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ssuo.mutation.Key(); ok {
+	if value, ok := _u.mutation.Key(); ok {
 		_spec.SetField(sitesetting.FieldKey, field.TypeString, value)
 	}
-	if value, ok := ssuo.mutation.Value(); ok {
+	if value, ok := _u.mutation.Value(); ok {
 		_spec.SetField(sitesetting.FieldValue, field.TypeJSON, value)
 	}
-	if value, ok := ssuo.mutation.AppendedValue(); ok {
+	if value, ok := _u.mutation.AppendedValue(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, sitesetting.FieldValue, value)
 		})
 	}
-	if ssuo.mutation.ValueCleared() {
+	if _u.mutation.ValueCleared() {
 		_spec.ClearField(sitesetting.FieldValue, field.TypeJSON)
 	}
-	if value, ok := ssuo.mutation.Public(); ok {
+	if value, ok := _u.mutation.Public(); ok {
 		_spec.SetField(sitesetting.FieldPublic, field.TypeBool, value)
 	}
-	_node = &SiteSetting{config: ssuo.config}
+	_node = &SiteSetting{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ssuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sitesetting.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -298,6 +298,6 @@ func (ssuo *SiteSettingUpdateOne) sqlSave(ctx context.Context) (_node *SiteSetti
 		}
 		return nil, err
 	}
-	ssuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

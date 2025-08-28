@@ -300,8 +300,8 @@ func (c *FileClient) Update() *FileUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *FileClient) UpdateOne(f *File) *FileUpdateOne {
-	mutation := newFileMutation(c.config, OpUpdateOne, withFile(f))
+func (c *FileClient) UpdateOne(_m *File) *FileUpdateOne {
+	mutation := newFileMutation(c.config, OpUpdateOne, withFile(_m))
 	return &FileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -318,8 +318,8 @@ func (c *FileClient) Delete() *FileDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *FileClient) DeleteOne(f *File) *FileDeleteOne {
-	return c.DeleteOneID(f.ID)
+func (c *FileClient) DeleteOne(_m *File) *FileDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -354,16 +354,16 @@ func (c *FileClient) GetX(ctx context.Context, id string) *File {
 }
 
 // QueryGame queries the game edge of a File.
-func (c *FileClient) QueryGame(f *File) *GameQuery {
+func (c *FileClient) QueryGame(_m *File) *GameQuery {
 	query := (&GameClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := f.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(file.Table, file.FieldID, id),
 			sqlgraph.To(game.Table, game.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, file.GameTable, file.GameColumn),
 		)
-		fromV = sqlgraph.Neighbors(f.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
@@ -449,8 +449,8 @@ func (c *GameClient) Update() *GameUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *GameClient) UpdateOne(ga *Game) *GameUpdateOne {
-	mutation := newGameMutation(c.config, OpUpdateOne, withGame(ga))
+func (c *GameClient) UpdateOne(_m *Game) *GameUpdateOne {
+	mutation := newGameMutation(c.config, OpUpdateOne, withGame(_m))
 	return &GameUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -467,8 +467,8 @@ func (c *GameClient) Delete() *GameDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *GameClient) DeleteOne(ga *Game) *GameDeleteOne {
-	return c.DeleteOneID(ga.ID)
+func (c *GameClient) DeleteOne(_m *Game) *GameDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -503,32 +503,32 @@ func (c *GameClient) GetX(ctx context.Context, id string) *Game {
 }
 
 // QueryFiles queries the files edge of a Game.
-func (c *GameClient) QueryFiles(ga *Game) *FileQuery {
+func (c *GameClient) QueryFiles(_m *Game) *FileQuery {
 	query := (&FileClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ga.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(game.Table, game.FieldID, id),
 			sqlgraph.To(file.Table, file.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, game.FilesTable, game.FilesColumn),
 		)
-		fromV = sqlgraph.Neighbors(ga.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
 // QueryImages queries the images edge of a Game.
-func (c *GameClient) QueryImages(ga *Game) *ImageQuery {
+func (c *GameClient) QueryImages(_m *Game) *ImageQuery {
 	query := (&ImageClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ga.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(game.Table, game.FieldID, id),
 			sqlgraph.To(image.Table, image.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, game.ImagesTable, game.ImagesColumn),
 		)
-		fromV = sqlgraph.Neighbors(ga.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
@@ -614,8 +614,8 @@ func (c *ImageClient) Update() *ImageUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *ImageClient) UpdateOne(i *Image) *ImageUpdateOne {
-	mutation := newImageMutation(c.config, OpUpdateOne, withImage(i))
+func (c *ImageClient) UpdateOne(_m *Image) *ImageUpdateOne {
+	mutation := newImageMutation(c.config, OpUpdateOne, withImage(_m))
 	return &ImageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -632,8 +632,8 @@ func (c *ImageClient) Delete() *ImageDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *ImageClient) DeleteOne(i *Image) *ImageDeleteOne {
-	return c.DeleteOneID(i.ID)
+func (c *ImageClient) DeleteOne(_m *Image) *ImageDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -668,16 +668,16 @@ func (c *ImageClient) GetX(ctx context.Context, id string) *Image {
 }
 
 // QueryGame queries the game edge of a Image.
-func (c *ImageClient) QueryGame(i *Image) *GameQuery {
+func (c *ImageClient) QueryGame(_m *Image) *GameQuery {
 	query := (&GameClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := i.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(image.Table, image.FieldID, id),
 			sqlgraph.To(game.Table, game.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, image.GameTable, image.GameColumn),
 		)
-		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
@@ -763,8 +763,8 @@ func (c *ReportClient) Update() *ReportUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *ReportClient) UpdateOne(r *Report) *ReportUpdateOne {
-	mutation := newReportMutation(c.config, OpUpdateOne, withReport(r))
+func (c *ReportClient) UpdateOne(_m *Report) *ReportUpdateOne {
+	mutation := newReportMutation(c.config, OpUpdateOne, withReport(_m))
 	return &ReportUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -781,8 +781,8 @@ func (c *ReportClient) Delete() *ReportDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *ReportClient) DeleteOne(r *Report) *ReportDeleteOne {
-	return c.DeleteOneID(r.ID)
+func (c *ReportClient) DeleteOne(_m *Report) *ReportDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -896,8 +896,8 @@ func (c *SiteSettingClient) Update() *SiteSettingUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *SiteSettingClient) UpdateOne(ss *SiteSetting) *SiteSettingUpdateOne {
-	mutation := newSiteSettingMutation(c.config, OpUpdateOne, withSiteSetting(ss))
+func (c *SiteSettingClient) UpdateOne(_m *SiteSetting) *SiteSettingUpdateOne {
+	mutation := newSiteSettingMutation(c.config, OpUpdateOne, withSiteSetting(_m))
 	return &SiteSettingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -914,8 +914,8 @@ func (c *SiteSettingClient) Delete() *SiteSettingDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *SiteSettingClient) DeleteOne(ss *SiteSetting) *SiteSettingDeleteOne {
-	return c.DeleteOneID(ss.ID)
+func (c *SiteSettingClient) DeleteOne(_m *SiteSetting) *SiteSettingDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -1029,8 +1029,8 @@ func (c *UserShadowClient) Update() *UserShadowUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *UserShadowClient) UpdateOne(us *UserShadow) *UserShadowUpdateOne {
-	mutation := newUserShadowMutation(c.config, OpUpdateOne, withUserShadow(us))
+func (c *UserShadowClient) UpdateOne(_m *UserShadow) *UserShadowUpdateOne {
+	mutation := newUserShadowMutation(c.config, OpUpdateOne, withUserShadow(_m))
 	return &UserShadowUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -1047,8 +1047,8 @@ func (c *UserShadowClient) Delete() *UserShadowDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *UserShadowClient) DeleteOne(us *UserShadow) *UserShadowDeleteOne {
-	return c.DeleteOneID(us.ID)
+func (c *UserShadowClient) DeleteOne(_m *UserShadow) *UserShadowDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.

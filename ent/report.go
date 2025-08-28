@@ -47,7 +47,7 @@ func (*Report) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Report fields.
-func (r *Report) assignValues(columns []string, values []any) error {
+func (_m *Report) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -57,46 +57,46 @@ func (r *Report) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				r.ID = value.String
+				_m.ID = value.String
 			}
 		case report.FieldSubjectType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field subject_type", values[i])
 			} else if value.Valid {
-				r.SubjectType = value.String
+				_m.SubjectType = value.String
 			}
 		case report.FieldSubjectID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field subject_id", values[i])
 			} else if value.Valid {
-				r.SubjectID = value.String
+				_m.SubjectID = value.String
 			}
 		case report.FieldReporterID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field reporter_id", values[i])
 			} else if value.Valid {
-				r.ReporterID = value.String
+				_m.ReporterID = value.String
 			}
 		case report.FieldReason:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field reason", values[i])
 			} else if value.Valid {
-				r.Reason = value.String
+				_m.Reason = value.String
 			}
 		case report.FieldNote:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field note", values[i])
 			} else if value.Valid {
-				r.Note = value.String
+				_m.Note = value.String
 			}
 		case report.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				r.Status = report.Status(value.String)
+				_m.Status = report.Status(value.String)
 			}
 		default:
-			r.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -104,50 +104,50 @@ func (r *Report) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Report.
 // This includes values selected through modifiers, order, etc.
-func (r *Report) Value(name string) (ent.Value, error) {
-	return r.selectValues.Get(name)
+func (_m *Report) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this Report.
 // Note that you need to call Report.Unwrap() before calling this method if this Report
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (r *Report) Update() *ReportUpdateOne {
-	return NewReportClient(r.config).UpdateOne(r)
+func (_m *Report) Update() *ReportUpdateOne {
+	return NewReportClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Report entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (r *Report) Unwrap() *Report {
-	_tx, ok := r.config.driver.(*txDriver)
+func (_m *Report) Unwrap() *Report {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Report is not a transactional entity")
 	}
-	r.config.driver = _tx.drv
-	return r
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (r *Report) String() string {
+func (_m *Report) String() string {
 	var builder strings.Builder
 	builder.WriteString("Report(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", r.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("subject_type=")
-	builder.WriteString(r.SubjectType)
+	builder.WriteString(_m.SubjectType)
 	builder.WriteString(", ")
 	builder.WriteString("subject_id=")
-	builder.WriteString(r.SubjectID)
+	builder.WriteString(_m.SubjectID)
 	builder.WriteString(", ")
 	builder.WriteString("reporter_id=")
-	builder.WriteString(r.ReporterID)
+	builder.WriteString(_m.ReporterID)
 	builder.WriteString(", ")
 	builder.WriteString("reason=")
-	builder.WriteString(r.Reason)
+	builder.WriteString(_m.Reason)
 	builder.WriteString(", ")
 	builder.WriteString("note=")
-	builder.WriteString(r.Note)
+	builder.WriteString(_m.Note)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", r.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteByte(')')
 	return builder.String()
 }

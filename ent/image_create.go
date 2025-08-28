@@ -21,82 +21,82 @@ type ImageCreate struct {
 }
 
 // SetKind sets the "kind" field.
-func (ic *ImageCreate) SetKind(i image.Kind) *ImageCreate {
-	ic.mutation.SetKind(i)
-	return ic
+func (_c *ImageCreate) SetKind(v image.Kind) *ImageCreate {
+	_c.mutation.SetKind(v)
+	return _c
 }
 
 // SetPosition sets the "position" field.
-func (ic *ImageCreate) SetPosition(i int) *ImageCreate {
-	ic.mutation.SetPosition(i)
-	return ic
+func (_c *ImageCreate) SetPosition(v int) *ImageCreate {
+	_c.mutation.SetPosition(v)
+	return _c
 }
 
 // SetNillablePosition sets the "position" field if the given value is not nil.
-func (ic *ImageCreate) SetNillablePosition(i *int) *ImageCreate {
-	if i != nil {
-		ic.SetPosition(*i)
+func (_c *ImageCreate) SetNillablePosition(v *int) *ImageCreate {
+	if v != nil {
+		_c.SetPosition(*v)
 	}
-	return ic
+	return _c
 }
 
 // SetS3Key sets the "s3_key" field.
-func (ic *ImageCreate) SetS3Key(s string) *ImageCreate {
-	ic.mutation.SetS3Key(s)
-	return ic
+func (_c *ImageCreate) SetS3Key(v string) *ImageCreate {
+	_c.mutation.SetS3Key(v)
+	return _c
 }
 
 // SetWidth sets the "width" field.
-func (ic *ImageCreate) SetWidth(i int) *ImageCreate {
-	ic.mutation.SetWidth(i)
-	return ic
+func (_c *ImageCreate) SetWidth(v int) *ImageCreate {
+	_c.mutation.SetWidth(v)
+	return _c
 }
 
 // SetHeight sets the "height" field.
-func (ic *ImageCreate) SetHeight(i int) *ImageCreate {
-	ic.mutation.SetHeight(i)
-	return ic
+func (_c *ImageCreate) SetHeight(v int) *ImageCreate {
+	_c.mutation.SetHeight(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (ic *ImageCreate) SetID(s string) *ImageCreate {
-	ic.mutation.SetID(s)
-	return ic
+func (_c *ImageCreate) SetID(v string) *ImageCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (ic *ImageCreate) SetNillableID(s *string) *ImageCreate {
-	if s != nil {
-		ic.SetID(*s)
+func (_c *ImageCreate) SetNillableID(v *string) *ImageCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return ic
+	return _c
 }
 
 // SetGameID sets the "game" edge to the Game entity by ID.
-func (ic *ImageCreate) SetGameID(id string) *ImageCreate {
-	ic.mutation.SetGameID(id)
-	return ic
+func (_c *ImageCreate) SetGameID(id string) *ImageCreate {
+	_c.mutation.SetGameID(id)
+	return _c
 }
 
 // SetGame sets the "game" edge to the Game entity.
-func (ic *ImageCreate) SetGame(g *Game) *ImageCreate {
-	return ic.SetGameID(g.ID)
+func (_c *ImageCreate) SetGame(v *Game) *ImageCreate {
+	return _c.SetGameID(v.ID)
 }
 
 // Mutation returns the ImageMutation object of the builder.
-func (ic *ImageCreate) Mutation() *ImageMutation {
-	return ic.mutation
+func (_c *ImageCreate) Mutation() *ImageMutation {
+	return _c.mutation
 }
 
 // Save creates the Image in the database.
-func (ic *ImageCreate) Save(ctx context.Context) (*Image, error) {
-	ic.defaults()
-	return withHooks(ctx, ic.sqlSave, ic.mutation, ic.hooks)
+func (_c *ImageCreate) Save(ctx context.Context) (*Image, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ic *ImageCreate) SaveX(ctx context.Context) *Image {
-	v, err := ic.Save(ctx)
+func (_c *ImageCreate) SaveX(ctx context.Context) *Image {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -104,64 +104,64 @@ func (ic *ImageCreate) SaveX(ctx context.Context) *Image {
 }
 
 // Exec executes the query.
-func (ic *ImageCreate) Exec(ctx context.Context) error {
-	_, err := ic.Save(ctx)
+func (_c *ImageCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ic *ImageCreate) ExecX(ctx context.Context) {
-	if err := ic.Exec(ctx); err != nil {
+func (_c *ImageCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ic *ImageCreate) defaults() {
-	if _, ok := ic.mutation.Position(); !ok {
+func (_c *ImageCreate) defaults() {
+	if _, ok := _c.mutation.Position(); !ok {
 		v := image.DefaultPosition
-		ic.mutation.SetPosition(v)
+		_c.mutation.SetPosition(v)
 	}
-	if _, ok := ic.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		v := image.DefaultID()
-		ic.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ic *ImageCreate) check() error {
-	if _, ok := ic.mutation.Kind(); !ok {
+func (_c *ImageCreate) check() error {
+	if _, ok := _c.mutation.Kind(); !ok {
 		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "Image.kind"`)}
 	}
-	if v, ok := ic.mutation.Kind(); ok {
+	if v, ok := _c.mutation.Kind(); ok {
 		if err := image.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "Image.kind": %w`, err)}
 		}
 	}
-	if _, ok := ic.mutation.Position(); !ok {
+	if _, ok := _c.mutation.Position(); !ok {
 		return &ValidationError{Name: "position", err: errors.New(`ent: missing required field "Image.position"`)}
 	}
-	if _, ok := ic.mutation.S3Key(); !ok {
+	if _, ok := _c.mutation.S3Key(); !ok {
 		return &ValidationError{Name: "s3_key", err: errors.New(`ent: missing required field "Image.s3_key"`)}
 	}
-	if _, ok := ic.mutation.Width(); !ok {
+	if _, ok := _c.mutation.Width(); !ok {
 		return &ValidationError{Name: "width", err: errors.New(`ent: missing required field "Image.width"`)}
 	}
-	if _, ok := ic.mutation.Height(); !ok {
+	if _, ok := _c.mutation.Height(); !ok {
 		return &ValidationError{Name: "height", err: errors.New(`ent: missing required field "Image.height"`)}
 	}
-	if len(ic.mutation.GameIDs()) == 0 {
+	if len(_c.mutation.GameIDs()) == 0 {
 		return &ValidationError{Name: "game", err: errors.New(`ent: missing required edge "Image.game"`)}
 	}
 	return nil
 }
 
-func (ic *ImageCreate) sqlSave(ctx context.Context) (*Image, error) {
-	if err := ic.check(); err != nil {
+func (_c *ImageCreate) sqlSave(ctx context.Context) (*Image, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := ic.createSpec()
-	if err := sqlgraph.CreateNode(ctx, ic.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -174,41 +174,41 @@ func (ic *ImageCreate) sqlSave(ctx context.Context) (*Image, error) {
 			return nil, fmt.Errorf("unexpected Image.ID type: %T", _spec.ID.Value)
 		}
 	}
-	ic.mutation.id = &_node.ID
-	ic.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (ic *ImageCreate) createSpec() (*Image, *sqlgraph.CreateSpec) {
+func (_c *ImageCreate) createSpec() (*Image, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Image{config: ic.config}
+		_node = &Image{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(image.Table, sqlgraph.NewFieldSpec(image.FieldID, field.TypeString))
 	)
-	if id, ok := ic.mutation.ID(); ok {
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ic.mutation.Kind(); ok {
+	if value, ok := _c.mutation.Kind(); ok {
 		_spec.SetField(image.FieldKind, field.TypeEnum, value)
 		_node.Kind = value
 	}
-	if value, ok := ic.mutation.Position(); ok {
+	if value, ok := _c.mutation.Position(); ok {
 		_spec.SetField(image.FieldPosition, field.TypeInt, value)
 		_node.Position = value
 	}
-	if value, ok := ic.mutation.S3Key(); ok {
+	if value, ok := _c.mutation.S3Key(); ok {
 		_spec.SetField(image.FieldS3Key, field.TypeString, value)
 		_node.S3Key = value
 	}
-	if value, ok := ic.mutation.Width(); ok {
+	if value, ok := _c.mutation.Width(); ok {
 		_spec.SetField(image.FieldWidth, field.TypeInt, value)
 		_node.Width = value
 	}
-	if value, ok := ic.mutation.Height(); ok {
+	if value, ok := _c.mutation.Height(); ok {
 		_spec.SetField(image.FieldHeight, field.TypeInt, value)
 		_node.Height = value
 	}
-	if nodes := ic.mutation.GameIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.GameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -236,16 +236,16 @@ type ImageCreateBulk struct {
 }
 
 // Save creates the Image entities in the database.
-func (icb *ImageCreateBulk) Save(ctx context.Context) ([]*Image, error) {
-	if icb.err != nil {
-		return nil, icb.err
+func (_c *ImageCreateBulk) Save(ctx context.Context) ([]*Image, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(icb.builders))
-	nodes := make([]*Image, len(icb.builders))
-	mutators := make([]Mutator, len(icb.builders))
-	for i := range icb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Image, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := icb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ImageMutation)
@@ -259,11 +259,11 @@ func (icb *ImageCreateBulk) Save(ctx context.Context) ([]*Image, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, icb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, icb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -283,7 +283,7 @@ func (icb *ImageCreateBulk) Save(ctx context.Context) ([]*Image, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, icb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -291,8 +291,8 @@ func (icb *ImageCreateBulk) Save(ctx context.Context) ([]*Image, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (icb *ImageCreateBulk) SaveX(ctx context.Context) []*Image {
-	v, err := icb.Save(ctx)
+func (_c *ImageCreateBulk) SaveX(ctx context.Context) []*Image {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -300,14 +300,14 @@ func (icb *ImageCreateBulk) SaveX(ctx context.Context) []*Image {
 }
 
 // Exec executes the query.
-func (icb *ImageCreateBulk) Exec(ctx context.Context) error {
-	_, err := icb.Save(ctx)
+func (_c *ImageCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (icb *ImageCreateBulk) ExecX(ctx context.Context) {
-	if err := icb.Exec(ctx); err != nil {
+func (_c *ImageCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

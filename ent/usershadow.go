@@ -41,7 +41,7 @@ func (*UserShadow) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the UserShadow fields.
-func (us *UserShadow) assignValues(columns []string, values []any) error {
+func (_m *UserShadow) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -51,28 +51,28 @@ func (us *UserShadow) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				us.ID = value.String
+				_m.ID = value.String
 			}
 		case usershadow.FieldKeycloakSub:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field keycloak_sub", values[i])
 			} else if value.Valid {
-				us.KeycloakSub = value.String
+				_m.KeycloakSub = value.String
 			}
 		case usershadow.FieldHandle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field handle", values[i])
 			} else if value.Valid {
-				us.Handle = value.String
+				_m.Handle = value.String
 			}
 		case usershadow.FieldDisplayName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field display_name", values[i])
 			} else if value.Valid {
-				us.DisplayName = value.String
+				_m.DisplayName = value.String
 			}
 		default:
-			us.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -80,41 +80,41 @@ func (us *UserShadow) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the UserShadow.
 // This includes values selected through modifiers, order, etc.
-func (us *UserShadow) Value(name string) (ent.Value, error) {
-	return us.selectValues.Get(name)
+func (_m *UserShadow) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this UserShadow.
 // Note that you need to call UserShadow.Unwrap() before calling this method if this UserShadow
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (us *UserShadow) Update() *UserShadowUpdateOne {
-	return NewUserShadowClient(us.config).UpdateOne(us)
+func (_m *UserShadow) Update() *UserShadowUpdateOne {
+	return NewUserShadowClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the UserShadow entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (us *UserShadow) Unwrap() *UserShadow {
-	_tx, ok := us.config.driver.(*txDriver)
+func (_m *UserShadow) Unwrap() *UserShadow {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: UserShadow is not a transactional entity")
 	}
-	us.config.driver = _tx.drv
-	return us
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (us *UserShadow) String() string {
+func (_m *UserShadow) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserShadow(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", us.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("keycloak_sub=")
-	builder.WriteString(us.KeycloakSub)
+	builder.WriteString(_m.KeycloakSub)
 	builder.WriteString(", ")
 	builder.WriteString("handle=")
-	builder.WriteString(us.Handle)
+	builder.WriteString(_m.Handle)
 	builder.WriteString(", ")
 	builder.WriteString("display_name=")
-	builder.WriteString(us.DisplayName)
+	builder.WriteString(_m.DisplayName)
 	builder.WriteByte(')')
 	return builder.String()
 }

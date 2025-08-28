@@ -37,44 +37,44 @@ type GameQuery struct {
 }
 
 // Where adds a new predicate for the GameQuery builder.
-func (gq *GameQuery) Where(ps ...predicate.Game) *GameQuery {
-	gq.predicates = append(gq.predicates, ps...)
-	return gq
+func (_q *GameQuery) Where(ps ...predicate.Game) *GameQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (gq *GameQuery) Limit(limit int) *GameQuery {
-	gq.ctx.Limit = &limit
-	return gq
+func (_q *GameQuery) Limit(limit int) *GameQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (gq *GameQuery) Offset(offset int) *GameQuery {
-	gq.ctx.Offset = &offset
-	return gq
+func (_q *GameQuery) Offset(offset int) *GameQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (gq *GameQuery) Unique(unique bool) *GameQuery {
-	gq.ctx.Unique = &unique
-	return gq
+func (_q *GameQuery) Unique(unique bool) *GameQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (gq *GameQuery) Order(o ...game.OrderOption) *GameQuery {
-	gq.order = append(gq.order, o...)
-	return gq
+func (_q *GameQuery) Order(o ...game.OrderOption) *GameQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryFiles chains the current query on the "files" edge.
-func (gq *GameQuery) QueryFiles() *FileQuery {
-	query := (&FileClient{config: gq.config}).Query()
+func (_q *GameQuery) QueryFiles() *FileQuery {
+	query := (&FileClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := gq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := gq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -83,20 +83,20 @@ func (gq *GameQuery) QueryFiles() *FileQuery {
 			sqlgraph.To(file.Table, file.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, game.FilesTable, game.FilesColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(gq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryImages chains the current query on the "images" edge.
-func (gq *GameQuery) QueryImages() *ImageQuery {
-	query := (&ImageClient{config: gq.config}).Query()
+func (_q *GameQuery) QueryImages() *ImageQuery {
+	query := (&ImageClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := gq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := gq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -105,7 +105,7 @@ func (gq *GameQuery) QueryImages() *ImageQuery {
 			sqlgraph.To(image.Table, image.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, game.ImagesTable, game.ImagesColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(gq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -113,8 +113,8 @@ func (gq *GameQuery) QueryImages() *ImageQuery {
 
 // First returns the first Game entity from the query.
 // Returns a *NotFoundError when no Game was found.
-func (gq *GameQuery) First(ctx context.Context) (*Game, error) {
-	nodes, err := gq.Limit(1).All(setContextOp(ctx, gq.ctx, ent.OpQueryFirst))
+func (_q *GameQuery) First(ctx context.Context) (*Game, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -125,8 +125,8 @@ func (gq *GameQuery) First(ctx context.Context) (*Game, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (gq *GameQuery) FirstX(ctx context.Context) *Game {
-	node, err := gq.First(ctx)
+func (_q *GameQuery) FirstX(ctx context.Context) *Game {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -135,9 +135,9 @@ func (gq *GameQuery) FirstX(ctx context.Context) *Game {
 
 // FirstID returns the first Game ID from the query.
 // Returns a *NotFoundError when no Game ID was found.
-func (gq *GameQuery) FirstID(ctx context.Context) (id string, err error) {
+func (_q *GameQuery) FirstID(ctx context.Context) (id string, err error) {
 	var ids []string
-	if ids, err = gq.Limit(1).IDs(setContextOp(ctx, gq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -148,8 +148,8 @@ func (gq *GameQuery) FirstID(ctx context.Context) (id string, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (gq *GameQuery) FirstIDX(ctx context.Context) string {
-	id, err := gq.FirstID(ctx)
+func (_q *GameQuery) FirstIDX(ctx context.Context) string {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -159,8 +159,8 @@ func (gq *GameQuery) FirstIDX(ctx context.Context) string {
 // Only returns a single Game entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one Game entity is found.
 // Returns a *NotFoundError when no Game entities are found.
-func (gq *GameQuery) Only(ctx context.Context) (*Game, error) {
-	nodes, err := gq.Limit(2).All(setContextOp(ctx, gq.ctx, ent.OpQueryOnly))
+func (_q *GameQuery) Only(ctx context.Context) (*Game, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -175,8 +175,8 @@ func (gq *GameQuery) Only(ctx context.Context) (*Game, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (gq *GameQuery) OnlyX(ctx context.Context) *Game {
-	node, err := gq.Only(ctx)
+func (_q *GameQuery) OnlyX(ctx context.Context) *Game {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,9 +186,9 @@ func (gq *GameQuery) OnlyX(ctx context.Context) *Game {
 // OnlyID is like Only, but returns the only Game ID in the query.
 // Returns a *NotSingularError when more than one Game ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (gq *GameQuery) OnlyID(ctx context.Context) (id string, err error) {
+func (_q *GameQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
-	if ids, err = gq.Limit(2).IDs(setContextOp(ctx, gq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -203,8 +203,8 @@ func (gq *GameQuery) OnlyID(ctx context.Context) (id string, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (gq *GameQuery) OnlyIDX(ctx context.Context) string {
-	id, err := gq.OnlyID(ctx)
+func (_q *GameQuery) OnlyIDX(ctx context.Context) string {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -212,18 +212,18 @@ func (gq *GameQuery) OnlyIDX(ctx context.Context) string {
 }
 
 // All executes the query and returns a list of Games.
-func (gq *GameQuery) All(ctx context.Context) ([]*Game, error) {
-	ctx = setContextOp(ctx, gq.ctx, ent.OpQueryAll)
-	if err := gq.prepareQuery(ctx); err != nil {
+func (_q *GameQuery) All(ctx context.Context) ([]*Game, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*Game, *GameQuery]()
-	return withInterceptors[[]*Game](ctx, gq, qr, gq.inters)
+	return withInterceptors[[]*Game](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (gq *GameQuery) AllX(ctx context.Context) []*Game {
-	nodes, err := gq.All(ctx)
+func (_q *GameQuery) AllX(ctx context.Context) []*Game {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -231,20 +231,20 @@ func (gq *GameQuery) AllX(ctx context.Context) []*Game {
 }
 
 // IDs executes the query and returns a list of Game IDs.
-func (gq *GameQuery) IDs(ctx context.Context) (ids []string, err error) {
-	if gq.ctx.Unique == nil && gq.path != nil {
-		gq.Unique(true)
+func (_q *GameQuery) IDs(ctx context.Context) (ids []string, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, gq.ctx, ent.OpQueryIDs)
-	if err = gq.Select(game.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(game.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (gq *GameQuery) IDsX(ctx context.Context) []string {
-	ids, err := gq.IDs(ctx)
+func (_q *GameQuery) IDsX(ctx context.Context) []string {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -252,17 +252,17 @@ func (gq *GameQuery) IDsX(ctx context.Context) []string {
 }
 
 // Count returns the count of the given query.
-func (gq *GameQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, gq.ctx, ent.OpQueryCount)
-	if err := gq.prepareQuery(ctx); err != nil {
+func (_q *GameQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, gq, querierCount[*GameQuery](), gq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*GameQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (gq *GameQuery) CountX(ctx context.Context) int {
-	count, err := gq.Count(ctx)
+func (_q *GameQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -270,9 +270,9 @@ func (gq *GameQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (gq *GameQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, gq.ctx, ent.OpQueryExist)
-	switch _, err := gq.FirstID(ctx); {
+func (_q *GameQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -283,8 +283,8 @@ func (gq *GameQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (gq *GameQuery) ExistX(ctx context.Context) bool {
-	exist, err := gq.Exist(ctx)
+func (_q *GameQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -293,44 +293,44 @@ func (gq *GameQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the GameQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (gq *GameQuery) Clone() *GameQuery {
-	if gq == nil {
+func (_q *GameQuery) Clone() *GameQuery {
+	if _q == nil {
 		return nil
 	}
 	return &GameQuery{
-		config:     gq.config,
-		ctx:        gq.ctx.Clone(),
-		order:      append([]game.OrderOption{}, gq.order...),
-		inters:     append([]Interceptor{}, gq.inters...),
-		predicates: append([]predicate.Game{}, gq.predicates...),
-		withFiles:  gq.withFiles.Clone(),
-		withImages: gq.withImages.Clone(),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]game.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.Game{}, _q.predicates...),
+		withFiles:  _q.withFiles.Clone(),
+		withImages: _q.withImages.Clone(),
 		// clone intermediate query.
-		sql:  gq.sql.Clone(),
-		path: gq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithFiles tells the query-builder to eager-load the nodes that are connected to
 // the "files" edge. The optional arguments are used to configure the query builder of the edge.
-func (gq *GameQuery) WithFiles(opts ...func(*FileQuery)) *GameQuery {
-	query := (&FileClient{config: gq.config}).Query()
+func (_q *GameQuery) WithFiles(opts ...func(*FileQuery)) *GameQuery {
+	query := (&FileClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	gq.withFiles = query
-	return gq
+	_q.withFiles = query
+	return _q
 }
 
 // WithImages tells the query-builder to eager-load the nodes that are connected to
 // the "images" edge. The optional arguments are used to configure the query builder of the edge.
-func (gq *GameQuery) WithImages(opts ...func(*ImageQuery)) *GameQuery {
-	query := (&ImageClient{config: gq.config}).Query()
+func (_q *GameQuery) WithImages(opts ...func(*ImageQuery)) *GameQuery {
+	query := (&ImageClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	gq.withImages = query
-	return gq
+	_q.withImages = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -347,10 +347,10 @@ func (gq *GameQuery) WithImages(opts ...func(*ImageQuery)) *GameQuery {
 //		GroupBy(game.FieldSlug).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (gq *GameQuery) GroupBy(field string, fields ...string) *GameGroupBy {
-	gq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &GameGroupBy{build: gq}
-	grbuild.flds = &gq.ctx.Fields
+func (_q *GameQuery) GroupBy(field string, fields ...string) *GameGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &GameGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = game.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -368,112 +368,112 @@ func (gq *GameQuery) GroupBy(field string, fields ...string) *GameGroupBy {
 //	client.Game.Query().
 //		Select(game.FieldSlug).
 //		Scan(ctx, &v)
-func (gq *GameQuery) Select(fields ...string) *GameSelect {
-	gq.ctx.Fields = append(gq.ctx.Fields, fields...)
-	sbuild := &GameSelect{GameQuery: gq}
+func (_q *GameQuery) Select(fields ...string) *GameSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &GameSelect{GameQuery: _q}
 	sbuild.label = game.Label
-	sbuild.flds, sbuild.scan = &gq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a GameSelect configured with the given aggregations.
-func (gq *GameQuery) Aggregate(fns ...AggregateFunc) *GameSelect {
-	return gq.Select().Aggregate(fns...)
+func (_q *GameQuery) Aggregate(fns ...AggregateFunc) *GameSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (gq *GameQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range gq.inters {
+func (_q *GameQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, gq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range gq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !game.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if gq.path != nil {
-		prev, err := gq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		gq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (gq *GameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Game, error) {
+func (_q *GameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Game, error) {
 	var (
 		nodes       = []*Game{}
-		_spec       = gq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			gq.withFiles != nil,
-			gq.withImages != nil,
+			_q.withFiles != nil,
+			_q.withImages != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Game).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Game{config: gq.config}
+		node := &Game{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(gq.modifiers) > 0 {
-		_spec.Modifiers = gq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, gq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := gq.withFiles; query != nil {
-		if err := gq.loadFiles(ctx, query, nodes,
+	if query := _q.withFiles; query != nil {
+		if err := _q.loadFiles(ctx, query, nodes,
 			func(n *Game) { n.Edges.Files = []*File{} },
 			func(n *Game, e *File) { n.Edges.Files = append(n.Edges.Files, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := gq.withImages; query != nil {
-		if err := gq.loadImages(ctx, query, nodes,
+	if query := _q.withImages; query != nil {
+		if err := _q.loadImages(ctx, query, nodes,
 			func(n *Game) { n.Edges.Images = []*Image{} },
 			func(n *Game, e *Image) { n.Edges.Images = append(n.Edges.Images, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range gq.withNamedFiles {
-		if err := gq.loadFiles(ctx, query, nodes,
+	for name, query := range _q.withNamedFiles {
+		if err := _q.loadFiles(ctx, query, nodes,
 			func(n *Game) { n.appendNamedFiles(name) },
 			func(n *Game, e *File) { n.appendNamedFiles(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range gq.withNamedImages {
-		if err := gq.loadImages(ctx, query, nodes,
+	for name, query := range _q.withNamedImages {
+		if err := _q.loadImages(ctx, query, nodes,
 			func(n *Game) { n.appendNamedImages(name) },
 			func(n *Game, e *Image) { n.appendNamedImages(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range gq.loadTotal {
-		if err := gq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (gq *GameQuery) loadFiles(ctx context.Context, query *FileQuery, nodes []*Game, init func(*Game), assign func(*Game, *File)) error {
+func (_q *GameQuery) loadFiles(ctx context.Context, query *FileQuery, nodes []*Game, init func(*Game), assign func(*Game, *File)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[string]*Game)
 	for i := range nodes {
@@ -504,7 +504,7 @@ func (gq *GameQuery) loadFiles(ctx context.Context, query *FileQuery, nodes []*G
 	}
 	return nil
 }
-func (gq *GameQuery) loadImages(ctx context.Context, query *ImageQuery, nodes []*Game, init func(*Game), assign func(*Game, *Image)) error {
+func (_q *GameQuery) loadImages(ctx context.Context, query *ImageQuery, nodes []*Game, init func(*Game), assign func(*Game, *Image)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[string]*Game)
 	for i := range nodes {
@@ -536,27 +536,27 @@ func (gq *GameQuery) loadImages(ctx context.Context, query *ImageQuery, nodes []
 	return nil
 }
 
-func (gq *GameQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := gq.querySpec()
-	if len(gq.modifiers) > 0 {
-		_spec.Modifiers = gq.modifiers
+func (_q *GameQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = gq.ctx.Fields
-	if len(gq.ctx.Fields) > 0 {
-		_spec.Unique = gq.ctx.Unique != nil && *gq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, gq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (gq *GameQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *GameQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(game.Table, game.Columns, sqlgraph.NewFieldSpec(game.FieldID, field.TypeString))
-	_spec.From = gq.sql
-	if unique := gq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if gq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := gq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, game.FieldID)
 		for i := range fields {
@@ -565,20 +565,20 @@ func (gq *GameQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := gq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := gq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := gq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := gq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -588,33 +588,33 @@ func (gq *GameQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (gq *GameQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(gq.driver.Dialect())
+func (_q *GameQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(game.Table)
-	columns := gq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = game.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if gq.sql != nil {
-		selector = gq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if gq.ctx.Unique != nil && *gq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range gq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range gq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := gq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := gq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -622,30 +622,30 @@ func (gq *GameQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedFiles tells the query-builder to eager-load the nodes that are connected to the "files"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (gq *GameQuery) WithNamedFiles(name string, opts ...func(*FileQuery)) *GameQuery {
-	query := (&FileClient{config: gq.config}).Query()
+func (_q *GameQuery) WithNamedFiles(name string, opts ...func(*FileQuery)) *GameQuery {
+	query := (&FileClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if gq.withNamedFiles == nil {
-		gq.withNamedFiles = make(map[string]*FileQuery)
+	if _q.withNamedFiles == nil {
+		_q.withNamedFiles = make(map[string]*FileQuery)
 	}
-	gq.withNamedFiles[name] = query
-	return gq
+	_q.withNamedFiles[name] = query
+	return _q
 }
 
 // WithNamedImages tells the query-builder to eager-load the nodes that are connected to the "images"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (gq *GameQuery) WithNamedImages(name string, opts ...func(*ImageQuery)) *GameQuery {
-	query := (&ImageClient{config: gq.config}).Query()
+func (_q *GameQuery) WithNamedImages(name string, opts ...func(*ImageQuery)) *GameQuery {
+	query := (&ImageClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if gq.withNamedImages == nil {
-		gq.withNamedImages = make(map[string]*ImageQuery)
+	if _q.withNamedImages == nil {
+		_q.withNamedImages = make(map[string]*ImageQuery)
 	}
-	gq.withNamedImages[name] = query
-	return gq
+	_q.withNamedImages[name] = query
+	return _q
 }
 
 // GameGroupBy is the group-by builder for Game entities.
@@ -655,41 +655,41 @@ type GameGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (ggb *GameGroupBy) Aggregate(fns ...AggregateFunc) *GameGroupBy {
-	ggb.fns = append(ggb.fns, fns...)
-	return ggb
+func (_g *GameGroupBy) Aggregate(fns ...AggregateFunc) *GameGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ggb *GameGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ggb.build.ctx, ent.OpQueryGroupBy)
-	if err := ggb.build.prepareQuery(ctx); err != nil {
+func (_g *GameGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*GameQuery, *GameGroupBy](ctx, ggb.build, ggb, ggb.build.inters, v)
+	return scanWithInterceptors[*GameQuery, *GameGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (ggb *GameGroupBy) sqlScan(ctx context.Context, root *GameQuery, v any) error {
+func (_g *GameGroupBy) sqlScan(ctx context.Context, root *GameQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(ggb.fns))
-	for _, fn := range ggb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*ggb.flds)+len(ggb.fns))
-		for _, f := range *ggb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*ggb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ggb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -703,27 +703,27 @@ type GameSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (gs *GameSelect) Aggregate(fns ...AggregateFunc) *GameSelect {
-	gs.fns = append(gs.fns, fns...)
-	return gs
+func (_s *GameSelect) Aggregate(fns ...AggregateFunc) *GameSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (gs *GameSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, gs.ctx, ent.OpQuerySelect)
-	if err := gs.prepareQuery(ctx); err != nil {
+func (_s *GameSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*GameQuery, *GameSelect](ctx, gs.GameQuery, gs, gs.inters, v)
+	return scanWithInterceptors[*GameQuery, *GameSelect](ctx, _s.GameQuery, _s, _s.inters, v)
 }
 
-func (gs *GameSelect) sqlScan(ctx context.Context, root *GameQuery, v any) error {
+func (_s *GameSelect) sqlScan(ctx context.Context, root *GameQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(gs.fns))
-	for _, fn := range gs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*gs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -731,7 +731,7 @@ func (gs *GameSelect) sqlScan(ctx context.Context, root *GameQuery, v any) error
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := gs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

@@ -2058,1330 +2058,398 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_Game_files_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Game_files_argsAfter(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "after", ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor)
 	if err != nil {
 		return nil, err
 	}
 	args["after"] = arg0
-	arg1, err := ec.field_Game_files_argsFirst(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "first", ec.unmarshalOInt2ᚖint)
 	if err != nil {
 		return nil, err
 	}
 	args["first"] = arg1
-	arg2, err := ec.field_Game_files_argsBefore(ctx, rawArgs)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "before", ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor)
 	if err != nil {
 		return nil, err
 	}
 	args["before"] = arg2
-	arg3, err := ec.field_Game_files_argsLast(ctx, rawArgs)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "last", ec.unmarshalOInt2ᚖint)
 	if err != nil {
 		return nil, err
 	}
 	args["last"] = arg3
-	arg4, err := ec.field_Game_files_argsWhere(ctx, rawArgs)
+	arg4, err := graphql.ProcessArgField(ctx, rawArgs, "where", ec.unmarshalOFileWhereInput2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋgraphᚋmodelᚐFileWhereInput)
 	if err != nil {
 		return nil, err
 	}
 	args["where"] = arg4
 	return args, nil
-}
-func (ec *executionContext) field_Game_files_argsAfter(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*entgql.Cursor[string], error) {
-	if _, ok := rawArgs["after"]; !ok {
-		var zeroVal *entgql.Cursor[string]
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-	if tmp, ok := rawArgs["after"]; ok {
-		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-	}
-
-	var zeroVal *entgql.Cursor[string]
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Game_files_argsFirst(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int, error) {
-	if _, ok := rawArgs["first"]; !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-	if tmp, ok := rawArgs["first"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Game_files_argsBefore(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*entgql.Cursor[string], error) {
-	if _, ok := rawArgs["before"]; !ok {
-		var zeroVal *entgql.Cursor[string]
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
-	if tmp, ok := rawArgs["before"]; ok {
-		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-	}
-
-	var zeroVal *entgql.Cursor[string]
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Game_files_argsLast(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int, error) {
-	if _, ok := rawArgs["last"]; !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-	if tmp, ok := rawArgs["last"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Game_files_argsWhere(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*model.FileWhereInput, error) {
-	if _, ok := rawArgs["where"]; !ok {
-		var zeroVal *model.FileWhereInput
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
-	if tmp, ok := rawArgs["where"]; ok {
-		return ec.unmarshalOFileWhereInput2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋgraphᚋmodelᚐFileWhereInput(ctx, tmp)
-	}
-
-	var zeroVal *model.FileWhereInput
-	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Game_images_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Game_images_argsAfter(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "after", ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor)
 	if err != nil {
 		return nil, err
 	}
 	args["after"] = arg0
-	arg1, err := ec.field_Game_images_argsFirst(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "first", ec.unmarshalOInt2ᚖint)
 	if err != nil {
 		return nil, err
 	}
 	args["first"] = arg1
-	arg2, err := ec.field_Game_images_argsBefore(ctx, rawArgs)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "before", ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor)
 	if err != nil {
 		return nil, err
 	}
 	args["before"] = arg2
-	arg3, err := ec.field_Game_images_argsLast(ctx, rawArgs)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "last", ec.unmarshalOInt2ᚖint)
 	if err != nil {
 		return nil, err
 	}
 	args["last"] = arg3
-	arg4, err := ec.field_Game_images_argsWhere(ctx, rawArgs)
+	arg4, err := graphql.ProcessArgField(ctx, rawArgs, "where", ec.unmarshalOImageWhereInput2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋgraphᚋmodelᚐImageWhereInput)
 	if err != nil {
 		return nil, err
 	}
 	args["where"] = arg4
 	return args, nil
 }
-func (ec *executionContext) field_Game_images_argsAfter(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*entgql.Cursor[string], error) {
-	if _, ok := rawArgs["after"]; !ok {
-		var zeroVal *entgql.Cursor[string]
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-	if tmp, ok := rawArgs["after"]; ok {
-		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-	}
-
-	var zeroVal *entgql.Cursor[string]
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Game_images_argsFirst(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int, error) {
-	if _, ok := rawArgs["first"]; !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-	if tmp, ok := rawArgs["first"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Game_images_argsBefore(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*entgql.Cursor[string], error) {
-	if _, ok := rawArgs["before"]; !ok {
-		var zeroVal *entgql.Cursor[string]
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
-	if tmp, ok := rawArgs["before"]; ok {
-		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-	}
-
-	var zeroVal *entgql.Cursor[string]
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Game_images_argsLast(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int, error) {
-	if _, ok := rawArgs["last"]; !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-	if tmp, ok := rawArgs["last"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Game_images_argsWhere(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*model.ImageWhereInput, error) {
-	if _, ok := rawArgs["where"]; !ok {
-		var zeroVal *model.ImageWhereInput
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
-	if tmp, ok := rawArgs["where"]; ok {
-		return ec.unmarshalOImageWhereInput2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋgraphᚋmodelᚐImageWhereInput(ctx, tmp)
-	}
-
-	var zeroVal *model.ImageWhereInput
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Mutation_createImageUploads_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Mutation_createImageUploads_argsGameID(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "gameId", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["gameId"] = arg0
-	arg1, err := ec.field_Mutation_createImageUploads_argsKind(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "kind", ec.unmarshalNImageKind2githubᚗcomᚋdeicodᚋarchivedgamesᚋentᚋimageᚐKind)
 	if err != nil {
 		return nil, err
 	}
 	args["kind"] = arg1
-	arg2, err := ec.field_Mutation_createImageUploads_argsCount(ctx, rawArgs)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "count", ec.unmarshalNInt2int)
 	if err != nil {
 		return nil, err
 	}
 	args["count"] = arg2
 	return args, nil
 }
-func (ec *executionContext) field_Mutation_createImageUploads_argsGameID(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["gameId"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("gameId"))
-	if tmp, ok := rawArgs["gameId"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_createImageUploads_argsKind(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (image.Kind, error) {
-	if _, ok := rawArgs["kind"]; !ok {
-		var zeroVal image.Kind
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("kind"))
-	if tmp, ok := rawArgs["kind"]; ok {
-		return ec.unmarshalNImageKind2githubᚗcomᚋdeicodᚋarchivedgamesᚋentᚋimageᚐKind(ctx, tmp)
-	}
-
-	var zeroVal image.Kind
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_createImageUploads_argsCount(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (int, error) {
-	if _, ok := rawArgs["count"]; !ok {
-		var zeroVal int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("count"))
-	if tmp, ok := rawArgs["count"]; ok {
-		return ec.unmarshalNInt2int(ctx, tmp)
-	}
-
-	var zeroVal int
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Mutation_deleteImage_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Mutation_deleteImage_argsImageID(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "imageId", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["imageId"] = arg0
 	return args, nil
 }
-func (ec *executionContext) field_Mutation_deleteImage_argsImageID(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["imageId"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("imageId"))
-	if tmp, ok := rawArgs["imageId"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Mutation_finalizeImageUploads_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Mutation_finalizeImageUploads_argsGameID(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "gameId", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["gameId"] = arg0
-	arg1, err := ec.field_Mutation_finalizeImageUploads_argsKind(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "kind", ec.unmarshalNImageKind2githubᚗcomᚋdeicodᚋarchivedgamesᚋentᚋimageᚐKind)
 	if err != nil {
 		return nil, err
 	}
 	args["kind"] = arg1
-	arg2, err := ec.field_Mutation_finalizeImageUploads_argsItems(ctx, rawArgs)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "items", ec.unmarshalNUploadedImageInput2ᚕᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋgraphᚋmodelᚐUploadedImageInputᚄ)
 	if err != nil {
 		return nil, err
 	}
 	args["items"] = arg2
 	return args, nil
 }
-func (ec *executionContext) field_Mutation_finalizeImageUploads_argsGameID(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["gameId"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("gameId"))
-	if tmp, ok := rawArgs["gameId"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_finalizeImageUploads_argsKind(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (image.Kind, error) {
-	if _, ok := rawArgs["kind"]; !ok {
-		var zeroVal image.Kind
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("kind"))
-	if tmp, ok := rawArgs["kind"]; ok {
-		return ec.unmarshalNImageKind2githubᚗcomᚋdeicodᚋarchivedgamesᚋentᚋimageᚐKind(ctx, tmp)
-	}
-
-	var zeroVal image.Kind
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_finalizeImageUploads_argsItems(
-	ctx context.Context,
-	rawArgs map[string]any,
-) ([]*model.UploadedImageInput, error) {
-	if _, ok := rawArgs["items"]; !ok {
-		var zeroVal []*model.UploadedImageInput
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("items"))
-	if tmp, ok := rawArgs["items"]; ok {
-		return ec.unmarshalNUploadedImageInput2ᚕᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋgraphᚋmodelᚐUploadedImageInputᚄ(ctx, tmp)
-	}
-
-	var zeroVal []*model.UploadedImageInput
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Mutation_quarantineFile_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Mutation_quarantineFile_argsFileID(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "fileId", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["fileId"] = arg0
-	arg1, err := ec.field_Mutation_quarantineFile_argsReason(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "reason", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["reason"] = arg1
 	return args, nil
 }
-func (ec *executionContext) field_Mutation_quarantineFile_argsFileID(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["fileId"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("fileId"))
-	if tmp, ok := rawArgs["fileId"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_quarantineFile_argsReason(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["reason"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("reason"))
-	if tmp, ok := rawArgs["reason"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Mutation_reportContent_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Mutation_reportContent_argsSubjectType(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "subjectType", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["subjectType"] = arg0
-	arg1, err := ec.field_Mutation_reportContent_argsSubjectID(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "subjectId", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["subjectId"] = arg1
-	arg2, err := ec.field_Mutation_reportContent_argsReason(ctx, rawArgs)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "reason", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["reason"] = arg2
-	arg3, err := ec.field_Mutation_reportContent_argsNote(ctx, rawArgs)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "note", ec.unmarshalOString2ᚖstring)
 	if err != nil {
 		return nil, err
 	}
 	args["note"] = arg3
 	return args, nil
 }
-func (ec *executionContext) field_Mutation_reportContent_argsSubjectType(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["subjectType"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("subjectType"))
-	if tmp, ok := rawArgs["subjectType"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_reportContent_argsSubjectID(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["subjectId"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("subjectId"))
-	if tmp, ok := rawArgs["subjectId"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_reportContent_argsReason(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["reason"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("reason"))
-	if tmp, ok := rawArgs["reason"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_reportContent_argsNote(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*string, error) {
-	if _, ok := rawArgs["note"]; !ok {
-		var zeroVal *string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("note"))
-	if tmp, ok := rawArgs["note"]; ok {
-		return ec.unmarshalOString2ᚖstring(ctx, tmp)
-	}
-
-	var zeroVal *string
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Mutation_setCoverImage_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Mutation_setCoverImage_argsImageID(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "imageId", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["imageId"] = arg0
 	return args, nil
 }
-func (ec *executionContext) field_Mutation_setCoverImage_argsImageID(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["imageId"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("imageId"))
-	if tmp, ok := rawArgs["imageId"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Mutation_setReportStatus_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Mutation_setReportStatus_argsReportID(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "reportId", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["reportId"] = arg0
-	arg1, err := ec.field_Mutation_setReportStatus_argsStatus(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "status", ec.unmarshalNReportStatus2githubᚗcomᚋdeicodᚋarchivedgamesᚋentᚋreportᚐStatus)
 	if err != nil {
 		return nil, err
 	}
 	args["status"] = arg1
 	return args, nil
 }
-func (ec *executionContext) field_Mutation_setReportStatus_argsReportID(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["reportId"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("reportId"))
-	if tmp, ok := rawArgs["reportId"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_setReportStatus_argsStatus(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (report.Status, error) {
-	if _, ok := rawArgs["status"]; !ok {
-		var zeroVal report.Status
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
-	if tmp, ok := rawArgs["status"]; ok {
-		return ec.unmarshalNReportStatus2githubᚗcomᚋdeicodᚋarchivedgamesᚋentᚋreportᚐStatus(ctx, tmp)
-	}
-
-	var zeroVal report.Status
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Mutation_setSiteSetting_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Mutation_setSiteSetting_argsKey(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "key", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["key"] = arg0
-	arg1, err := ec.field_Mutation_setSiteSetting_argsValue(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "value", ec.unmarshalNRawMessage2githubᚗcomᚋdeicodᚋarchivedgamesᚋinternalᚋgqltypesᚐRawMessage)
 	if err != nil {
 		return nil, err
 	}
 	args["value"] = arg1
-	arg2, err := ec.field_Mutation_setSiteSetting_argsPublic(ctx, rawArgs)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "public", ec.unmarshalOBoolean2ᚖbool)
 	if err != nil {
 		return nil, err
 	}
 	args["public"] = arg2
 	return args, nil
 }
-func (ec *executionContext) field_Mutation_setSiteSetting_argsKey(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["key"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("key"))
-	if tmp, ok := rawArgs["key"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_setSiteSetting_argsValue(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (gqltypes.RawMessage, error) {
-	if _, ok := rawArgs["value"]; !ok {
-		var zeroVal gqltypes.RawMessage
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
-	if tmp, ok := rawArgs["value"]; ok {
-		return ec.unmarshalNRawMessage2githubᚗcomᚋdeicodᚋarchivedgamesᚋinternalᚋgqltypesᚐRawMessage(ctx, tmp)
-	}
-
-	var zeroVal gqltypes.RawMessage
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_setSiteSetting_argsPublic(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*bool, error) {
-	if _, ok := rawArgs["public"]; !ok {
-		var zeroVal *bool
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("public"))
-	if tmp, ok := rawArgs["public"]; ok {
-		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
-	}
-
-	var zeroVal *bool
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Query___type_argsName(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "name", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["name"] = arg0
 	return args, nil
 }
-func (ec *executionContext) field_Query___type_argsName(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["name"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-	if tmp, ok := rawArgs["name"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Query_files_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Query_files_argsAfter(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "after", ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor)
 	if err != nil {
 		return nil, err
 	}
 	args["after"] = arg0
-	arg1, err := ec.field_Query_files_argsFirst(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "first", ec.unmarshalOInt2ᚖint)
 	if err != nil {
 		return nil, err
 	}
 	args["first"] = arg1
-	arg2, err := ec.field_Query_files_argsBefore(ctx, rawArgs)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "before", ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor)
 	if err != nil {
 		return nil, err
 	}
 	args["before"] = arg2
-	arg3, err := ec.field_Query_files_argsLast(ctx, rawArgs)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "last", ec.unmarshalOInt2ᚖint)
 	if err != nil {
 		return nil, err
 	}
 	args["last"] = arg3
-	arg4, err := ec.field_Query_files_argsWhere(ctx, rawArgs)
+	arg4, err := graphql.ProcessArgField(ctx, rawArgs, "where", ec.unmarshalOFileWhereInput2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋgraphᚋmodelᚐFileWhereInput)
 	if err != nil {
 		return nil, err
 	}
 	args["where"] = arg4
 	return args, nil
-}
-func (ec *executionContext) field_Query_files_argsAfter(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*entgql.Cursor[string], error) {
-	if _, ok := rawArgs["after"]; !ok {
-		var zeroVal *entgql.Cursor[string]
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-	if tmp, ok := rawArgs["after"]; ok {
-		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-	}
-
-	var zeroVal *entgql.Cursor[string]
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_files_argsFirst(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int, error) {
-	if _, ok := rawArgs["first"]; !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-	if tmp, ok := rawArgs["first"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_files_argsBefore(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*entgql.Cursor[string], error) {
-	if _, ok := rawArgs["before"]; !ok {
-		var zeroVal *entgql.Cursor[string]
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
-	if tmp, ok := rawArgs["before"]; ok {
-		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-	}
-
-	var zeroVal *entgql.Cursor[string]
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_files_argsLast(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int, error) {
-	if _, ok := rawArgs["last"]; !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-	if tmp, ok := rawArgs["last"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_files_argsWhere(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*model.FileWhereInput, error) {
-	if _, ok := rawArgs["where"]; !ok {
-		var zeroVal *model.FileWhereInput
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
-	if tmp, ok := rawArgs["where"]; ok {
-		return ec.unmarshalOFileWhereInput2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋgraphᚋmodelᚐFileWhereInput(ctx, tmp)
-	}
-
-	var zeroVal *model.FileWhereInput
-	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Query_games_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Query_games_argsAfter(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "after", ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor)
 	if err != nil {
 		return nil, err
 	}
 	args["after"] = arg0
-	arg1, err := ec.field_Query_games_argsFirst(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "first", ec.unmarshalOInt2ᚖint)
 	if err != nil {
 		return nil, err
 	}
 	args["first"] = arg1
-	arg2, err := ec.field_Query_games_argsBefore(ctx, rawArgs)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "before", ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor)
 	if err != nil {
 		return nil, err
 	}
 	args["before"] = arg2
-	arg3, err := ec.field_Query_games_argsLast(ctx, rawArgs)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "last", ec.unmarshalOInt2ᚖint)
 	if err != nil {
 		return nil, err
 	}
 	args["last"] = arg3
-	arg4, err := ec.field_Query_games_argsWhere(ctx, rawArgs)
+	arg4, err := graphql.ProcessArgField(ctx, rawArgs, "where", ec.unmarshalOGameWhereInput2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋgraphᚋmodelᚐGameWhereInput)
 	if err != nil {
 		return nil, err
 	}
 	args["where"] = arg4
 	return args, nil
 }
-func (ec *executionContext) field_Query_games_argsAfter(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*entgql.Cursor[string], error) {
-	if _, ok := rawArgs["after"]; !ok {
-		var zeroVal *entgql.Cursor[string]
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-	if tmp, ok := rawArgs["after"]; ok {
-		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-	}
-
-	var zeroVal *entgql.Cursor[string]
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_games_argsFirst(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int, error) {
-	if _, ok := rawArgs["first"]; !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-	if tmp, ok := rawArgs["first"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_games_argsBefore(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*entgql.Cursor[string], error) {
-	if _, ok := rawArgs["before"]; !ok {
-		var zeroVal *entgql.Cursor[string]
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
-	if tmp, ok := rawArgs["before"]; ok {
-		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-	}
-
-	var zeroVal *entgql.Cursor[string]
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_games_argsLast(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int, error) {
-	if _, ok := rawArgs["last"]; !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-	if tmp, ok := rawArgs["last"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_games_argsWhere(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*model.GameWhereInput, error) {
-	if _, ok := rawArgs["where"]; !ok {
-		var zeroVal *model.GameWhereInput
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
-	if tmp, ok := rawArgs["where"]; ok {
-		return ec.unmarshalOGameWhereInput2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋgraphᚋmodelᚐGameWhereInput(ctx, tmp)
-	}
-
-	var zeroVal *model.GameWhereInput
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Query_getDownloadURL_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Query_getDownloadURL_argsFileID(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "fileId", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["fileId"] = arg0
-	arg1, err := ec.field_Query_getDownloadURL_argsTTLSeconds(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "ttlSeconds", ec.unmarshalOInt2ᚖint)
 	if err != nil {
 		return nil, err
 	}
 	args["ttlSeconds"] = arg1
 	return args, nil
 }
-func (ec *executionContext) field_Query_getDownloadURL_argsFileID(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["fileId"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("fileId"))
-	if tmp, ok := rawArgs["fileId"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_getDownloadURL_argsTTLSeconds(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int, error) {
-	if _, ok := rawArgs["ttlSeconds"]; !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("ttlSeconds"))
-	if tmp, ok := rawArgs["ttlSeconds"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Query_node_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Query_node_argsID(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
 	if err != nil {
 		return nil, err
 	}
 	args["id"] = arg0
 	return args, nil
 }
-func (ec *executionContext) field_Query_node_argsID(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["id"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-	if tmp, ok := rawArgs["id"]; ok {
-		return ec.unmarshalNID2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Query_nodes_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Query_nodes_argsIds(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "ids", ec.unmarshalNID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
 	args["ids"] = arg0
 	return args, nil
 }
-func (ec *executionContext) field_Query_nodes_argsIds(
-	ctx context.Context,
-	rawArgs map[string]any,
-) ([]string, error) {
-	if _, ok := rawArgs["ids"]; !ok {
-		var zeroVal []string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("ids"))
-	if tmp, ok := rawArgs["ids"]; ok {
-		return ec.unmarshalNID2ᚕstringᚄ(ctx, tmp)
-	}
-
-	var zeroVal []string
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Query_opensearchSuggestions_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Query_opensearchSuggestions_argsQ(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "q", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
 	args["q"] = arg0
-	arg1, err := ec.field_Query_opensearchSuggestions_argsPlatform(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "platform", ec.unmarshalOGamePlatform2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋentᚋgameᚐPlatform)
 	if err != nil {
 		return nil, err
 	}
 	args["platform"] = arg1
 	return args, nil
 }
-func (ec *executionContext) field_Query_opensearchSuggestions_argsQ(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["q"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("q"))
-	if tmp, ok := rawArgs["q"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_opensearchSuggestions_argsPlatform(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*game.Platform, error) {
-	if _, ok := rawArgs["platform"]; !ok {
-		var zeroVal *game.Platform
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("platform"))
-	if tmp, ok := rawArgs["platform"]; ok {
-		return ec.unmarshalOGamePlatform2ᚖgithubᚗcomᚋdeicodᚋarchivedgamesᚋentᚋgameᚐPlatform(ctx, tmp)
-	}
-
-	var zeroVal *game.Platform
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Query_reportsOpen_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Query_reportsOpen_argsFirst(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "first", ec.unmarshalOInt2ᚖint)
 	if err != nil {
 		return nil, err
 	}
 	args["first"] = arg0
-	arg1, err := ec.field_Query_reportsOpen_argsOffset(ctx, rawArgs)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalOInt2ᚖint)
 	if err != nil {
 		return nil, err
 	}
 	args["offset"] = arg1
-	arg2, err := ec.field_Query_reportsOpen_argsSubjectType(ctx, rawArgs)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "subjectType", ec.unmarshalOString2ᚖstring)
 	if err != nil {
 		return nil, err
 	}
 	args["subjectType"] = arg2
 	return args, nil
 }
-func (ec *executionContext) field_Query_reportsOpen_argsFirst(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int, error) {
-	if _, ok := rawArgs["first"]; !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-	if tmp, ok := rawArgs["first"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_reportsOpen_argsOffset(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int, error) {
-	if _, ok := rawArgs["offset"]; !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
-	if tmp, ok := rawArgs["offset"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_reportsOpen_argsSubjectType(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*string, error) {
-	if _, ok := rawArgs["subjectType"]; !ok {
-		var zeroVal *string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("subjectType"))
-	if tmp, ok := rawArgs["subjectType"]; ok {
-		return ec.unmarshalOString2ᚖstring(ctx, tmp)
-	}
-
-	var zeroVal *string
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field___Directive_args_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field___Directive_args_argsIncludeDeprecated(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "includeDeprecated", ec.unmarshalOBoolean2ᚖbool)
 	if err != nil {
 		return nil, err
 	}
 	args["includeDeprecated"] = arg0
 	return args, nil
-}
-func (ec *executionContext) field___Directive_args_argsIncludeDeprecated(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*bool, error) {
-	if _, ok := rawArgs["includeDeprecated"]; !ok {
-		var zeroVal *bool
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("includeDeprecated"))
-	if tmp, ok := rawArgs["includeDeprecated"]; ok {
-		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
-	}
-
-	var zeroVal *bool
-	return zeroVal, nil
 }
 
 func (ec *executionContext) field___Field_args_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field___Field_args_argsIncludeDeprecated(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "includeDeprecated", ec.unmarshalOBoolean2ᚖbool)
 	if err != nil {
 		return nil, err
 	}
 	args["includeDeprecated"] = arg0
 	return args, nil
-}
-func (ec *executionContext) field___Field_args_argsIncludeDeprecated(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*bool, error) {
-	if _, ok := rawArgs["includeDeprecated"]; !ok {
-		var zeroVal *bool
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("includeDeprecated"))
-	if tmp, ok := rawArgs["includeDeprecated"]; ok {
-		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
-	}
-
-	var zeroVal *bool
-	return zeroVal, nil
 }
 
 func (ec *executionContext) field___Type_enumValues_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field___Type_enumValues_argsIncludeDeprecated(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "includeDeprecated", ec.unmarshalOBoolean2bool)
 	if err != nil {
 		return nil, err
 	}
 	args["includeDeprecated"] = arg0
 	return args, nil
-}
-func (ec *executionContext) field___Type_enumValues_argsIncludeDeprecated(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (bool, error) {
-	if _, ok := rawArgs["includeDeprecated"]; !ok {
-		var zeroVal bool
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("includeDeprecated"))
-	if tmp, ok := rawArgs["includeDeprecated"]; ok {
-		return ec.unmarshalOBoolean2bool(ctx, tmp)
-	}
-
-	var zeroVal bool
-	return zeroVal, nil
 }
 
 func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field___Type_fields_argsIncludeDeprecated(ctx, rawArgs)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "includeDeprecated", ec.unmarshalOBoolean2bool)
 	if err != nil {
 		return nil, err
 	}
 	args["includeDeprecated"] = arg0
 	return args, nil
-}
-func (ec *executionContext) field___Type_fields_argsIncludeDeprecated(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (bool, error) {
-	if _, ok := rawArgs["includeDeprecated"]; !ok {
-		var zeroVal bool
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("includeDeprecated"))
-	if tmp, ok := rawArgs["includeDeprecated"]; ok {
-		return ec.unmarshalOBoolean2bool(ctx, tmp)
-	}
-
-	var zeroVal bool
-	return zeroVal, nil
 }
 
 // endregion ***************************** args.gotpl *****************************

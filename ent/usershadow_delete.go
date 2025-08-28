@@ -20,56 +20,56 @@ type UserShadowDelete struct {
 }
 
 // Where appends a list predicates to the UserShadowDelete builder.
-func (usd *UserShadowDelete) Where(ps ...predicate.UserShadow) *UserShadowDelete {
-	usd.mutation.Where(ps...)
-	return usd
+func (_d *UserShadowDelete) Where(ps ...predicate.UserShadow) *UserShadowDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (usd *UserShadowDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, usd.sqlExec, usd.mutation, usd.hooks)
+func (_d *UserShadowDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (usd *UserShadowDelete) ExecX(ctx context.Context) int {
-	n, err := usd.Exec(ctx)
+func (_d *UserShadowDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (usd *UserShadowDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *UserShadowDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(usershadow.Table, sqlgraph.NewFieldSpec(usershadow.FieldID, field.TypeString))
-	if ps := usd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, usd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	usd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // UserShadowDeleteOne is the builder for deleting a single UserShadow entity.
 type UserShadowDeleteOne struct {
-	usd *UserShadowDelete
+	_d *UserShadowDelete
 }
 
 // Where appends a list predicates to the UserShadowDelete builder.
-func (usdo *UserShadowDeleteOne) Where(ps ...predicate.UserShadow) *UserShadowDeleteOne {
-	usdo.usd.mutation.Where(ps...)
-	return usdo
+func (_d *UserShadowDeleteOne) Where(ps ...predicate.UserShadow) *UserShadowDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (usdo *UserShadowDeleteOne) Exec(ctx context.Context) error {
-	n, err := usdo.usd.Exec(ctx)
+func (_d *UserShadowDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (usdo *UserShadowDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (usdo *UserShadowDeleteOne) ExecX(ctx context.Context) {
-	if err := usdo.Exec(ctx); err != nil {
+func (_d *UserShadowDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

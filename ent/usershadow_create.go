@@ -20,67 +20,67 @@ type UserShadowCreate struct {
 }
 
 // SetKeycloakSub sets the "keycloak_sub" field.
-func (usc *UserShadowCreate) SetKeycloakSub(s string) *UserShadowCreate {
-	usc.mutation.SetKeycloakSub(s)
-	return usc
+func (_c *UserShadowCreate) SetKeycloakSub(v string) *UserShadowCreate {
+	_c.mutation.SetKeycloakSub(v)
+	return _c
 }
 
 // SetHandle sets the "handle" field.
-func (usc *UserShadowCreate) SetHandle(s string) *UserShadowCreate {
-	usc.mutation.SetHandle(s)
-	return usc
+func (_c *UserShadowCreate) SetHandle(v string) *UserShadowCreate {
+	_c.mutation.SetHandle(v)
+	return _c
 }
 
 // SetNillableHandle sets the "handle" field if the given value is not nil.
-func (usc *UserShadowCreate) SetNillableHandle(s *string) *UserShadowCreate {
-	if s != nil {
-		usc.SetHandle(*s)
+func (_c *UserShadowCreate) SetNillableHandle(v *string) *UserShadowCreate {
+	if v != nil {
+		_c.SetHandle(*v)
 	}
-	return usc
+	return _c
 }
 
 // SetDisplayName sets the "display_name" field.
-func (usc *UserShadowCreate) SetDisplayName(s string) *UserShadowCreate {
-	usc.mutation.SetDisplayName(s)
-	return usc
+func (_c *UserShadowCreate) SetDisplayName(v string) *UserShadowCreate {
+	_c.mutation.SetDisplayName(v)
+	return _c
 }
 
 // SetNillableDisplayName sets the "display_name" field if the given value is not nil.
-func (usc *UserShadowCreate) SetNillableDisplayName(s *string) *UserShadowCreate {
-	if s != nil {
-		usc.SetDisplayName(*s)
+func (_c *UserShadowCreate) SetNillableDisplayName(v *string) *UserShadowCreate {
+	if v != nil {
+		_c.SetDisplayName(*v)
 	}
-	return usc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (usc *UserShadowCreate) SetID(s string) *UserShadowCreate {
-	usc.mutation.SetID(s)
-	return usc
+func (_c *UserShadowCreate) SetID(v string) *UserShadowCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (usc *UserShadowCreate) SetNillableID(s *string) *UserShadowCreate {
-	if s != nil {
-		usc.SetID(*s)
+func (_c *UserShadowCreate) SetNillableID(v *string) *UserShadowCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return usc
+	return _c
 }
 
 // Mutation returns the UserShadowMutation object of the builder.
-func (usc *UserShadowCreate) Mutation() *UserShadowMutation {
-	return usc.mutation
+func (_c *UserShadowCreate) Mutation() *UserShadowMutation {
+	return _c.mutation
 }
 
 // Save creates the UserShadow in the database.
-func (usc *UserShadowCreate) Save(ctx context.Context) (*UserShadow, error) {
-	usc.defaults()
-	return withHooks(ctx, usc.sqlSave, usc.mutation, usc.hooks)
+func (_c *UserShadowCreate) Save(ctx context.Context) (*UserShadow, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (usc *UserShadowCreate) SaveX(ctx context.Context) *UserShadow {
-	v, err := usc.Save(ctx)
+func (_c *UserShadowCreate) SaveX(ctx context.Context) *UserShadow {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -88,40 +88,40 @@ func (usc *UserShadowCreate) SaveX(ctx context.Context) *UserShadow {
 }
 
 // Exec executes the query.
-func (usc *UserShadowCreate) Exec(ctx context.Context) error {
-	_, err := usc.Save(ctx)
+func (_c *UserShadowCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (usc *UserShadowCreate) ExecX(ctx context.Context) {
-	if err := usc.Exec(ctx); err != nil {
+func (_c *UserShadowCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (usc *UserShadowCreate) defaults() {
-	if _, ok := usc.mutation.ID(); !ok {
+func (_c *UserShadowCreate) defaults() {
+	if _, ok := _c.mutation.ID(); !ok {
 		v := usershadow.DefaultID()
-		usc.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (usc *UserShadowCreate) check() error {
-	if _, ok := usc.mutation.KeycloakSub(); !ok {
+func (_c *UserShadowCreate) check() error {
+	if _, ok := _c.mutation.KeycloakSub(); !ok {
 		return &ValidationError{Name: "keycloak_sub", err: errors.New(`ent: missing required field "UserShadow.keycloak_sub"`)}
 	}
 	return nil
 }
 
-func (usc *UserShadowCreate) sqlSave(ctx context.Context) (*UserShadow, error) {
-	if err := usc.check(); err != nil {
+func (_c *UserShadowCreate) sqlSave(ctx context.Context) (*UserShadow, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := usc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, usc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -134,29 +134,29 @@ func (usc *UserShadowCreate) sqlSave(ctx context.Context) (*UserShadow, error) {
 			return nil, fmt.Errorf("unexpected UserShadow.ID type: %T", _spec.ID.Value)
 		}
 	}
-	usc.mutation.id = &_node.ID
-	usc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (usc *UserShadowCreate) createSpec() (*UserShadow, *sqlgraph.CreateSpec) {
+func (_c *UserShadowCreate) createSpec() (*UserShadow, *sqlgraph.CreateSpec) {
 	var (
-		_node = &UserShadow{config: usc.config}
+		_node = &UserShadow{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(usershadow.Table, sqlgraph.NewFieldSpec(usershadow.FieldID, field.TypeString))
 	)
-	if id, ok := usc.mutation.ID(); ok {
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := usc.mutation.KeycloakSub(); ok {
+	if value, ok := _c.mutation.KeycloakSub(); ok {
 		_spec.SetField(usershadow.FieldKeycloakSub, field.TypeString, value)
 		_node.KeycloakSub = value
 	}
-	if value, ok := usc.mutation.Handle(); ok {
+	if value, ok := _c.mutation.Handle(); ok {
 		_spec.SetField(usershadow.FieldHandle, field.TypeString, value)
 		_node.Handle = value
 	}
-	if value, ok := usc.mutation.DisplayName(); ok {
+	if value, ok := _c.mutation.DisplayName(); ok {
 		_spec.SetField(usershadow.FieldDisplayName, field.TypeString, value)
 		_node.DisplayName = value
 	}
@@ -171,16 +171,16 @@ type UserShadowCreateBulk struct {
 }
 
 // Save creates the UserShadow entities in the database.
-func (uscb *UserShadowCreateBulk) Save(ctx context.Context) ([]*UserShadow, error) {
-	if uscb.err != nil {
-		return nil, uscb.err
+func (_c *UserShadowCreateBulk) Save(ctx context.Context) ([]*UserShadow, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(uscb.builders))
-	nodes := make([]*UserShadow, len(uscb.builders))
-	mutators := make([]Mutator, len(uscb.builders))
-	for i := range uscb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*UserShadow, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := uscb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UserShadowMutation)
@@ -194,11 +194,11 @@ func (uscb *UserShadowCreateBulk) Save(ctx context.Context) ([]*UserShadow, erro
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, uscb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, uscb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -218,7 +218,7 @@ func (uscb *UserShadowCreateBulk) Save(ctx context.Context) ([]*UserShadow, erro
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, uscb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -226,8 +226,8 @@ func (uscb *UserShadowCreateBulk) Save(ctx context.Context) ([]*UserShadow, erro
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uscb *UserShadowCreateBulk) SaveX(ctx context.Context) []*UserShadow {
-	v, err := uscb.Save(ctx)
+func (_c *UserShadowCreateBulk) SaveX(ctx context.Context) []*UserShadow {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -235,14 +235,14 @@ func (uscb *UserShadowCreateBulk) SaveX(ctx context.Context) []*UserShadow {
 }
 
 // Exec executes the query.
-func (uscb *UserShadowCreateBulk) Exec(ctx context.Context) error {
-	_, err := uscb.Save(ctx)
+func (_c *UserShadowCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uscb *UserShadowCreateBulk) ExecX(ctx context.Context) {
-	if err := uscb.Exec(ctx); err != nil {
+func (_c *UserShadowCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

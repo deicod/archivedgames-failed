@@ -76,57 +76,57 @@ func (*Image) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Image fields.
-func (i *Image) assignValues(columns []string, values []any) error {
+func (_m *Image) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
-	for j := range columns {
-		switch columns[j] {
+	for i := range columns {
+		switch columns[i] {
 		case image.FieldID:
-			if value, ok := values[j].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[j])
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				i.ID = value.String
+				_m.ID = value.String
 			}
 		case image.FieldKind:
-			if value, ok := values[j].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field kind", values[j])
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field kind", values[i])
 			} else if value.Valid {
-				i.Kind = image.Kind(value.String)
+				_m.Kind = image.Kind(value.String)
 			}
 		case image.FieldPosition:
-			if value, ok := values[j].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field position", values[j])
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field position", values[i])
 			} else if value.Valid {
-				i.Position = int(value.Int64)
+				_m.Position = int(value.Int64)
 			}
 		case image.FieldS3Key:
-			if value, ok := values[j].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field s3_key", values[j])
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field s3_key", values[i])
 			} else if value.Valid {
-				i.S3Key = value.String
+				_m.S3Key = value.String
 			}
 		case image.FieldWidth:
-			if value, ok := values[j].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field width", values[j])
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field width", values[i])
 			} else if value.Valid {
-				i.Width = int(value.Int64)
+				_m.Width = int(value.Int64)
 			}
 		case image.FieldHeight:
-			if value, ok := values[j].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field height", values[j])
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field height", values[i])
 			} else if value.Valid {
-				i.Height = int(value.Int64)
+				_m.Height = int(value.Int64)
 			}
 		case image.ForeignKeys[0]:
-			if value, ok := values[j].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field game_images", values[j])
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field game_images", values[i])
 			} else if value.Valid {
-				i.game_images = new(string)
-				*i.game_images = value.String
+				_m.game_images = new(string)
+				*_m.game_images = value.String
 			}
 		default:
-			i.selectValues.Set(columns[j], values[j])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -134,52 +134,52 @@ func (i *Image) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Image.
 // This includes values selected through modifiers, order, etc.
-func (i *Image) Value(name string) (ent.Value, error) {
-	return i.selectValues.Get(name)
+func (_m *Image) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryGame queries the "game" edge of the Image entity.
-func (i *Image) QueryGame() *GameQuery {
-	return NewImageClient(i.config).QueryGame(i)
+func (_m *Image) QueryGame() *GameQuery {
+	return NewImageClient(_m.config).QueryGame(_m)
 }
 
 // Update returns a builder for updating this Image.
 // Note that you need to call Image.Unwrap() before calling this method if this Image
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (i *Image) Update() *ImageUpdateOne {
-	return NewImageClient(i.config).UpdateOne(i)
+func (_m *Image) Update() *ImageUpdateOne {
+	return NewImageClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Image entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (i *Image) Unwrap() *Image {
-	_tx, ok := i.config.driver.(*txDriver)
+func (_m *Image) Unwrap() *Image {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Image is not a transactional entity")
 	}
-	i.config.driver = _tx.drv
-	return i
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (i *Image) String() string {
+func (_m *Image) String() string {
 	var builder strings.Builder
 	builder.WriteString("Image(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", i.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("kind=")
-	builder.WriteString(fmt.Sprintf("%v", i.Kind))
+	builder.WriteString(fmt.Sprintf("%v", _m.Kind))
 	builder.WriteString(", ")
 	builder.WriteString("position=")
-	builder.WriteString(fmt.Sprintf("%v", i.Position))
+	builder.WriteString(fmt.Sprintf("%v", _m.Position))
 	builder.WriteString(", ")
 	builder.WriteString("s3_key=")
-	builder.WriteString(i.S3Key)
+	builder.WriteString(_m.S3Key)
 	builder.WriteString(", ")
 	builder.WriteString("width=")
-	builder.WriteString(fmt.Sprintf("%v", i.Width))
+	builder.WriteString(fmt.Sprintf("%v", _m.Width))
 	builder.WriteString(", ")
 	builder.WriteString("height=")
-	builder.WriteString(fmt.Sprintf("%v", i.Height))
+	builder.WriteString(fmt.Sprintf("%v", _m.Height))
 	builder.WriteByte(')')
 	return builder.String()
 }
