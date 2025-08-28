@@ -81,6 +81,12 @@ Entry template:
   - Frontend: AdminReports shows total, proper paging, selection + bulk triage/reject, optional admin note, bulk quarantine for file subjects
   - Tracks: #35, #43
 
+- 2025-08-28: Observability — request IDs, metrics, logging
+  - Add X-Request-ID middleware and expose id via context
+  - Add Prometheus `/metrics` with `http_requests_total` and `http_request_duration_seconds`
+  - Switch server logs to slog JSON and add timings for key operations (download URL, opensearch, prerender)
+  - Tracks: #48
+
 - 2025-08-28: Backlog — shadcn/ui follow-ups
   - Add shadcn/ui components and refactor views (#53)
   - Theme toggle and tokens (Tailwind v4) (#54)

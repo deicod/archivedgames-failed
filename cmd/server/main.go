@@ -1,15 +1,15 @@
 package main
 
 import (
-	"context"
-	"database/sql"
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-	"os"
-	"strings"
-	"time"
+    "context"
+    "database/sql"
+    "encoding/json"
+    "fmt"
+    "log/slog"
+    "net/http"
+    "os"
+    "strings"
+    "time"
 
 	"github.com/deicod/archivedgames/ent"
 	"github.com/deicod/archivedgames/ent/file"
@@ -19,11 +19,13 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	graphpkg "github.com/deicod/archivedgames/graph"
-	authmw "github.com/deicod/archivedgames/internal/auth"
-	ratelimit "github.com/deicod/archivedgames/internal/rate"
-	reqmw "github.com/deicod/archivedgames/internal/request"
-	"github.com/deicod/archivedgames/internal/s3client"
+    graphpkg "github.com/deicod/archivedgames/graph"
+    authmw "github.com/deicod/archivedgames/internal/auth"
+    obs "github.com/deicod/archivedgames/internal/obs"
+    ratelimit "github.com/deicod/archivedgames/internal/rate"
+    reqmw "github.com/deicod/archivedgames/internal/request"
+    reqidmw "github.com/deicod/archivedgames/internal/requestid"
+    "github.com/deicod/archivedgames/internal/s3client"
 )
 
 func dsnFromEnv() string {
@@ -46,27 +48,25 @@ func getenv(k, def string) string {
 func main() {
 	ctx := context.Background()
 
-	client, err := ent.Open("postgres", dsnFromEnv())
-	if err != nil {
-		log.Fatalf("opening database: %v", err)
-	}
+    client, err := ent.Open("postgres", dsnFromEnv())
+    if err != nil { slog.Error("opening database", "err", err); os.Exit(1) }
 	defer client.Close()
 
 	// Run migrations on startup for dev.
-	if getenv("MIGRATE_ON_START", "true") == "true" {
-		if err := client.Schema.Create(ctx); err != nil {
-			log.Fatalf("running migrations: %v", err)
-		}
-		dropLegacyColumns(ctx)
-	}
+    if getenv("MIGRATE_ON_START", "true") == "true" {
+        if err := client.Schema.Create(ctx); err != nil { slog.Error("migrations", "err", err); os.Exit(1) }
+        dropLegacyColumns(ctx)
+    }
 
-	dlRate := ratelimit.NewFromEnv()
-	mux := http.NewServeMux()
+    dlRate := ratelimit.NewFromEnv()
+    mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(200); w.Write([]byte("ok")) })
 	mux.HandleFunc("/readyz", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(200); w.Write([]byte("ready")) })
-	mux.HandleFunc("/robots.txt", robotsTxt)
-	mux.HandleFunc("/opensearch.xml", openSearchXML)
-	mux.HandleFunc("/sitemap.xml", func(w http.ResponseWriter, r *http.Request) { sitemapXML(w, r, client) })
+    mux.HandleFunc("/robots.txt", robotsTxt)
+    mux.HandleFunc("/opensearch.xml", openSearchXML)
+    mux.HandleFunc("/sitemap.xml", func(w http.ResponseWriter, r *http.Request) { sitemapXML(w, r, client) })
+    // Prometheus metrics
+    mux.Handle("/metrics", obs.MetricsHandler())
     mux.HandleFunc("/api/opensearch", func(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query().Get("q")
 		plat := r.URL.Query().Get("platform")
@@ -155,10 +155,10 @@ func main() {
 		}
 		http.Redirect(w, r, url, http.StatusFound)
 	})
-	resolver := &graphpkg.Resolver{Client: client, Rate: dlRate}
-	srv := handler.NewDefaultServer(graphpkg.NewExecutableSchema(graphpkg.Config{Resolvers: resolver}))
-	// Attach OIDC auth middleware
-	mux.Handle("/graphql", reqmw.WithClientIP(authmw.NewValidator().Middleware(srv)))
+    resolver := &graphpkg.Resolver{Client: client, Rate: dlRate}
+    srv := handler.NewDefaultServer(graphpkg.NewExecutableSchema(graphpkg.Config{Resolvers: resolver}))
+    // Attach OIDC auth middleware
+    mux.Handle("/graphql", reqmw.WithClientIP(authmw.NewValidator().Middleware(srv)))
 	// Root handler with simple prerender for bots on /, /platform/*, /game/*
 	playgroundHandler := playground.Handler("GraphQL", "/graphql")
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -181,12 +181,14 @@ func main() {
 		playgroundHandler.ServeHTTP(w, r)
 	})
 
-	addr := ":8080"
-	httpSrv := &http.Server{Addr: addr, Handler: mux, ReadHeaderTimeout: 10 * time.Second}
-	log.Printf("listening on %s", addr)
-	if err := httpSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatal(err)
-	}
+    // Top-level middleware: request id + metrics
+    handlerWithMW := reqidmw.Middleware(obs.WithHTTPMetrics(mux))
+    addr := ":8080"
+    httpSrv := &http.Server{Addr: addr, Handler: handlerWithMW, ReadHeaderTimeout: 10 * time.Second}
+    slog.Info("listening", "addr", addr)
+    if err := httpSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+        slog.Error("server error", "err", err)
+    }
 }
 
 func deriveKey(orig string, w string) string {
@@ -266,8 +268,9 @@ func prerenderPlatform(w http.ResponseWriter, r *http.Request) {
 }
 
 func prerenderGame(w http.ResponseWriter, r *http.Request, c *ent.Client) {
-	b := baseURL(r)
-	slug := strings.TrimPrefix(r.URL.Path, "/game/")
+    start := time.Now()
+    b := baseURL(r)
+    slug := strings.TrimPrefix(r.URL.Path, "/game/")
 	ctx := r.Context()
 	g, err := c.Game.Query().Where(game.SlugEQ(slug)).Only(ctx)
 	if err != nil {
@@ -311,7 +314,8 @@ func prerenderGame(w http.ResponseWriter, r *http.Request, c *ent.Client) {
 		"twitter:description": desc,
 		"twitter:card":        "summary_large_image",
 	}
-	writeHTML(w, title, meta, fmt.Sprintf("<h1>%s</h1>", htmlEscape(g.Title)))
+    writeHTML(w, title, meta, fmt.Sprintf("<h1>%s</h1>", htmlEscape(g.Title)))
+    slog.Info("prerenderGame", "slug", slug, "dur_ms", time.Since(start).Milliseconds())
 }
 
 func robotsTxt(w http.ResponseWriter, r *http.Request) {
