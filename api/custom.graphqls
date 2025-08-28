@@ -9,6 +9,15 @@ extend type Query {
   publicSiteConfig: RawMessage!
   reportsOpen(first: Int = 50, offset: Int = 0, subjectType: String): [Report!]!
   reportsOpenTotal(subjectType: String): Int!
+  searchGames(
+    q: String!
+    platform: GamePlatform
+    yearFrom: Int
+    yearTo: Int
+    format: String
+    first: Int = 20
+    after: Cursor
+  ): GameConnection!
 }
 
 type PresignedPut {

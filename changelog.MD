@@ -97,6 +97,12 @@ Entry template:
   - Build verified; no code changes required beyond version bump
   - Tracks: #57
 
+- 2025-08-28: Search — Postgres FTS + API + FE page
+  - DB: add GIN index on `to_tsvector('simple', title)` (created on startup)
+  - API: `searchGames(q, platform?, yearFrom?, yearTo?, format?, first?, after?) -> GameConnection!` using FTS + filters
+  - FE: `/search` page with query + platform filter; paginated results (basic)
+  - Tracks: #58
+
 - 2025-08-28: Backlog — shadcn/ui follow-ups
   - Add shadcn/ui components and refactor views (#53)
   - Theme toggle and tokens (Tailwind v4) (#54)

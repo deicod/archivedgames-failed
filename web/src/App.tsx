@@ -3,6 +3,7 @@ import { Routes, Route, Link, useNavigate } from 'react-router';
 import Home from './pages/Home';
 import PlatformList from './pages/PlatformList';
 import GameDetail from './pages/GameDetail';
+import SearchPage from './pages/Search';
 import { useAuth, withAuthenticationRequired } from 'react-oidc-context';
 import { Button } from '@/components/ui/button';
 import PublicLayout from '@/layouts/PublicLayout';
@@ -26,6 +27,7 @@ const App: React.FC = () => {
       <Route path="/" element={<PublicLayout isAdmin={isAdmin}><Home /></PublicLayout>} />
       <Route path="/platform/:platform" element={<PublicLayout isAdmin={isAdmin}><PlatformList /></PublicLayout>} />
       <Route path="/game/:slug" element={<PublicLayout isAdmin={isAdmin}><GameDetail /></PublicLayout>} />
+      <Route path="/search" element={<PublicLayout isAdmin={isAdmin}><SearchPage /></PublicLayout>} />
 
       {/* Admin layout */}
       <Route path="/admin/reports" element={<AdminLayout><AdminRoute /></AdminLayout>} />

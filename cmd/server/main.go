@@ -56,6 +56,7 @@ func main() {
     if getenv("MIGRATE_ON_START", "true") == "true" {
         if err := client.Schema.Create(ctx); err != nil { slog.Error("migrations", "err", err); os.Exit(1) }
         dropLegacyColumns(ctx)
+        ensureFTS(ctx)
     }
 
     dlRate := ratelimit.NewFromEnv()
@@ -374,4 +375,13 @@ func dropLegacyColumns(ctx context.Context) {
 	}
 	defer db.Close()
 	_, _ = db.ExecContext(ctx, `ALTER TABLE reports DROP COLUMN IF EXISTS subject_xid`)
+}
+
+// ensureFTS creates a GIN index for full-text search on game titles if it does not exist.
+func ensureFTS(ctx context.Context) {
+    dsn := dsnFromEnv()
+    db, err := sql.Open("postgres", dsn)
+    if err != nil { return }
+    defer db.Close()
+    _, _ = db.ExecContext(ctx, `CREATE INDEX IF NOT EXISTS games_title_fts_idx ON games USING GIN (to_tsvector('simple', title))`)
 }
