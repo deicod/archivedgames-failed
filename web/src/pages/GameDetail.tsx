@@ -9,7 +9,7 @@ const Query = graphql`
     games(first: 1, where: { slug: $slug }) {
       edges {
         node {
-          id slug title
+          id slug title year publisher
           images(first: 4) { edges { node { id s3Key width height kind } } }
           files(first: 50) { edges { node { id originalName sizeBytes format } } }
         }
@@ -92,6 +92,12 @@ export default function GameDetail(){
       </div>
       <aside className="space-y-4">
         <h1 className="text-2xl font-semibold break-words">{node.title}</h1>
+        {(node.publisher || node.year) && (
+          <div className="text-sm text-gray-300 space-x-2">
+            {node.publisher && <span>Publisher: <span className="text-gray-100">{node.publisher}</span></span>}
+            {node.year && <span>Year: <span className="text-gray-100">{node.year}</span></span>}
+          </div>
+        )}
         <div className="space-y-2">
           {files.map((f:any)=> (
             <div key={f.id} className="flex items-center justify-between gap-3 text-sm">

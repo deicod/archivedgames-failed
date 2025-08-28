@@ -31,6 +31,11 @@ Entry template:
   - Docs: update Frontend Scaffold (Part 1) for Tailwind v4 setup
   - Tracks: #49
 
+- 2025-08-28: SEO — show publisher/year on game page
+  - GameDetail now renders `publisher` and `year` in the page body below the title
+  - GraphQL query updated accordingly; build verified
+  - Tracks: #47
+
 - 2025-08-28: Planning — NEXT.md linked to GitHub issues
   - Annotate `docs/NEXT.md` with direct links to open issues for each next step
   - Create tracking issues for missing items: #44 (FileGroup model), #45 (Platform validation & DOS zips), #46 (Image thumbnails), #47 (Publisher/year in body), #48 (Observability metrics/logging)
