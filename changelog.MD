@@ -75,6 +75,12 @@ Entry template:
   - Replaces prompt-based flow; aligns with moderation plan (I2)
   - Tracks: #34
 
+- 2025-08-28: Moderation — Dashboard polish (totals, paging, bulk)
+  - Backend: add `reportsOpenTotal(subjectType)` and bulk mutation `setReportStatusBulk` with optional admin note
+  - Extend `setReportStatus` to accept admin note and append to report notes
+  - Frontend: AdminReports shows total, proper paging, selection + bulk triage/reject, optional admin note, bulk quarantine for file subjects
+  - Tracks: #35, #43
+
 - 2025-08-28: Backlog — shadcn/ui follow-ups
   - Add shadcn/ui components and refactor views (#53)
   - Theme toggle and tokens (Tailwind v4) (#54)

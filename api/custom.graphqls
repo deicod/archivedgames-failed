@@ -8,6 +8,7 @@ extend type Query {
   opensearchSuggestions(q: String!, platform: GamePlatform): [String!]!
   publicSiteConfig: RawMessage!
   reportsOpen(first: Int = 50, offset: Int = 0, subjectType: String): [Report!]!
+  reportsOpenTotal(subjectType: String): Int!
 }
 
 type PresignedPut {
@@ -29,5 +30,6 @@ extend type Mutation {
   quarantineFile(fileId: String!, reason: String!): File!
   setCoverImage(imageId: String!): Image!
   deleteImage(imageId: String!): Boolean!
-  setReportStatus(reportId: String!, status: ReportStatus!): Report!
+  setReportStatus(reportId: String!, status: ReportStatus!, note: String): Report!
+  setReportStatusBulk(reportIds: [String!]!, status: ReportStatus!, note: String): [Report!]!
 }

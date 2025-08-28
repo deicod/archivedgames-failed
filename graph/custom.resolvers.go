@@ -21,9 +21,9 @@ import (
 	"github.com/deicod/archivedgames/graph/model"
 	"github.com/deicod/archivedgames/internal/auth"
 	"github.com/deicod/archivedgames/internal/gqltypes"
+	"github.com/deicod/archivedgames/internal/imageproc"
 	reqctx "github.com/deicod/archivedgames/internal/request"
 	"github.com/deicod/archivedgames/internal/s3client"
-	"github.com/deicod/archivedgames/internal/imageproc"
 )
 
 // CreateImageUploads is the resolver for the createImageUploads field.
@@ -186,7 +186,7 @@ func (r *mutationResolver) DeleteImage(ctx context.Context, imageID string) (boo
 }
 
 // SetReportStatus is the resolver for the setReportStatus field.
-func (r *mutationResolver) SetReportStatus(ctx context.Context, reportID string, status report.Status) (*ent.Report, error) {
+func (r *mutationResolver) SetReportStatus(ctx context.Context, reportID string, status report.Status, note *string) (*ent.Report, error) {
 	// Admin guard
 	isAdmin := false
 	for _, ro := range auth.Roles(ctx) {
@@ -198,10 +198,47 @@ func (r *mutationResolver) SetReportStatus(ctx context.Context, reportID string,
 	if !isAdmin {
 		return nil, errors.New("forbidden")
 	}
-	if err := r.Client.Report.UpdateOneID(reportID).SetStatus(status).Exec(ctx); err != nil {
+	// Fetch current and update with optional admin note
+	rep, err := r.Client.Report.Get(ctx, reportID)
+	if err != nil {
+		return nil, err
+	}
+	upd := r.Client.Report.UpdateOneID(reportID).SetStatus(status)
+	if note != nil && *note != "" {
+		merged := rep.Note
+		if merged != "" {
+			merged += " | "
+		}
+		merged += "admin: " + *note
+		upd = upd.SetNote(merged)
+	}
+	if err := upd.Exec(ctx); err != nil {
 		return nil, err
 	}
 	return r.Client.Report.Get(ctx, reportID)
+}
+
+// SetReportStatusBulk is the resolver for the setReportStatusBulk field.
+func (r *mutationResolver) SetReportStatusBulk(ctx context.Context, reportIds []string, status report.Status, note *string) ([]*ent.Report, error) {
+	isAdmin := false
+	for _, ro := range auth.Roles(ctx) {
+		if ro == "admin" {
+			isAdmin = true
+			break
+		}
+	}
+	if !isAdmin {
+		return nil, errors.New("forbidden")
+	}
+	out := make([]*ent.Report, 0, len(reportIds))
+	for _, id := range reportIds {
+		rep, err := r.SetReportStatus(ctx, id, status, note)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, rep)
+	}
+	return out, nil
 }
 
 // GetDownloadURL is the resolver for the getDownloadURL field.
@@ -279,7 +316,23 @@ func (r *queryResolver) ReportsOpen(ctx context.Context, first *int, offset *int
 	if first != nil && *first > 0 {
 		lim = *first
 	}
-	return r.Client.Report.Query().Where(report.StatusEQ(report.StatusOPEN)).Limit(lim).All(ctx)
+	qb := r.Client.Report.Query().Where(report.StatusEQ(report.StatusOPEN))
+	if subjectType != nil && *subjectType != "" {
+		qb = qb.Where(report.SubjectTypeEQ(*subjectType))
+	}
+	if offset != nil && *offset > 0 {
+		qb = qb.Offset(*offset)
+	}
+	return qb.Limit(lim).All(ctx)
+}
+
+// ReportsOpenTotal is the resolver for the reportsOpenTotal field.
+func (r *queryResolver) ReportsOpenTotal(ctx context.Context, subjectType *string) (int, error) {
+	qb := r.Client.Report.Query().Where(report.StatusEQ(report.StatusOPEN))
+	if subjectType != nil && *subjectType != "" {
+		qb = qb.Where(report.SubjectTypeEQ(*subjectType))
+	}
+	return qb.Count(ctx)
 }
 
 // Mutation returns MutationResolver implementation.
