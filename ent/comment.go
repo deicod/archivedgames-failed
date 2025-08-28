@@ -27,8 +27,8 @@ type Comment struct {
 	UserID string `json:"user_id,omitempty"`
 	// Language holds the value of the "language" field.
 	Language string `json:"language,omitempty"`
-	// ContentSanitized holds the value of the "content_sanitized" field.
-	ContentSanitized string `json:"content_sanitized,omitempty"`
+	// Content holds the value of the "content" field.
+	Content string `json:"content,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// EditedAt holds the value of the "edited_at" field.
@@ -83,7 +83,7 @@ func (*Comment) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case comment.FieldID, comment.FieldSubjectType, comment.FieldSubjectID, comment.FieldUserID, comment.FieldLanguage, comment.FieldContentSanitized:
+		case comment.FieldID, comment.FieldSubjectType, comment.FieldSubjectID, comment.FieldUserID, comment.FieldLanguage, comment.FieldContent:
 			values[i] = new(sql.NullString)
 		case comment.FieldCreatedAt, comment.FieldEditedAt, comment.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -136,11 +136,11 @@ func (_m *Comment) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Language = value.String
 			}
-		case comment.FieldContentSanitized:
+		case comment.FieldContent:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field content_sanitized", values[i])
+				return fmt.Errorf("unexpected type %T for field content", values[i])
 			} else if value.Valid {
-				_m.ContentSanitized = value.String
+				_m.Content = value.String
 			}
 		case comment.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -234,8 +234,8 @@ func (_m *Comment) String() string {
 	builder.WriteString("language=")
 	builder.WriteString(_m.Language)
 	builder.WriteString(", ")
-	builder.WriteString("content_sanitized=")
-	builder.WriteString(_m.ContentSanitized)
+	builder.WriteString("content=")
+	builder.WriteString(_m.Content)
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))

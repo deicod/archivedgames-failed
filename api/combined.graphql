@@ -6,7 +6,7 @@ type Comment implements Node {
   subjectID: String!
   userID: String!
   language: String
-  contentSanitized: String!
+  content: String!
   createdAt: Time!
   editedAt: Time
   deletedAt: Time
@@ -131,21 +131,21 @@ input CommentWhereInput {
   languageEqualFold: String
   languageContainsFold: String
   """
-  content_sanitized field predicates
+  content field predicates
   """
-  contentSanitized: String
-  contentSanitizedNEQ: String
-  contentSanitizedIn: [String!]
-  contentSanitizedNotIn: [String!]
-  contentSanitizedGT: String
-  contentSanitizedGTE: String
-  contentSanitizedLT: String
-  contentSanitizedLTE: String
-  contentSanitizedContains: String
-  contentSanitizedHasPrefix: String
-  contentSanitizedHasSuffix: String
-  contentSanitizedEqualFold: String
-  contentSanitizedContainsFold: String
+  content: String
+  contentNEQ: String
+  contentIn: [String!]
+  contentNotIn: [String!]
+  contentGT: String
+  contentGTE: String
+  contentLT: String
+  contentLTE: String
+  contentContains: String
+  contentHasPrefix: String
+  contentHasSuffix: String
+  contentEqualFold: String
+  contentContainsFold: String
   """
   created_at field predicates
   """

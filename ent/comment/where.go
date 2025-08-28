@@ -85,9 +85,9 @@ func Language(v string) predicate.Comment {
 	return predicate.Comment(sql.FieldEQ(FieldLanguage, v))
 }
 
-// ContentSanitized applies equality check predicate on the "content_sanitized" field. It's identical to ContentSanitizedEQ.
-func ContentSanitized(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldEQ(FieldContentSanitized, v))
+// Content applies equality check predicate on the "content" field. It's identical to ContentEQ.
+func Content(v string) predicate.Comment {
+	return predicate.Comment(sql.FieldEQ(FieldContent, v))
 }
 
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
@@ -375,69 +375,69 @@ func LanguageContainsFold(v string) predicate.Comment {
 	return predicate.Comment(sql.FieldContainsFold(FieldLanguage, v))
 }
 
-// ContentSanitizedEQ applies the EQ predicate on the "content_sanitized" field.
-func ContentSanitizedEQ(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldEQ(FieldContentSanitized, v))
+// ContentEQ applies the EQ predicate on the "content" field.
+func ContentEQ(v string) predicate.Comment {
+	return predicate.Comment(sql.FieldEQ(FieldContent, v))
 }
 
-// ContentSanitizedNEQ applies the NEQ predicate on the "content_sanitized" field.
-func ContentSanitizedNEQ(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldNEQ(FieldContentSanitized, v))
+// ContentNEQ applies the NEQ predicate on the "content" field.
+func ContentNEQ(v string) predicate.Comment {
+	return predicate.Comment(sql.FieldNEQ(FieldContent, v))
 }
 
-// ContentSanitizedIn applies the In predicate on the "content_sanitized" field.
-func ContentSanitizedIn(vs ...string) predicate.Comment {
-	return predicate.Comment(sql.FieldIn(FieldContentSanitized, vs...))
+// ContentIn applies the In predicate on the "content" field.
+func ContentIn(vs ...string) predicate.Comment {
+	return predicate.Comment(sql.FieldIn(FieldContent, vs...))
 }
 
-// ContentSanitizedNotIn applies the NotIn predicate on the "content_sanitized" field.
-func ContentSanitizedNotIn(vs ...string) predicate.Comment {
-	return predicate.Comment(sql.FieldNotIn(FieldContentSanitized, vs...))
+// ContentNotIn applies the NotIn predicate on the "content" field.
+func ContentNotIn(vs ...string) predicate.Comment {
+	return predicate.Comment(sql.FieldNotIn(FieldContent, vs...))
 }
 
-// ContentSanitizedGT applies the GT predicate on the "content_sanitized" field.
-func ContentSanitizedGT(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldGT(FieldContentSanitized, v))
+// ContentGT applies the GT predicate on the "content" field.
+func ContentGT(v string) predicate.Comment {
+	return predicate.Comment(sql.FieldGT(FieldContent, v))
 }
 
-// ContentSanitizedGTE applies the GTE predicate on the "content_sanitized" field.
-func ContentSanitizedGTE(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldGTE(FieldContentSanitized, v))
+// ContentGTE applies the GTE predicate on the "content" field.
+func ContentGTE(v string) predicate.Comment {
+	return predicate.Comment(sql.FieldGTE(FieldContent, v))
 }
 
-// ContentSanitizedLT applies the LT predicate on the "content_sanitized" field.
-func ContentSanitizedLT(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldLT(FieldContentSanitized, v))
+// ContentLT applies the LT predicate on the "content" field.
+func ContentLT(v string) predicate.Comment {
+	return predicate.Comment(sql.FieldLT(FieldContent, v))
 }
 
-// ContentSanitizedLTE applies the LTE predicate on the "content_sanitized" field.
-func ContentSanitizedLTE(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldLTE(FieldContentSanitized, v))
+// ContentLTE applies the LTE predicate on the "content" field.
+func ContentLTE(v string) predicate.Comment {
+	return predicate.Comment(sql.FieldLTE(FieldContent, v))
 }
 
-// ContentSanitizedContains applies the Contains predicate on the "content_sanitized" field.
-func ContentSanitizedContains(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldContains(FieldContentSanitized, v))
+// ContentContains applies the Contains predicate on the "content" field.
+func ContentContains(v string) predicate.Comment {
+	return predicate.Comment(sql.FieldContains(FieldContent, v))
 }
 
-// ContentSanitizedHasPrefix applies the HasPrefix predicate on the "content_sanitized" field.
-func ContentSanitizedHasPrefix(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldHasPrefix(FieldContentSanitized, v))
+// ContentHasPrefix applies the HasPrefix predicate on the "content" field.
+func ContentHasPrefix(v string) predicate.Comment {
+	return predicate.Comment(sql.FieldHasPrefix(FieldContent, v))
 }
 
-// ContentSanitizedHasSuffix applies the HasSuffix predicate on the "content_sanitized" field.
-func ContentSanitizedHasSuffix(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldHasSuffix(FieldContentSanitized, v))
+// ContentHasSuffix applies the HasSuffix predicate on the "content" field.
+func ContentHasSuffix(v string) predicate.Comment {
+	return predicate.Comment(sql.FieldHasSuffix(FieldContent, v))
 }
 
-// ContentSanitizedEqualFold applies the EqualFold predicate on the "content_sanitized" field.
-func ContentSanitizedEqualFold(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldEqualFold(FieldContentSanitized, v))
+// ContentEqualFold applies the EqualFold predicate on the "content" field.
+func ContentEqualFold(v string) predicate.Comment {
+	return predicate.Comment(sql.FieldEqualFold(FieldContent, v))
 }
 
-// ContentSanitizedContainsFold applies the ContainsFold predicate on the "content_sanitized" field.
-func ContentSanitizedContainsFold(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldContainsFold(FieldContentSanitized, v))
+// ContentContainsFold applies the ContainsFold predicate on the "content" field.
+func ContentContainsFold(v string) predicate.Comment {
+	return predicate.Comment(sql.FieldContainsFold(FieldContent, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

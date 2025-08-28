@@ -49,25 +49,25 @@ const (
 // CommentMutation represents an operation that mutates the Comment nodes in the graph.
 type CommentMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *string
-	subject_type      *string
-	subject_id        *string
-	user_id           *string
-	language          *string
-	content_sanitized *string
-	created_at        *time.Time
-	edited_at         *time.Time
-	deleted_at        *time.Time
-	clearedFields     map[string]struct{}
-	game              *string
-	clearedgame       bool
-	file              *string
-	clearedfile       bool
-	done              bool
-	oldValue          func(context.Context) (*Comment, error)
-	predicates        []predicate.Comment
+	op            Op
+	typ           string
+	id            *string
+	subject_type  *string
+	subject_id    *string
+	user_id       *string
+	language      *string
+	content       *string
+	created_at    *time.Time
+	edited_at     *time.Time
+	deleted_at    *time.Time
+	clearedFields map[string]struct{}
+	game          *string
+	clearedgame   bool
+	file          *string
+	clearedfile   bool
+	done          bool
+	oldValue      func(context.Context) (*Comment, error)
+	predicates    []predicate.Comment
 }
 
 var _ ent.Mutation = (*CommentMutation)(nil)
@@ -331,40 +331,40 @@ func (m *CommentMutation) ResetLanguage() {
 	delete(m.clearedFields, comment.FieldLanguage)
 }
 
-// SetContentSanitized sets the "content_sanitized" field.
-func (m *CommentMutation) SetContentSanitized(s string) {
-	m.content_sanitized = &s
+// SetContent sets the "content" field.
+func (m *CommentMutation) SetContent(s string) {
+	m.content = &s
 }
 
-// ContentSanitized returns the value of the "content_sanitized" field in the mutation.
-func (m *CommentMutation) ContentSanitized() (r string, exists bool) {
-	v := m.content_sanitized
+// Content returns the value of the "content" field in the mutation.
+func (m *CommentMutation) Content() (r string, exists bool) {
+	v := m.content
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldContentSanitized returns the old "content_sanitized" field's value of the Comment entity.
+// OldContent returns the old "content" field's value of the Comment entity.
 // If the Comment object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CommentMutation) OldContentSanitized(ctx context.Context) (v string, err error) {
+func (m *CommentMutation) OldContent(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldContentSanitized is only allowed on UpdateOne operations")
+		return v, errors.New("OldContent is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldContentSanitized requires an ID field in the mutation")
+		return v, errors.New("OldContent requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldContentSanitized: %w", err)
+		return v, fmt.Errorf("querying old value for OldContent: %w", err)
 	}
-	return oldValue.ContentSanitized, nil
+	return oldValue.Content, nil
 }
 
-// ResetContentSanitized resets all changes to the "content_sanitized" field.
-func (m *CommentMutation) ResetContentSanitized() {
-	m.content_sanitized = nil
+// ResetContent resets all changes to the "content" field.
+func (m *CommentMutation) ResetContent() {
+	m.content = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -626,8 +626,8 @@ func (m *CommentMutation) Fields() []string {
 	if m.language != nil {
 		fields = append(fields, comment.FieldLanguage)
 	}
-	if m.content_sanitized != nil {
-		fields = append(fields, comment.FieldContentSanitized)
+	if m.content != nil {
+		fields = append(fields, comment.FieldContent)
 	}
 	if m.created_at != nil {
 		fields = append(fields, comment.FieldCreatedAt)
@@ -654,8 +654,8 @@ func (m *CommentMutation) Field(name string) (ent.Value, bool) {
 		return m.UserID()
 	case comment.FieldLanguage:
 		return m.Language()
-	case comment.FieldContentSanitized:
-		return m.ContentSanitized()
+	case comment.FieldContent:
+		return m.Content()
 	case comment.FieldCreatedAt:
 		return m.CreatedAt()
 	case comment.FieldEditedAt:
@@ -679,8 +679,8 @@ func (m *CommentMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldUserID(ctx)
 	case comment.FieldLanguage:
 		return m.OldLanguage(ctx)
-	case comment.FieldContentSanitized:
-		return m.OldContentSanitized(ctx)
+	case comment.FieldContent:
+		return m.OldContent(ctx)
 	case comment.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case comment.FieldEditedAt:
@@ -724,12 +724,12 @@ func (m *CommentMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetLanguage(v)
 		return nil
-	case comment.FieldContentSanitized:
+	case comment.FieldContent:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetContentSanitized(v)
+		m.SetContent(v)
 		return nil
 	case comment.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -834,8 +834,8 @@ func (m *CommentMutation) ResetField(name string) error {
 	case comment.FieldLanguage:
 		m.ResetLanguage()
 		return nil
-	case comment.FieldContentSanitized:
-		m.ResetContentSanitized()
+	case comment.FieldContent:
+		m.ResetContent()
 		return nil
 	case comment.FieldCreatedAt:
 		m.ResetCreatedAt()

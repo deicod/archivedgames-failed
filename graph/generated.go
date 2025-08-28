@@ -58,17 +58,17 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Comment struct {
-		ContentSanitized func(childComplexity int) int
-		CreatedAt        func(childComplexity int) int
-		DeletedAt        func(childComplexity int) int
-		EditedAt         func(childComplexity int) int
-		File             func(childComplexity int) int
-		Game             func(childComplexity int) int
-		ID               func(childComplexity int) int
-		Language         func(childComplexity int) int
-		SubjectID        func(childComplexity int) int
-		SubjectType      func(childComplexity int) int
-		UserID           func(childComplexity int) int
+		Content     func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		DeletedAt   func(childComplexity int) int
+		EditedAt    func(childComplexity int) int
+		File        func(childComplexity int) int
+		Game        func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Language    func(childComplexity int) int
+		SubjectID   func(childComplexity int) int
+		SubjectType func(childComplexity int) int
+		UserID      func(childComplexity int) int
 	}
 
 	CommentConnection struct {
@@ -366,12 +366,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Comment.contentSanitized":
-		if e.complexity.Comment.ContentSanitized == nil {
+	case "Comment.content":
+		if e.complexity.Comment.Content == nil {
 			break
 		}
 
-		return e.complexity.Comment.ContentSanitized(childComplexity), true
+		return e.complexity.Comment.Content(childComplexity), true
 
 	case "Comment.createdAt":
 		if e.complexity.Comment.CreatedAt == nil {
@@ -1708,7 +1708,7 @@ type Comment implements Node {
   subjectID: String!
   userID: String!
   language: String
-  contentSanitized: String!
+  content: String!
   createdAt: Time!
   editedAt: Time
   deletedAt: Time
@@ -1833,21 +1833,21 @@ input CommentWhereInput {
   languageEqualFold: String
   languageContainsFold: String
   """
-  content_sanitized field predicates
+  content field predicates
   """
-  contentSanitized: String
-  contentSanitizedNEQ: String
-  contentSanitizedIn: [String!]
-  contentSanitizedNotIn: [String!]
-  contentSanitizedGT: String
-  contentSanitizedGTE: String
-  contentSanitizedLT: String
-  contentSanitizedLTE: String
-  contentSanitizedContains: String
-  contentSanitizedHasPrefix: String
-  contentSanitizedHasSuffix: String
-  contentSanitizedEqualFold: String
-  contentSanitizedContainsFold: String
+  content: String
+  contentNEQ: String
+  contentIn: [String!]
+  contentNotIn: [String!]
+  contentGT: String
+  contentGTE: String
+  contentLT: String
+  contentLTE: String
+  contentContains: String
+  contentHasPrefix: String
+  contentHasSuffix: String
+  contentEqualFold: String
+  contentContainsFold: String
   """
   created_at field predicates
   """
@@ -4614,8 +4614,8 @@ func (ec *executionContext) fieldContext_Comment_language(_ context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Comment_contentSanitized(ctx context.Context, field graphql.CollectedField, obj *ent.Comment) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Comment_contentSanitized(ctx, field)
+func (ec *executionContext) _Comment_content(ctx context.Context, field graphql.CollectedField, obj *ent.Comment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Comment_content(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4628,7 +4628,7 @@ func (ec *executionContext) _Comment_contentSanitized(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ContentSanitized, nil
+		return obj.Content, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4645,7 +4645,7 @@ func (ec *executionContext) _Comment_contentSanitized(ctx context.Context, field
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Comment_contentSanitized(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Comment_content(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Comment",
 		Field:      field,
@@ -5125,8 +5125,8 @@ func (ec *executionContext) fieldContext_CommentEdge_node(_ context.Context, fie
 				return ec.fieldContext_Comment_userID(ctx, field)
 			case "language":
 				return ec.fieldContext_Comment_language(ctx, field)
-			case "contentSanitized":
-				return ec.fieldContext_Comment_contentSanitized(ctx, field)
+			case "content":
+				return ec.fieldContext_Comment_content(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Comment_createdAt(ctx, field)
 			case "editedAt":
@@ -9855,8 +9855,8 @@ func (ec *executionContext) fieldContext_Mutation_addComment(ctx context.Context
 				return ec.fieldContext_Comment_userID(ctx, field)
 			case "language":
 				return ec.fieldContext_Comment_language(ctx, field)
-			case "contentSanitized":
-				return ec.fieldContext_Comment_contentSanitized(ctx, field)
+			case "content":
+				return ec.fieldContext_Comment_content(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Comment_createdAt(ctx, field)
 			case "editedAt":
@@ -9934,8 +9934,8 @@ func (ec *executionContext) fieldContext_Mutation_editComment(ctx context.Contex
 				return ec.fieldContext_Comment_userID(ctx, field)
 			case "language":
 				return ec.fieldContext_Comment_language(ctx, field)
-			case "contentSanitized":
-				return ec.fieldContext_Comment_contentSanitized(ctx, field)
+			case "content":
+				return ec.fieldContext_Comment_content(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Comment_createdAt(ctx, field)
 			case "editedAt":
@@ -14209,7 +14209,7 @@ func (ec *executionContext) unmarshalInputCommentWhereInput(ctx context.Context,
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "idEqualFold", "idContainsFold", "subjectType", "subjectTypeNEQ", "subjectTypeIn", "subjectTypeNotIn", "subjectTypeGT", "subjectTypeGTE", "subjectTypeLT", "subjectTypeLTE", "subjectTypeContains", "subjectTypeHasPrefix", "subjectTypeHasSuffix", "subjectTypeEqualFold", "subjectTypeContainsFold", "subjectID", "subjectIDNEQ", "subjectIDIn", "subjectIDNotIn", "subjectIDGT", "subjectIDGTE", "subjectIDLT", "subjectIDLTE", "subjectIDContains", "subjectIDHasPrefix", "subjectIDHasSuffix", "subjectIDEqualFold", "subjectIDContainsFold", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "userIDGT", "userIDGTE", "userIDLT", "userIDLTE", "userIDContains", "userIDHasPrefix", "userIDHasSuffix", "userIDEqualFold", "userIDContainsFold", "language", "languageNEQ", "languageIn", "languageNotIn", "languageGT", "languageGTE", "languageLT", "languageLTE", "languageContains", "languageHasPrefix", "languageHasSuffix", "languageIsNil", "languageNotNil", "languageEqualFold", "languageContainsFold", "contentSanitized", "contentSanitizedNEQ", "contentSanitizedIn", "contentSanitizedNotIn", "contentSanitizedGT", "contentSanitizedGTE", "contentSanitizedLT", "contentSanitizedLTE", "contentSanitizedContains", "contentSanitizedHasPrefix", "contentSanitizedHasSuffix", "contentSanitizedEqualFold", "contentSanitizedContainsFold", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "editedAt", "editedAtNEQ", "editedAtIn", "editedAtNotIn", "editedAtGT", "editedAtGTE", "editedAtLT", "editedAtLTE", "editedAtIsNil", "editedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "hasGame", "hasGameWith", "hasFile", "hasFileWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "idEqualFold", "idContainsFold", "subjectType", "subjectTypeNEQ", "subjectTypeIn", "subjectTypeNotIn", "subjectTypeGT", "subjectTypeGTE", "subjectTypeLT", "subjectTypeLTE", "subjectTypeContains", "subjectTypeHasPrefix", "subjectTypeHasSuffix", "subjectTypeEqualFold", "subjectTypeContainsFold", "subjectID", "subjectIDNEQ", "subjectIDIn", "subjectIDNotIn", "subjectIDGT", "subjectIDGTE", "subjectIDLT", "subjectIDLTE", "subjectIDContains", "subjectIDHasPrefix", "subjectIDHasSuffix", "subjectIDEqualFold", "subjectIDContainsFold", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "userIDGT", "userIDGTE", "userIDLT", "userIDLTE", "userIDContains", "userIDHasPrefix", "userIDHasSuffix", "userIDEqualFold", "userIDContainsFold", "language", "languageNEQ", "languageIn", "languageNotIn", "languageGT", "languageGTE", "languageLT", "languageLTE", "languageContains", "languageHasPrefix", "languageHasSuffix", "languageIsNil", "languageNotNil", "languageEqualFold", "languageContainsFold", "content", "contentNEQ", "contentIn", "contentNotIn", "contentGT", "contentGTE", "contentLT", "contentLTE", "contentContains", "contentHasPrefix", "contentHasSuffix", "contentEqualFold", "contentContainsFold", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "editedAt", "editedAtNEQ", "editedAtIn", "editedAtNotIn", "editedAtGT", "editedAtGTE", "editedAtLT", "editedAtLTE", "editedAtIsNil", "editedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "hasGame", "hasGameWith", "hasFile", "hasFileWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -14685,97 +14685,97 @@ func (ec *executionContext) unmarshalInputCommentWhereInput(ctx context.Context,
 				return it, err
 			}
 			it.LanguageContainsFold = data
-		case "contentSanitized":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitized"))
+		case "content":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("content"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitized = data
-		case "contentSanitizedNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitizedNEQ"))
+			it.Content = data
+		case "contentNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentNEQ"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitizedNeq = data
-		case "contentSanitizedIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitizedIn"))
+			it.ContentNeq = data
+		case "contentIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentIn"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitizedIn = data
-		case "contentSanitizedNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitizedNotIn"))
+			it.ContentIn = data
+		case "contentNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentNotIn"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitizedNotIn = data
-		case "contentSanitizedGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitizedGT"))
+			it.ContentNotIn = data
+		case "contentGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentGT"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitizedGt = data
-		case "contentSanitizedGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitizedGTE"))
+			it.ContentGt = data
+		case "contentGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentGTE"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitizedGte = data
-		case "contentSanitizedLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitizedLT"))
+			it.ContentGte = data
+		case "contentLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentLT"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitizedLt = data
-		case "contentSanitizedLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitizedLTE"))
+			it.ContentLt = data
+		case "contentLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentLTE"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitizedLte = data
-		case "contentSanitizedContains":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitizedContains"))
+			it.ContentLte = data
+		case "contentContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentContains"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitizedContains = data
-		case "contentSanitizedHasPrefix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitizedHasPrefix"))
+			it.ContentContains = data
+		case "contentHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentHasPrefix"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitizedHasPrefix = data
-		case "contentSanitizedHasSuffix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitizedHasSuffix"))
+			it.ContentHasPrefix = data
+		case "contentHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentHasSuffix"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitizedHasSuffix = data
-		case "contentSanitizedEqualFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitizedEqualFold"))
+			it.ContentHasSuffix = data
+		case "contentEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentEqualFold"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitizedEqualFold = data
-		case "contentSanitizedContainsFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentSanitizedContainsFold"))
+			it.ContentEqualFold = data
+		case "contentContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentContainsFold"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ContentSanitizedContainsFold = data
+			it.ContentContainsFold = data
 		case "createdAt":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
 			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
@@ -19396,8 +19396,8 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "language":
 			out.Values[i] = ec._Comment_language(ctx, field, obj)
-		case "contentSanitized":
-			out.Values[i] = ec._Comment_contentSanitized(ctx, field, obj)
+		case "content":
+			out.Values[i] = ec._Comment_content(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}

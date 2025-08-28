@@ -101,20 +101,20 @@ type CommentWhereInput struct {
 	LanguageEqualFold    *string  `json:"languageEqualFold,omitempty"`
 	LanguageContainsFold *string  `json:"languageContainsFold,omitempty"`
 
-	// "content_sanitized" field predicates.
-	ContentSanitized             *string  `json:"contentSanitized,omitempty"`
-	ContentSanitizedNEQ          *string  `json:"contentSanitizedNEQ,omitempty"`
-	ContentSanitizedIn           []string `json:"contentSanitizedIn,omitempty"`
-	ContentSanitizedNotIn        []string `json:"contentSanitizedNotIn,omitempty"`
-	ContentSanitizedGT           *string  `json:"contentSanitizedGT,omitempty"`
-	ContentSanitizedGTE          *string  `json:"contentSanitizedGTE,omitempty"`
-	ContentSanitizedLT           *string  `json:"contentSanitizedLT,omitempty"`
-	ContentSanitizedLTE          *string  `json:"contentSanitizedLTE,omitempty"`
-	ContentSanitizedContains     *string  `json:"contentSanitizedContains,omitempty"`
-	ContentSanitizedHasPrefix    *string  `json:"contentSanitizedHasPrefix,omitempty"`
-	ContentSanitizedHasSuffix    *string  `json:"contentSanitizedHasSuffix,omitempty"`
-	ContentSanitizedEqualFold    *string  `json:"contentSanitizedEqualFold,omitempty"`
-	ContentSanitizedContainsFold *string  `json:"contentSanitizedContainsFold,omitempty"`
+	// "content" field predicates.
+	Content             *string  `json:"content,omitempty"`
+	ContentNEQ          *string  `json:"contentNEQ,omitempty"`
+	ContentIn           []string `json:"contentIn,omitempty"`
+	ContentNotIn        []string `json:"contentNotIn,omitempty"`
+	ContentGT           *string  `json:"contentGT,omitempty"`
+	ContentGTE          *string  `json:"contentGTE,omitempty"`
+	ContentLT           *string  `json:"contentLT,omitempty"`
+	ContentLTE          *string  `json:"contentLTE,omitempty"`
+	ContentContains     *string  `json:"contentContains,omitempty"`
+	ContentHasPrefix    *string  `json:"contentHasPrefix,omitempty"`
+	ContentHasSuffix    *string  `json:"contentHasSuffix,omitempty"`
+	ContentEqualFold    *string  `json:"contentEqualFold,omitempty"`
+	ContentContainsFold *string  `json:"contentContainsFold,omitempty"`
 
 	// "created_at" field predicates.
 	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
@@ -422,44 +422,44 @@ func (i *CommentWhereInput) P() (predicate.Comment, error) {
 	if i.LanguageContainsFold != nil {
 		predicates = append(predicates, comment.LanguageContainsFold(*i.LanguageContainsFold))
 	}
-	if i.ContentSanitized != nil {
-		predicates = append(predicates, comment.ContentSanitizedEQ(*i.ContentSanitized))
+	if i.Content != nil {
+		predicates = append(predicates, comment.ContentEQ(*i.Content))
 	}
-	if i.ContentSanitizedNEQ != nil {
-		predicates = append(predicates, comment.ContentSanitizedNEQ(*i.ContentSanitizedNEQ))
+	if i.ContentNEQ != nil {
+		predicates = append(predicates, comment.ContentNEQ(*i.ContentNEQ))
 	}
-	if len(i.ContentSanitizedIn) > 0 {
-		predicates = append(predicates, comment.ContentSanitizedIn(i.ContentSanitizedIn...))
+	if len(i.ContentIn) > 0 {
+		predicates = append(predicates, comment.ContentIn(i.ContentIn...))
 	}
-	if len(i.ContentSanitizedNotIn) > 0 {
-		predicates = append(predicates, comment.ContentSanitizedNotIn(i.ContentSanitizedNotIn...))
+	if len(i.ContentNotIn) > 0 {
+		predicates = append(predicates, comment.ContentNotIn(i.ContentNotIn...))
 	}
-	if i.ContentSanitizedGT != nil {
-		predicates = append(predicates, comment.ContentSanitizedGT(*i.ContentSanitizedGT))
+	if i.ContentGT != nil {
+		predicates = append(predicates, comment.ContentGT(*i.ContentGT))
 	}
-	if i.ContentSanitizedGTE != nil {
-		predicates = append(predicates, comment.ContentSanitizedGTE(*i.ContentSanitizedGTE))
+	if i.ContentGTE != nil {
+		predicates = append(predicates, comment.ContentGTE(*i.ContentGTE))
 	}
-	if i.ContentSanitizedLT != nil {
-		predicates = append(predicates, comment.ContentSanitizedLT(*i.ContentSanitizedLT))
+	if i.ContentLT != nil {
+		predicates = append(predicates, comment.ContentLT(*i.ContentLT))
 	}
-	if i.ContentSanitizedLTE != nil {
-		predicates = append(predicates, comment.ContentSanitizedLTE(*i.ContentSanitizedLTE))
+	if i.ContentLTE != nil {
+		predicates = append(predicates, comment.ContentLTE(*i.ContentLTE))
 	}
-	if i.ContentSanitizedContains != nil {
-		predicates = append(predicates, comment.ContentSanitizedContains(*i.ContentSanitizedContains))
+	if i.ContentContains != nil {
+		predicates = append(predicates, comment.ContentContains(*i.ContentContains))
 	}
-	if i.ContentSanitizedHasPrefix != nil {
-		predicates = append(predicates, comment.ContentSanitizedHasPrefix(*i.ContentSanitizedHasPrefix))
+	if i.ContentHasPrefix != nil {
+		predicates = append(predicates, comment.ContentHasPrefix(*i.ContentHasPrefix))
 	}
-	if i.ContentSanitizedHasSuffix != nil {
-		predicates = append(predicates, comment.ContentSanitizedHasSuffix(*i.ContentSanitizedHasSuffix))
+	if i.ContentHasSuffix != nil {
+		predicates = append(predicates, comment.ContentHasSuffix(*i.ContentHasSuffix))
 	}
-	if i.ContentSanitizedEqualFold != nil {
-		predicates = append(predicates, comment.ContentSanitizedEqualFold(*i.ContentSanitizedEqualFold))
+	if i.ContentEqualFold != nil {
+		predicates = append(predicates, comment.ContentEqualFold(*i.ContentEqualFold))
 	}
-	if i.ContentSanitizedContainsFold != nil {
-		predicates = append(predicates, comment.ContentSanitizedContainsFold(*i.ContentSanitizedContainsFold))
+	if i.ContentContainsFold != nil {
+		predicates = append(predicates, comment.ContentContainsFold(*i.ContentContainsFold))
 	}
 	if i.CreatedAt != nil {
 		predicates = append(predicates, comment.CreatedAtEQ(*i.CreatedAt))

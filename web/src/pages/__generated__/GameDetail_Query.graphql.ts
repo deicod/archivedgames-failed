@@ -21,7 +21,7 @@ export type GameDetail_Query$data = {
         readonly comments: {
           readonly edges: ReadonlyArray<{
             readonly node: {
-              readonly contentSanitized: string;
+              readonly content: string;
               readonly createdAt: any;
               readonly deletedAt: any | null | undefined;
               readonly editedAt: any | null | undefined;
@@ -389,7 +389,7 @@ v3 = [
                             "alias": null,
                             "args": null,
                             "kind": "ScalarField",
-                            "name": "contentSanitized",
+                            "name": "content",
                             "storageKey": null
                           },
                           {
@@ -467,7 +467,7 @@ return {
     "metadata": {},
     "name": "GameDetail_Query",
     "operationKind": "query",
-    "text": "query GameDetail_Query(\n  $slug: String!\n) {\n  games(first: 1, where: {slug: $slug}) {\n    edges {\n      node {\n        id\n        slug\n        title\n        year\n        publisher\n        platform\n        likes {\n          totalCount\n        }\n        images(first: 4) {\n          edges {\n            node {\n              id\n              s3Key\n              width\n              height\n              kind\n            }\n          }\n        }\n        files(first: 50) {\n          edges {\n            node {\n              id\n              originalName\n              sizeBytes\n              format\n            }\n          }\n        }\n        comments(first: 50) {\n          edges {\n            node {\n              id\n              userID\n              contentSanitized\n              createdAt\n              editedAt\n              deletedAt\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query GameDetail_Query(\n  $slug: String!\n) {\n  games(first: 1, where: {slug: $slug}) {\n    edges {\n      node {\n        id\n        slug\n        title\n        year\n        publisher\n        platform\n        likes {\n          totalCount\n        }\n        images(first: 4) {\n          edges {\n            node {\n              id\n              s3Key\n              width\n              height\n              kind\n            }\n          }\n        }\n        files(first: 50) {\n          edges {\n            node {\n              id\n              originalName\n              sizeBytes\n              format\n            }\n          }\n        }\n        comments(first: 50) {\n          edges {\n            node {\n              id\n              userID\n              content\n              createdAt\n              editedAt\n              deletedAt\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();

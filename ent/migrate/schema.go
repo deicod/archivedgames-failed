@@ -15,7 +15,7 @@ var (
 		{Name: "subject_id", Type: field.TypeString},
 		{Name: "user_id", Type: field.TypeString},
 		{Name: "language", Type: field.TypeString, Nullable: true},
-		{Name: "content_sanitized", Type: field.TypeString},
+		{Name: "content", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "edited_at", Type: field.TypeTime, Nullable: true},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
