@@ -67,7 +67,7 @@ func main() {
 	mux.HandleFunc("/robots.txt", robotsTxt)
 	mux.HandleFunc("/opensearch.xml", openSearchXML)
 	mux.HandleFunc("/sitemap.xml", func(w http.ResponseWriter, r *http.Request) { sitemapXML(w, r, client) })
-	mux.HandleFunc("/api/opensearch", func(w http.ResponseWriter, r *http.Request) {
+    mux.HandleFunc("/api/opensearch", func(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query().Get("q")
 		plat := r.URL.Query().Get("platform")
 		ctx := r.Context()
@@ -90,8 +90,32 @@ func main() {
 		fmt.Fprintf(w, `[%q,%s]`, q, toJSONArr(titles))
 	})
 
-	// HTTP download redirect: /d/{fileId}
-	mux.HandleFunc("/d/", func(w http.ResponseWriter, r *http.Request) {
+    // Image redirect: /img/{imageId}?w=128|512
+    mux.HandleFunc("/img/", func(w http.ResponseWriter, r *http.Request) {
+        id := strings.TrimPrefix(r.URL.Path, "/img/")
+        if id == "" { http.Error(w, "missing id", http.StatusBadRequest); return }
+        ctx := r.Context()
+        img, err := client.Image.Query().Where(entimage.IDEQ(id)).Only(ctx)
+        if err != nil { http.Error(w, "not found", http.StatusNotFound); return }
+        key := img.S3Key
+        // prefer derived size if requested and exists
+        wq := r.URL.Query().Get("w")
+        if wq == "128" || wq == "512" {
+            if s3c, err := s3client.New(ctx); err == nil {
+                // compute derived key
+                dk := deriveKey(key, wq)
+                if s3c.Exists(ctx, dk) { key = dk }
+            }
+        }
+        s3c, err := s3client.New(ctx)
+        if err != nil { http.Error(w, "s3 error", http.StatusInternalServerError); return }
+        url, err := s3c.PresignGet(ctx, key, 2*time.Minute)
+        if err != nil { http.Error(w, "s3 error", http.StatusInternalServerError); return }
+        http.Redirect(w, r, url, http.StatusFound)
+    })
+
+    // HTTP download redirect: /d/{fileId}
+    mux.HandleFunc("/d/", func(w http.ResponseWriter, r *http.Request) {
 		id := strings.TrimPrefix(r.URL.Path, "/d/")
 		if id == "" {
 			http.Error(w, "missing id", http.StatusBadRequest)
@@ -163,6 +187,12 @@ func main() {
 	if err := httpSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
+}
+
+func deriveKey(orig string, w string) string {
+    dot := strings.LastIndex(orig, ".")
+    if dot <= 0 { return orig + "_w" + w }
+    return orig[:dot] + "_w" + w + orig[dot:]
 }
 
 func baseURL(r *http.Request) string {

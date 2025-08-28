@@ -56,6 +56,12 @@ Entry template:
   - Fix Header admin gating to read `isAdmin` via props; add env overrides for redirect/silent paths
   - Tracks: #51
 
+- 2025-08-28: Images — derived thumbnails and /img route
+  - Generate JPEG derivatives at widths 128 and 512 on finalizeImageUploads (best-effort)
+  - Add `/img/{imageId}?w=128|512` redirect to S3 keys; fall back to original when missing
+  - Frontend now requests `?w=512` for cover and gallery images
+  - Tracks: #46
+
 - 2025-08-28: Planning — NEXT.md linked to GitHub issues
   - Annotate `docs/NEXT.md` with direct links to open issues for each next step
   - Create tracking issues for missing items: #44 (FileGroup model), #45 (Platform validation & DOS zips), #46 (Image thumbnails), #47 (Publisher/year in body), #48 (Observability metrics/logging)

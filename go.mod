@@ -16,6 +16,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/rs/xid v1.6.0
 	github.com/vektah/gqlparser/v2 v2.5.30
+	golang.org/x/image v0.30.0
 )
 
 require (

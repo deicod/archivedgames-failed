@@ -1,12 +1,13 @@
 package s3client
 
 import (
-	"context"
-	"errors"
-	"net/url"
-	"os"
-	"strconv"
-	"time"
+    "context"
+    "errors"
+    "bytes"
+    "net/url"
+    "os"
+    "strconv"
+    "time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -16,9 +17,9 @@ import (
 )
 
 type Client struct {
-	Bucket  string
-	S3      *awss3.Client
-	Presign *awss3.PresignClient
+    Bucket  string
+    S3      *awss3.Client
+    Presign *awss3.PresignClient
 }
 
 func getenv(key, def string) string {
@@ -72,6 +73,59 @@ func New(ctx context.Context) (*Client, error) {
 	}
 	s3 := awss3.NewFromConfig(cfg, s3Opts)
 	return &Client{Bucket: bucket, S3: s3, Presign: awss3.NewPresignClient(s3)}, nil
+}
+
+// Get returns the raw bytes and content-type for an object key.
+func (c *Client) Get(ctx context.Context, key string) ([]byte, string, error) {
+    if key == "" {
+        return nil, "", errors.New("empty key")
+    }
+    out, err := c.S3.GetObject(ctx, &awss3.GetObjectInput{Bucket: aws.String(c.Bucket), Key: aws.String(key)})
+    if err != nil {
+        return nil, "", err
+    }
+    defer out.Body.Close()
+    buf := make([]byte, 0, 64*1024)
+    tmp := make([]byte, 32*1024)
+    for {
+        n, rerr := out.Body.Read(tmp)
+        if n > 0 {
+            buf = append(buf, tmp[:n]...)
+        }
+        if rerr != nil {
+            if rerr.Error() == "EOF" {
+                break
+            }
+            if n == 0 {
+                break
+            }
+            break
+        }
+    }
+    ctype := ""
+    if out.ContentType != nil {
+        ctype = *out.ContentType
+    }
+    return buf, ctype, nil
+}
+
+// Put uploads bytes to the given key with content-type and optional cache-control.
+func (c *Client) Put(ctx context.Context, key string, body []byte, contentType string, cacheControl string) error {
+    if key == "" {
+        return errors.New("empty key")
+    }
+    input := &awss3.PutObjectInput{Bucket: aws.String(c.Bucket), Key: aws.String(key), Body: bytes.NewReader(body)}
+    if contentType != "" { input.ContentType = aws.String(contentType) }
+    if cacheControl != "" { input.CacheControl = aws.String(cacheControl) }
+    _, err := c.S3.PutObject(ctx, input)
+    return err
+}
+
+// Exists returns whether an object key exists (HEAD request).
+func (c *Client) Exists(ctx context.Context, key string) bool {
+    if key == "" { return false }
+    _, err := c.S3.HeadObject(ctx, &awss3.HeadObjectInput{Bucket: aws.String(c.Bucket), Key: aws.String(key)})
+    return err == nil
 }
 
 // PresignGet returns a pre-signed GET URL for the given object key.

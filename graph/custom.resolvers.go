@@ -23,6 +23,7 @@ import (
 	"github.com/deicod/archivedgames/internal/gqltypes"
 	reqctx "github.com/deicod/archivedgames/internal/request"
 	"github.com/deicod/archivedgames/internal/s3client"
+	"github.com/deicod/archivedgames/internal/imageproc"
 )
 
 // CreateImageUploads is the resolver for the createImageUploads field.
@@ -77,6 +78,10 @@ func (r *mutationResolver) FinalizeImageUploads(ctx context.Context, gameID stri
 			return nil, err
 		}
 		created = append(created, img)
+		// Best-effort derive thumbnails for newly uploaded image
+		if s3c, err := s3client.New(ctx); err == nil {
+			_ = imageproc.Derive(ctx, s3c, it.Key, []int{128, 512})
+		}
 	}
 	return created, nil
 }

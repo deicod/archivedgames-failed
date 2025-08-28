@@ -76,7 +76,7 @@ export default function GameDetail(){
   const origin = (typeof window !== 'undefined') ? window.location.origin : '';
   const canonical = `/game/${node.slug}`;
   const platform = (node.platform || '').toString();
-  const coverUrl = images[0] ? `${origin}/img/${images[0].id}` : undefined;
+  const coverUrl = images[0] ? `${origin}/img/${images[0].id}?w=512` : undefined;
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'VideoGame',
@@ -102,11 +102,11 @@ export default function GameDetail(){
     <div className="grid md:grid-cols-3 gap-6">
       <Seo title={`ArchivedGames — ${node.title}`} canonicalPath={canonical} jsonLd={jsonLd} />
       <div className="md:col-span-2 space-y-4">
-        <div className="aspect-video bg-white/5 rounded-2xl flex items-center justify-center">{images[0] ? <img src={`/img/${images[0].id}`} alt="cover" className="w-full h-full object-cover rounded-2xl"/> : null}</div>
+        <div className="aspect-video bg-white/5 rounded-2xl flex items-center justify-center">{images[0] ? <img src={`/img/${images[0].id}?w=512`} alt="cover" className="w-full h-full object-cover rounded-2xl"/> : null}</div>
         <div className="grid grid-cols-2 gap-3">
           {images.slice(1).map((img:any)=> (
           <div key={img.id} className="aspect-[4/3] bg-white/5 rounded-xl overflow-hidden relative group">
-              <img src={`/img/${img.id}`} alt="gallery" className="w-full h-full object-cover"/>
+              <img src={`/img/${img.id}?w=512`} alt="gallery" className="w-full h-full object-cover"/>
               {auth?.isAuthenticated && (
                 <div className="absolute inset-x-0 bottom-0 p-2 flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                   <button onClick={()=>setCover(img.id)} className="px-2 py-1 text-xs rounded bg-white/10 hover:bg-white/20">Set cover</button>
