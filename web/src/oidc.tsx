@@ -3,11 +3,15 @@ import { useEffect } from 'react';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import React from 'react';
 
+const origin = window.location.origin;
+const redirectPath = (import.meta as any).env.VITE_OIDC_REDIRECT_PATH || '/';
+const silentPath = (import.meta as any).env.VITE_OIDC_SILENT_PATH || '/oidc-silent';
+
 const oidcConfig: AuthProviderProps['client'] = {
   authority: import.meta.env.VITE_OIDC_ISSUER,
   client_id: import.meta.env.VITE_OIDC_CLIENT_ID,
-  redirect_uri: window.location.origin + '/',
-  silent_redirect_uri: window.location.origin + '/oidc-silent',
+  redirect_uri: origin + redirectPath,
+  silent_redirect_uri: origin + silentPath,
   post_logout_redirect_uri: window.location.origin + '/',
   response_type: 'code',
   scope: 'openid profile email',

@@ -50,6 +50,12 @@ Entry template:
   - Add explicit `oidc-client-ts` dependency
   - Tracks: #50
 
+- 2025-08-28: Auth — callback route + guarded admin
+  - Add `/oidc-callback` route that calls `signinRedirectCallback()` and cleans URL
+  - Guard `/admin/reports` with `withAuthenticationRequired`; show "Not authorized" if not admin
+  - Fix Header admin gating to read `isAdmin` via props; add env overrides for redirect/silent paths
+  - Tracks: #51
+
 - 2025-08-28: Planning — NEXT.md linked to GitHub issues
   - Annotate `docs/NEXT.md` with direct links to open issues for each next step
   - Create tracking issues for missing items: #44 (FileGroup model), #45 (Platform validation & DOS zips), #46 (Image thumbnails), #47 (Publisher/year in body), #48 (Observability metrics/logging)

@@ -3,13 +3,14 @@ import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import Home from './pages/Home';
 import PlatformList from './pages/PlatformList';
 import GameDetail from './pages/GameDetail';
-import { useAuth } from 'react-oidc-context';
+import { useAuth, withAuthenticationRequired } from 'react-oidc-context';
 import SupportButton from './components/SupportButton';
 import { isAdminFromToken } from './utils/jwt';
 import AdminReports from './pages/AdminReports';
 import OidcSilent from './pages/OidcSilent';
+import OidcCallback from './pages/OidcCallback';
 
-const Header: React.FC = () => {
+const Header: React.FC<{ isAdmin: boolean }> = ({ isAdmin }) => {
   const auth = useAuth();
   const nav = useNavigate();
   return (
@@ -40,16 +41,19 @@ const App: React.FC = () => {
   const auth = useAuth();
   const token = (auth?.user as any)?.access_token as string | undefined;
   const isAdmin = token ? isAdminFromToken(token) : false;
+  const AdminProtected = withAuthenticationRequired(AdminReports);
+  const AdminRoute: React.FC = () => (isAdmin ? <AdminProtected /> : <div>Not authorized</div>);
   return (
   <div className="min-h-screen flex flex-col">
-    <Header />
+    <Header isAdmin={isAdmin} />
     <main className="flex-1 max-w-6xl mx-auto px-4 py-6">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/platform/:platform" element={<PlatformList />} />
         <Route path="/game/:slug" element={<GameDetail />} />
-        <Route path="/admin/reports" element={<AdminReports />} />
+        <Route path="/admin/reports" element={<AdminRoute />} />
         <Route path="/oidc-silent" element={<OidcSilent />} />
+        <Route path="/oidc-callback" element={<OidcCallback />} />
       </Routes>
     </main>
     <footer className="border-t border-white/10 py-6 text-center text-xs text-white/60">© ArchivedGames</footer>
