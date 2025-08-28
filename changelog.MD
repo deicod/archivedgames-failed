@@ -69,6 +69,12 @@ Entry template:
   - Vite: alias `@` → `src`; replace some buttons (Login/Logout/Support/Load more) with `<Button>`
   - Tracks: #52
 
+- 2025-08-28: Moderation — Report submission dialog
+  - Add in-app report dialog with preset reasons and optional note on GameDetail
+  - Submit via `reportContent(subjectType, subjectId, reason, note)`; show feedback
+  - Replaces prompt-based flow; aligns with moderation plan (I2)
+  - Tracks: #34
+
 - 2025-08-28: Backlog — shadcn/ui follow-ups
   - Add shadcn/ui components and refactor views (#53)
   - Theme toggle and tokens (Tailwind v4) (#54)

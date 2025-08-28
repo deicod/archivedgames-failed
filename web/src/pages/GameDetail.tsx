@@ -4,6 +4,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import ImageUploader from '../components/ImageUploader';
 import Seo from '../components/Seo';
 import { useAuth } from 'react-oidc-context';
+import ReportDialog from '../components/ReportDialog';
 
 const Query = graphql`
   query GameDetail_Query($slug: String!) {
@@ -20,14 +21,7 @@ const Query = graphql`
 `;
 
 
-async function reportFile(fileId: string){
-  const reason = window.prompt('Reason for report? (e.g., copyright)')||'';
-  if(!reason) return;
-  const url = (import.meta as any).env.VITE_GRAPHQL_URL as string;
-  const token = localStorage.getItem('access_token');
-  await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token?{ Authorization:`Bearer ${token}` }: {}) }, body: JSON.stringify({ query: `mutation($t:String!,$id:String!,$r:String!){ reportContent(subjectType:$t, subjectId:$id, reason:$r){ id } }`, variables: { t: 'file', id: fileId, r: reason } }) });
-  alert('Reported');
-}
+// Report handled via modal dialog
 
 async function requestDownload(fileId: string){
   const url = (import.meta as any).env.VITE_GRAPHQL_URL as string;
@@ -73,6 +67,8 @@ export default function GameDetail(){
   if (!node) return <div>Not found</div>;
   const images = node.images.edges?.map((e: any) => e.node) || [];
   const files = node.files.edges?.map((e: any) => e.node) || [];
+  const [reportOpen, setReportOpen] = React.useState(false);
+  const [reportId, setReportId] = React.useState<string | null>(null);
   const origin = (typeof window !== 'undefined') ? window.location.origin : '';
   const canonical = `/game/${node.slug}`;
   const platform = (node.platform || '').toString();
@@ -99,6 +95,7 @@ export default function GameDetail(){
     ]
   };
   return (
+    <>
     <div className="grid md:grid-cols-3 gap-6">
       <Seo title={`ArchivedGames — ${node.title}`} canonicalPath={canonical} jsonLd={jsonLd} />
       <div className="md:col-span-2 space-y-4">
@@ -130,7 +127,7 @@ export default function GameDetail(){
             <div key={f.id} className="flex items-center justify-between gap-3 text-sm">
               <div className="truncate">{f.originalName}</div>
               <a href={`/d/${f.id}`} className="px-3 py-1 rounded bg-white/10 hover:bg-white/20">Download</a>
-                <button onClick={()=>reportFile(f.id)} className="px-2 py-1 rounded bg-red-500/20 hover:bg-red-500/30">Report</button>
+                <button onClick={()=>{ setReportId(f.id); setReportOpen(true); }} className="px-2 py-1 rounded bg-red-500/20 hover:bg-red-500/30">Report</button>
               </div>
           ))}
         </div>
@@ -140,5 +137,7 @@ export default function GameDetail(){
           </div> : null}
       </aside>
     </div>
+    <ReportDialog open={reportOpen} onClose={()=>setReportOpen(false)} subjectType="file" subjectId={reportId} />
+    </>
   );
 }
