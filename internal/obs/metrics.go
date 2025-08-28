@@ -2,6 +2,7 @@ package obs
 
 import (
     "net/http"
+    "strconv"
     "time"
 
     "github.com/prometheus/client_golang/prometheus"
@@ -33,7 +34,7 @@ func WithHTTPMetrics(next http.Handler) http.Handler {
         ww := &statusWriter{ResponseWriter: w, status: http.StatusOK}
         next.ServeHTTP(ww, r)
         path := r.URL.Path
-        httpRequestsTotal.WithLabelValues(r.Method, path, itoa(ww.status)).Inc()
+        httpRequestsTotal.WithLabelValues(r.Method, path, strconv.Itoa(ww.status)).Inc()
         httpRequestDuration.WithLabelValues(r.Method, path).Observe(time.Since(start).Seconds())
     })
 }
@@ -47,10 +48,5 @@ type statusWriter struct{
 }
 func (s *statusWriter) WriteHeader(code int) { s.status = code; s.ResponseWriter.WriteHeader(code) }
 
-func itoa(n int) string {
-    if n == 0 { return "0" }
-    s := ""
-    for n > 0 { s = string('0'+(n%10)) + s; n /= 10 }
-    return s
-}
+// no custom itoa needed; strconv handles conversion
 

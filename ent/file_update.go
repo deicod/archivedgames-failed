@@ -10,7 +10,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/deicod/archivedgames/ent/comment"
 	"github.com/deicod/archivedgames/ent/file"
+	"github.com/deicod/archivedgames/ent/filegroup"
+	"github.com/deicod/archivedgames/ent/filereaction"
 	"github.com/deicod/archivedgames/ent/game"
 	"github.com/deicod/archivedgames/ent/predicate"
 )
@@ -265,6 +268,55 @@ func (_u *FileUpdate) SetGame(v *Game) *FileUpdate {
 	return _u.SetGameID(v.ID)
 }
 
+// SetGroupID sets the "group" edge to the FileGroup entity by ID.
+func (_u *FileUpdate) SetGroupID(id string) *FileUpdate {
+	_u.mutation.SetGroupID(id)
+	return _u
+}
+
+// SetNillableGroupID sets the "group" edge to the FileGroup entity by ID if the given value is not nil.
+func (_u *FileUpdate) SetNillableGroupID(id *string) *FileUpdate {
+	if id != nil {
+		_u = _u.SetGroupID(*id)
+	}
+	return _u
+}
+
+// SetGroup sets the "group" edge to the FileGroup entity.
+func (_u *FileUpdate) SetGroup(v *FileGroup) *FileUpdate {
+	return _u.SetGroupID(v.ID)
+}
+
+// AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
+func (_u *FileUpdate) AddCommentIDs(ids ...string) *FileUpdate {
+	_u.mutation.AddCommentIDs(ids...)
+	return _u
+}
+
+// AddComments adds the "comments" edges to the Comment entity.
+func (_u *FileUpdate) AddComments(v ...*Comment) *FileUpdate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddCommentIDs(ids...)
+}
+
+// AddReactionIDs adds the "reactions" edge to the FileReaction entity by IDs.
+func (_u *FileUpdate) AddReactionIDs(ids ...string) *FileUpdate {
+	_u.mutation.AddReactionIDs(ids...)
+	return _u
+}
+
+// AddReactions adds the "reactions" edges to the FileReaction entity.
+func (_u *FileUpdate) AddReactions(v ...*FileReaction) *FileUpdate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddReactionIDs(ids...)
+}
+
 // Mutation returns the FileMutation object of the builder.
 func (_u *FileUpdate) Mutation() *FileMutation {
 	return _u.mutation
@@ -274,6 +326,54 @@ func (_u *FileUpdate) Mutation() *FileMutation {
 func (_u *FileUpdate) ClearGame() *FileUpdate {
 	_u.mutation.ClearGame()
 	return _u
+}
+
+// ClearGroup clears the "group" edge to the FileGroup entity.
+func (_u *FileUpdate) ClearGroup() *FileUpdate {
+	_u.mutation.ClearGroup()
+	return _u
+}
+
+// ClearComments clears all "comments" edges to the Comment entity.
+func (_u *FileUpdate) ClearComments() *FileUpdate {
+	_u.mutation.ClearComments()
+	return _u
+}
+
+// RemoveCommentIDs removes the "comments" edge to Comment entities by IDs.
+func (_u *FileUpdate) RemoveCommentIDs(ids ...string) *FileUpdate {
+	_u.mutation.RemoveCommentIDs(ids...)
+	return _u
+}
+
+// RemoveComments removes "comments" edges to Comment entities.
+func (_u *FileUpdate) RemoveComments(v ...*Comment) *FileUpdate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveCommentIDs(ids...)
+}
+
+// ClearReactions clears all "reactions" edges to the FileReaction entity.
+func (_u *FileUpdate) ClearReactions() *FileUpdate {
+	_u.mutation.ClearReactions()
+	return _u
+}
+
+// RemoveReactionIDs removes the "reactions" edge to FileReaction entities by IDs.
+func (_u *FileUpdate) RemoveReactionIDs(ids ...string) *FileUpdate {
+	_u.mutation.RemoveReactionIDs(ids...)
+	return _u
+}
+
+// RemoveReactions removes "reactions" edges to FileReaction entities.
+func (_u *FileUpdate) RemoveReactions(v ...*FileReaction) *FileUpdate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveReactionIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -405,6 +505,125 @@ func (_u *FileUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.GroupCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   file.GroupTable,
+			Columns: []string{file.GroupColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filegroup.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.GroupIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   file.GroupTable,
+			Columns: []string{file.GroupColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filegroup.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.CommentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   file.CommentsTable,
+			Columns: []string{file.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedCommentsIDs(); len(nodes) > 0 && !_u.mutation.CommentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   file.CommentsTable,
+			Columns: []string{file.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CommentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   file.CommentsTable,
+			Columns: []string{file.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ReactionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ReactionsTable,
+			Columns: []string{file.ReactionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filereaction.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedReactionsIDs(); len(nodes) > 0 && !_u.mutation.ReactionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ReactionsTable,
+			Columns: []string{file.ReactionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filereaction.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ReactionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ReactionsTable,
+			Columns: []string{file.ReactionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filereaction.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -669,6 +888,55 @@ func (_u *FileUpdateOne) SetGame(v *Game) *FileUpdateOne {
 	return _u.SetGameID(v.ID)
 }
 
+// SetGroupID sets the "group" edge to the FileGroup entity by ID.
+func (_u *FileUpdateOne) SetGroupID(id string) *FileUpdateOne {
+	_u.mutation.SetGroupID(id)
+	return _u
+}
+
+// SetNillableGroupID sets the "group" edge to the FileGroup entity by ID if the given value is not nil.
+func (_u *FileUpdateOne) SetNillableGroupID(id *string) *FileUpdateOne {
+	if id != nil {
+		_u = _u.SetGroupID(*id)
+	}
+	return _u
+}
+
+// SetGroup sets the "group" edge to the FileGroup entity.
+func (_u *FileUpdateOne) SetGroup(v *FileGroup) *FileUpdateOne {
+	return _u.SetGroupID(v.ID)
+}
+
+// AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
+func (_u *FileUpdateOne) AddCommentIDs(ids ...string) *FileUpdateOne {
+	_u.mutation.AddCommentIDs(ids...)
+	return _u
+}
+
+// AddComments adds the "comments" edges to the Comment entity.
+func (_u *FileUpdateOne) AddComments(v ...*Comment) *FileUpdateOne {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddCommentIDs(ids...)
+}
+
+// AddReactionIDs adds the "reactions" edge to the FileReaction entity by IDs.
+func (_u *FileUpdateOne) AddReactionIDs(ids ...string) *FileUpdateOne {
+	_u.mutation.AddReactionIDs(ids...)
+	return _u
+}
+
+// AddReactions adds the "reactions" edges to the FileReaction entity.
+func (_u *FileUpdateOne) AddReactions(v ...*FileReaction) *FileUpdateOne {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddReactionIDs(ids...)
+}
+
 // Mutation returns the FileMutation object of the builder.
 func (_u *FileUpdateOne) Mutation() *FileMutation {
 	return _u.mutation
@@ -678,6 +946,54 @@ func (_u *FileUpdateOne) Mutation() *FileMutation {
 func (_u *FileUpdateOne) ClearGame() *FileUpdateOne {
 	_u.mutation.ClearGame()
 	return _u
+}
+
+// ClearGroup clears the "group" edge to the FileGroup entity.
+func (_u *FileUpdateOne) ClearGroup() *FileUpdateOne {
+	_u.mutation.ClearGroup()
+	return _u
+}
+
+// ClearComments clears all "comments" edges to the Comment entity.
+func (_u *FileUpdateOne) ClearComments() *FileUpdateOne {
+	_u.mutation.ClearComments()
+	return _u
+}
+
+// RemoveCommentIDs removes the "comments" edge to Comment entities by IDs.
+func (_u *FileUpdateOne) RemoveCommentIDs(ids ...string) *FileUpdateOne {
+	_u.mutation.RemoveCommentIDs(ids...)
+	return _u
+}
+
+// RemoveComments removes "comments" edges to Comment entities.
+func (_u *FileUpdateOne) RemoveComments(v ...*Comment) *FileUpdateOne {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveCommentIDs(ids...)
+}
+
+// ClearReactions clears all "reactions" edges to the FileReaction entity.
+func (_u *FileUpdateOne) ClearReactions() *FileUpdateOne {
+	_u.mutation.ClearReactions()
+	return _u
+}
+
+// RemoveReactionIDs removes the "reactions" edge to FileReaction entities by IDs.
+func (_u *FileUpdateOne) RemoveReactionIDs(ids ...string) *FileUpdateOne {
+	_u.mutation.RemoveReactionIDs(ids...)
+	return _u
+}
+
+// RemoveReactions removes "reactions" edges to FileReaction entities.
+func (_u *FileUpdateOne) RemoveReactions(v ...*FileReaction) *FileUpdateOne {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveReactionIDs(ids...)
 }
 
 // Where appends a list predicates to the FileUpdate builder.
@@ -839,6 +1155,125 @@ func (_u *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(game.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.GroupCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   file.GroupTable,
+			Columns: []string{file.GroupColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filegroup.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.GroupIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   file.GroupTable,
+			Columns: []string{file.GroupColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filegroup.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.CommentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   file.CommentsTable,
+			Columns: []string{file.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedCommentsIDs(); len(nodes) > 0 && !_u.mutation.CommentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   file.CommentsTable,
+			Columns: []string{file.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CommentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   file.CommentsTable,
+			Columns: []string{file.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ReactionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ReactionsTable,
+			Columns: []string{file.ReactionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filereaction.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedReactionsIDs(); len(nodes) > 0 && !_u.mutation.ReactionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ReactionsTable,
+			Columns: []string{file.ReactionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filereaction.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ReactionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ReactionsTable,
+			Columns: []string{file.ReactionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filereaction.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

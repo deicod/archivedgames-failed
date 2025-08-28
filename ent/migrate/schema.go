@@ -8,6 +8,40 @@ import (
 )
 
 var (
+	// CommentsColumns holds the columns for the "comments" table.
+	CommentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "subject_type", Type: field.TypeString},
+		{Name: "subject_id", Type: field.TypeString},
+		{Name: "user_id", Type: field.TypeString},
+		{Name: "language", Type: field.TypeString, Nullable: true},
+		{Name: "content_sanitized", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "edited_at", Type: field.TypeTime, Nullable: true},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
+		{Name: "file_comments", Type: field.TypeString, Nullable: true},
+		{Name: "game_comments", Type: field.TypeString, Nullable: true},
+	}
+	// CommentsTable holds the schema information for the "comments" table.
+	CommentsTable = &schema.Table{
+		Name:       "comments",
+		Columns:    CommentsColumns,
+		PrimaryKey: []*schema.Column{CommentsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "comments_files_comments",
+				Columns:    []*schema.Column{CommentsColumns[9]},
+				RefColumns: []*schema.Column{FilesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "comments_games_comments",
+				Columns:    []*schema.Column{CommentsColumns[10]},
+				RefColumns: []*schema.Column{GamesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// FilesColumns holds the columns for the "files" table.
 	FilesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
@@ -24,6 +58,7 @@ var (
 		{Name: "needs_review", Type: field.TypeBool, Default: false},
 		{Name: "disk_number", Type: field.TypeInt, Nullable: true},
 		{Name: "side", Type: field.TypeString, Nullable: true},
+		{Name: "file_group_files", Type: field.TypeString, Nullable: true},
 		{Name: "game_files", Type: field.TypeString},
 	}
 	// FilesTable holds the schema information for the "files" table.
@@ -33,10 +68,64 @@ var (
 		PrimaryKey: []*schema.Column{FilesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "files_games_files",
+				Symbol:     "files_file_groups_files",
 				Columns:    []*schema.Column{FilesColumns[14]},
+				RefColumns: []*schema.Column{FileGroupsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "files_games_files",
+				Columns:    []*schema.Column{FilesColumns[15]},
 				RefColumns: []*schema.Column{GamesColumns[0]},
 				OnDelete:   schema.NoAction,
+			},
+		},
+	}
+	// FileGroupsColumns holds the columns for the "file_groups" table.
+	FileGroupsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "key", Type: field.TypeString, Unique: true},
+		{Name: "game_groups", Type: field.TypeString},
+	}
+	// FileGroupsTable holds the schema information for the "file_groups" table.
+	FileGroupsTable = &schema.Table{
+		Name:       "file_groups",
+		Columns:    FileGroupsColumns,
+		PrimaryKey: []*schema.Column{FileGroupsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "file_groups_games_groups",
+				Columns:    []*schema.Column{FileGroupsColumns[2]},
+				RefColumns: []*schema.Column{GamesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
+	// FileReactionsColumns holds the columns for the "file_reactions" table.
+	FileReactionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "user_id", Type: field.TypeString},
+		{Name: "value", Type: field.TypeInt},
+		{Name: "file_reaction_file", Type: field.TypeString},
+	}
+	// FileReactionsTable holds the schema information for the "file_reactions" table.
+	FileReactionsTable = &schema.Table{
+		Name:       "file_reactions",
+		Columns:    FileReactionsColumns,
+		PrimaryKey: []*schema.Column{FileReactionsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "file_reactions_files_file",
+				Columns:    []*schema.Column{FileReactionsColumns[3]},
+				RefColumns: []*schema.Column{FilesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "filereaction_user_id_file_reaction_file",
+				Unique:  true,
+				Columns: []*schema.Column{FileReactionsColumns[1], FileReactionsColumns[3]},
 			},
 		},
 	}
@@ -55,6 +144,33 @@ var (
 		Name:       "games",
 		Columns:    GamesColumns,
 		PrimaryKey: []*schema.Column{GamesColumns[0]},
+	}
+	// GameLikesColumns holds the columns for the "game_likes" table.
+	GameLikesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "user_id", Type: field.TypeString},
+		{Name: "game_like_game", Type: field.TypeString},
+	}
+	// GameLikesTable holds the schema information for the "game_likes" table.
+	GameLikesTable = &schema.Table{
+		Name:       "game_likes",
+		Columns:    GameLikesColumns,
+		PrimaryKey: []*schema.Column{GameLikesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "game_likes_games_game",
+				Columns:    []*schema.Column{GameLikesColumns[2]},
+				RefColumns: []*schema.Column{GamesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "gamelike_user_id_game_like_game",
+				Unique:  true,
+				Columns: []*schema.Column{GameLikesColumns[1], GameLikesColumns[2]},
+			},
+		},
 	}
 	// ImagesColumns holds the columns for the "images" table.
 	ImagesColumns = []*schema.Column{
@@ -124,8 +240,12 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		CommentsTable,
 		FilesTable,
+		FileGroupsTable,
+		FileReactionsTable,
 		GamesTable,
+		GameLikesTable,
 		ImagesTable,
 		ReportsTable,
 		SiteSettingsTable,
@@ -134,6 +254,12 @@ var (
 )
 
 func init() {
-	FilesTable.ForeignKeys[0].RefTable = GamesTable
+	CommentsTable.ForeignKeys[0].RefTable = FilesTable
+	CommentsTable.ForeignKeys[1].RefTable = GamesTable
+	FilesTable.ForeignKeys[0].RefTable = FileGroupsTable
+	FilesTable.ForeignKeys[1].RefTable = GamesTable
+	FileGroupsTable.ForeignKeys[0].RefTable = GamesTable
+	FileReactionsTable.ForeignKeys[0].RefTable = FilesTable
+	GameLikesTable.ForeignKeys[0].RefTable = GamesTable
 	ImagesTable.ForeignKeys[0].RefTable = GamesTable
 }

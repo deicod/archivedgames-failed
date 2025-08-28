@@ -111,6 +111,12 @@ Entry template:
   - FE: GameDetail shows comments and add form for authenticated users
   - Tracks: #24, #25
 
+- 2025-08-28: Likes and file reactions
+  - Ent: add `GameLike` and `FileReaction` entities with unique (user, game/file)
+  - GraphQL: `rateGame` and `reactToFile` mutations; `viewerDidLike` and `reactionSummary` fields
+  - FE: GameDetail shows like counts and per-file thumbs up/down with toggle
+  - Tracks: #40, closes #31
+
 - 2025-08-28: Backlog — shadcn/ui follow-ups
   - Add shadcn/ui components and refactor views (#53)
   - Theme toggle and tokens (Tailwind v4) (#54)

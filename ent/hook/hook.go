@@ -9,6 +9,18 @@ import (
 	"github.com/deicod/archivedgames/ent"
 )
 
+// The CommentFunc type is an adapter to allow the use of ordinary
+// function as Comment mutator.
+type CommentFunc func(context.Context, *ent.CommentMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CommentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.CommentMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CommentMutation", m)
+}
+
 // The FileFunc type is an adapter to allow the use of ordinary
 // function as File mutator.
 type FileFunc func(context.Context, *ent.FileMutation) (ent.Value, error)
@@ -21,6 +33,30 @@ func (f FileFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FileMutation", m)
 }
 
+// The FileGroupFunc type is an adapter to allow the use of ordinary
+// function as FileGroup mutator.
+type FileGroupFunc func(context.Context, *ent.FileGroupMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FileGroupFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FileGroupMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FileGroupMutation", m)
+}
+
+// The FileReactionFunc type is an adapter to allow the use of ordinary
+// function as FileReaction mutator.
+type FileReactionFunc func(context.Context, *ent.FileReactionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FileReactionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FileReactionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FileReactionMutation", m)
+}
+
 // The GameFunc type is an adapter to allow the use of ordinary
 // function as Game mutator.
 type GameFunc func(context.Context, *ent.GameMutation) (ent.Value, error)
@@ -31,6 +67,18 @@ func (f GameFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.GameMutation", m)
+}
+
+// The GameLikeFunc type is an adapter to allow the use of ordinary
+// function as GameLike mutator.
+type GameLikeFunc func(context.Context, *ent.GameLikeMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f GameLikeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.GameLikeMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.GameLikeMutation", m)
 }
 
 // The ImageFunc type is an adapter to allow the use of ordinary

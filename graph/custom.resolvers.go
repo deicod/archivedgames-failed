@@ -17,7 +17,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/deicod/archivedgames/ent"
 	"github.com/deicod/archivedgames/ent/file"
+	"github.com/deicod/archivedgames/ent/filereaction"
 	"github.com/deicod/archivedgames/ent/game"
+	"github.com/deicod/archivedgames/ent/gamelike"
 	"github.com/deicod/archivedgames/ent/image"
 	"github.com/deicod/archivedgames/ent/report"
 	"github.com/deicod/archivedgames/ent/sitesetting"
@@ -29,6 +31,30 @@ import (
 	"github.com/deicod/archivedgames/internal/s3client"
 	"github.com/deicod/archivedgames/internal/sanitize"
 )
+
+// ReactionSummary is the resolver for the reactionSummary field.
+func (r *fileResolver) ReactionSummary(ctx context.Context, obj *ent.File) (*model.ReactionSummary, error) {
+	uid, _ := auth.UserID(ctx)
+	up, _ := r.Client.FileReaction.Query().Where(filereaction.HasFileWith(file.IDEQ(obj.ID)), filereaction.ValueEQ(1)).Count(ctx)
+	down, _ := r.Client.FileReaction.Query().Where(filereaction.HasFileWith(file.IDEQ(obj.ID)), filereaction.ValueEQ(-1)).Count(ctx)
+	viewer := 0
+	if uid != "" {
+		if fr, err := r.Client.FileReaction.Query().Where(filereaction.HasFileWith(file.IDEQ(obj.ID)), filereaction.UserID(uid)).Only(ctx); err == nil {
+			viewer = fr.Value
+		}
+	}
+	return &model.ReactionSummary{Up: up, Down: down, Viewer: viewer}, nil
+}
+
+// ViewerDidLike is the resolver for the viewerDidLike field.
+func (r *gameResolver) ViewerDidLike(ctx context.Context, obj *ent.Game) (bool, error) {
+	uid, ok := auth.UserID(ctx)
+	if !ok {
+		return false, nil
+	}
+	cnt, err := r.Client.GameLike.Query().Where(gamelike.HasGameWith(game.IDEQ(obj.ID)), gamelike.UserID(uid)).Count(ctx)
+	return cnt > 0, err
+}
 
 // CreateImageUploads is the resolver for the createImageUploads field.
 func (r *mutationResolver) CreateImageUploads(ctx context.Context, gameID string, kind image.Kind, count int) ([]*model.PresignedPut, error) {
@@ -326,6 +352,59 @@ func (r *mutationResolver) DeleteComment(ctx context.Context, id string) (bool, 
 		return false, err
 	}
 	return true, nil
+}
+
+// RateGame is the resolver for the rateGame field.
+func (r *mutationResolver) RateGame(ctx context.Context, gameID string, like bool) (*ent.Game, error) {
+	uid, err := auth.RequireUser(ctx)
+	if err != nil {
+		return nil, err
+	}
+	exists, _ := r.Client.GameLike.Query().Where(gamelike.HasGameWith(game.IDEQ(gameID)), gamelike.UserID(uid)).Exist(ctx)
+	if like {
+		if !exists {
+			if _, err := r.Client.GameLike.Create().SetGameID(gameID).SetUserID(uid).Save(ctx); err != nil {
+				return nil, err
+			}
+		}
+	} else {
+		if exists {
+			if _, err := r.Client.GameLike.Delete().Where(gamelike.HasGameWith(game.IDEQ(gameID)), gamelike.UserID(uid)).Exec(ctx); err != nil {
+				return nil, err
+			}
+		}
+	}
+	return r.Client.Game.Get(ctx, gameID)
+}
+
+// ReactToFile is the resolver for the reactToFile field.
+func (r *mutationResolver) ReactToFile(ctx context.Context, fileID string, value int) (*ent.File, error) {
+	uid, err := auth.RequireUser(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if value != -1 && value != 0 && value != 1 {
+		return nil, errors.New("invalid value")
+	}
+	fr, err := r.Client.FileReaction.Query().Where(filereaction.HasFileWith(file.IDEQ(fileID)), filereaction.UserID(uid)).Only(ctx)
+	if value == 0 {
+		if err == nil {
+			if err := r.Client.FileReaction.DeleteOne(fr).Exec(ctx); err != nil {
+				return nil, err
+			}
+		}
+	} else {
+		if err == nil {
+			if err := r.Client.FileReaction.UpdateOne(fr).SetValue(value).Exec(ctx); err != nil {
+				return nil, err
+			}
+		} else {
+			if _, err := r.Client.FileReaction.Create().SetFileID(fileID).SetUserID(uid).SetValue(value).Save(ctx); err != nil {
+				return nil, err
+			}
+		}
+	}
+	return r.Client.File.Get(ctx, fileID)
 }
 
 // GetDownloadURL is the resolver for the getDownloadURL field.

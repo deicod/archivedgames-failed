@@ -37,5 +37,6 @@ func (Game) Edges() []ent.Edge {
         edge.To("images", Image.Type).Annotations(entgql.RelayConnection()),
         edge.To("comments", Comment.Type).Annotations(entgql.RelayConnection()),
         edge.To("groups", FileGroup.Type).Annotations(entgql.RelayConnection()),
+        edge.From("likes", GameLike.Type).Ref("game").Annotations(entgql.RelayConnection()),
     }
 }

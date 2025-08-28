@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/deicod/archivedgames/ent/file"
+	"github.com/deicod/archivedgames/ent/filegroup"
 	"github.com/deicod/archivedgames/ent/game"
 )
 
@@ -45,20 +46,30 @@ type File struct {
 	Side string `json:"side,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FileQuery when eager-loading is set.
-	Edges        FileEdges `json:"edges"`
-	game_files   *string
-	selectValues sql.SelectValues
+	Edges            FileEdges `json:"edges"`
+	file_group_files *string
+	game_files       *string
+	selectValues     sql.SelectValues
 }
 
 // FileEdges holds the relations/edges for other nodes in the graph.
 type FileEdges struct {
 	// Game holds the value of the game edge.
 	Game *Game `json:"game,omitempty"`
+	// Group holds the value of the group edge.
+	Group *FileGroup `json:"group,omitempty"`
+	// Comments holds the value of the comments edge.
+	Comments []*Comment `json:"comments,omitempty"`
+	// Reactions holds the value of the reactions edge.
+	Reactions []*FileReaction `json:"reactions,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [4]map[string]int
+
+	namedComments  map[string][]*Comment
+	namedReactions map[string][]*FileReaction
 }
 
 // GameOrErr returns the Game value or an error if the edge
@@ -72,6 +83,35 @@ func (e FileEdges) GameOrErr() (*Game, error) {
 	return nil, &NotLoadedError{edge: "game"}
 }
 
+// GroupOrErr returns the Group value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e FileEdges) GroupOrErr() (*FileGroup, error) {
+	if e.Group != nil {
+		return e.Group, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: filegroup.Label}
+	}
+	return nil, &NotLoadedError{edge: "group"}
+}
+
+// CommentsOrErr returns the Comments value or an error if the edge
+// was not loaded in eager-loading.
+func (e FileEdges) CommentsOrErr() ([]*Comment, error) {
+	if e.loadedTypes[2] {
+		return e.Comments, nil
+	}
+	return nil, &NotLoadedError{edge: "comments"}
+}
+
+// ReactionsOrErr returns the Reactions value or an error if the edge
+// was not loaded in eager-loading.
+func (e FileEdges) ReactionsOrErr() ([]*FileReaction, error) {
+	if e.loadedTypes[3] {
+		return e.Reactions, nil
+	}
+	return nil, &NotLoadedError{edge: "reactions"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*File) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -83,7 +123,9 @@ func (*File) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case file.FieldID, file.FieldPath, file.FieldOriginalName, file.FieldNormalizedName, file.FieldSetKey, file.FieldChecksum, file.FieldMimeType, file.FieldFormat, file.FieldSource, file.FieldSide:
 			values[i] = new(sql.NullString)
-		case file.ForeignKeys[0]: // game_files
+		case file.ForeignKeys[0]: // file_group_files
+			values[i] = new(sql.NullString)
+		case file.ForeignKeys[1]: // game_files
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -187,6 +229,13 @@ func (_m *File) assignValues(columns []string, values []any) error {
 			}
 		case file.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field file_group_files", values[i])
+			} else if value.Valid {
+				_m.file_group_files = new(string)
+				*_m.file_group_files = value.String
+			}
+		case file.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field game_files", values[i])
 			} else if value.Valid {
 				_m.game_files = new(string)
@@ -208,6 +257,21 @@ func (_m *File) Value(name string) (ent.Value, error) {
 // QueryGame queries the "game" edge of the File entity.
 func (_m *File) QueryGame() *GameQuery {
 	return NewFileClient(_m.config).QueryGame(_m)
+}
+
+// QueryGroup queries the "group" edge of the File entity.
+func (_m *File) QueryGroup() *FileGroupQuery {
+	return NewFileClient(_m.config).QueryGroup(_m)
+}
+
+// QueryComments queries the "comments" edge of the File entity.
+func (_m *File) QueryComments() *CommentQuery {
+	return NewFileClient(_m.config).QueryComments(_m)
+}
+
+// QueryReactions queries the "reactions" edge of the File entity.
+func (_m *File) QueryReactions() *FileReactionQuery {
+	return NewFileClient(_m.config).QueryReactions(_m)
 }
 
 // Update returns a builder for updating this File.
@@ -275,6 +339,54 @@ func (_m *File) String() string {
 	builder.WriteString(_m.Side)
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedComments returns the Comments named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *File) NamedComments(name string) ([]*Comment, error) {
+	if _m.Edges.namedComments == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedComments[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *File) appendNamedComments(name string, edges ...*Comment) {
+	if _m.Edges.namedComments == nil {
+		_m.Edges.namedComments = make(map[string][]*Comment)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedComments[name] = []*Comment{}
+	} else {
+		_m.Edges.namedComments[name] = append(_m.Edges.namedComments[name], edges...)
+	}
+}
+
+// NamedReactions returns the Reactions named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *File) NamedReactions(name string) ([]*FileReaction, error) {
+	if _m.Edges.namedReactions == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedReactions[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *File) appendNamedReactions(name string, edges ...*FileReaction) {
+	if _m.Edges.namedReactions == nil {
+		_m.Edges.namedReactions = make(map[string][]*FileReaction)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedReactions[name] = []*FileReaction{}
+	} else {
+		_m.Edges.namedReactions[name] = append(_m.Edges.namedReactions[name], edges...)
+	}
 }
 
 // Files is a parsable slice of File.

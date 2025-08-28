@@ -3,8 +3,14 @@
 package ent
 
 import (
+	"time"
+
+	"github.com/deicod/archivedgames/ent/comment"
 	"github.com/deicod/archivedgames/ent/file"
+	"github.com/deicod/archivedgames/ent/filegroup"
+	"github.com/deicod/archivedgames/ent/filereaction"
 	"github.com/deicod/archivedgames/ent/game"
+	"github.com/deicod/archivedgames/ent/gamelike"
 	"github.com/deicod/archivedgames/ent/image"
 	"github.com/deicod/archivedgames/ent/report"
 	"github.com/deicod/archivedgames/ent/schema"
@@ -16,6 +22,16 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	commentFields := schema.Comment{}.Fields()
+	_ = commentFields
+	// commentDescCreatedAt is the schema descriptor for created_at field.
+	commentDescCreatedAt := commentFields[6].Descriptor()
+	// comment.DefaultCreatedAt holds the default value on creation for the created_at field.
+	comment.DefaultCreatedAt = commentDescCreatedAt.Default.(func() time.Time)
+	// commentDescID is the schema descriptor for id field.
+	commentDescID := commentFields[0].Descriptor()
+	// comment.DefaultID holds the default value on creation for the id field.
+	comment.DefaultID = commentDescID.Default.(func() string)
 	fileFields := schema.File{}.Fields()
 	_ = fileFields
 	// fileDescQuarantine is the schema descriptor for quarantine field.
@@ -30,12 +46,30 @@ func init() {
 	fileDescID := fileFields[0].Descriptor()
 	// file.DefaultID holds the default value on creation for the id field.
 	file.DefaultID = fileDescID.Default.(func() string)
+	filegroupFields := schema.FileGroup{}.Fields()
+	_ = filegroupFields
+	// filegroupDescID is the schema descriptor for id field.
+	filegroupDescID := filegroupFields[0].Descriptor()
+	// filegroup.DefaultID holds the default value on creation for the id field.
+	filegroup.DefaultID = filegroupDescID.Default.(func() string)
+	filereactionFields := schema.FileReaction{}.Fields()
+	_ = filereactionFields
+	// filereactionDescID is the schema descriptor for id field.
+	filereactionDescID := filereactionFields[0].Descriptor()
+	// filereaction.DefaultID holds the default value on creation for the id field.
+	filereaction.DefaultID = filereactionDescID.Default.(func() string)
 	gameFields := schema.Game{}.Fields()
 	_ = gameFields
 	// gameDescID is the schema descriptor for id field.
 	gameDescID := gameFields[0].Descriptor()
 	// game.DefaultID holds the default value on creation for the id field.
 	game.DefaultID = gameDescID.Default.(func() string)
+	gamelikeFields := schema.GameLike{}.Fields()
+	_ = gamelikeFields
+	// gamelikeDescID is the schema descriptor for id field.
+	gamelikeDescID := gamelikeFields[0].Descriptor()
+	// gamelike.DefaultID holds the default value on creation for the id field.
+	gamelike.DefaultID = gamelikeDescID.Default.(func() string)
 	imageFields := schema.Image{}.Fields()
 	_ = imageFields
 	// imageDescPosition is the schema descriptor for position field.

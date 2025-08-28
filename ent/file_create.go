@@ -9,7 +9,10 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/deicod/archivedgames/ent/comment"
 	"github.com/deicod/archivedgames/ent/file"
+	"github.com/deicod/archivedgames/ent/filegroup"
+	"github.com/deicod/archivedgames/ent/filereaction"
 	"github.com/deicod/archivedgames/ent/game"
 )
 
@@ -177,6 +180,55 @@ func (_c *FileCreate) SetGameID(id string) *FileCreate {
 // SetGame sets the "game" edge to the Game entity.
 func (_c *FileCreate) SetGame(v *Game) *FileCreate {
 	return _c.SetGameID(v.ID)
+}
+
+// SetGroupID sets the "group" edge to the FileGroup entity by ID.
+func (_c *FileCreate) SetGroupID(id string) *FileCreate {
+	_c.mutation.SetGroupID(id)
+	return _c
+}
+
+// SetNillableGroupID sets the "group" edge to the FileGroup entity by ID if the given value is not nil.
+func (_c *FileCreate) SetNillableGroupID(id *string) *FileCreate {
+	if id != nil {
+		_c = _c.SetGroupID(*id)
+	}
+	return _c
+}
+
+// SetGroup sets the "group" edge to the FileGroup entity.
+func (_c *FileCreate) SetGroup(v *FileGroup) *FileCreate {
+	return _c.SetGroupID(v.ID)
+}
+
+// AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
+func (_c *FileCreate) AddCommentIDs(ids ...string) *FileCreate {
+	_c.mutation.AddCommentIDs(ids...)
+	return _c
+}
+
+// AddComments adds the "comments" edges to the Comment entity.
+func (_c *FileCreate) AddComments(v ...*Comment) *FileCreate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddCommentIDs(ids...)
+}
+
+// AddReactionIDs adds the "reactions" edge to the FileReaction entity by IDs.
+func (_c *FileCreate) AddReactionIDs(ids ...string) *FileCreate {
+	_c.mutation.AddReactionIDs(ids...)
+	return _c
+}
+
+// AddReactions adds the "reactions" edges to the FileReaction entity.
+func (_c *FileCreate) AddReactions(v ...*FileReaction) *FileCreate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddReactionIDs(ids...)
 }
 
 // Mutation returns the FileMutation object of the builder.
@@ -359,6 +411,55 @@ func (_c *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.game_files = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.GroupIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   file.GroupTable,
+			Columns: []string{file.GroupColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filegroup.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.file_group_files = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.CommentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   file.CommentsTable,
+			Columns: []string{file.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.ReactionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ReactionsTable,
+			Columns: []string{file.ReactionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filereaction.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

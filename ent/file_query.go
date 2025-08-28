@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -11,7 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/deicod/archivedgames/ent/comment"
 	"github.com/deicod/archivedgames/ent/file"
+	"github.com/deicod/archivedgames/ent/filegroup"
+	"github.com/deicod/archivedgames/ent/filereaction"
 	"github.com/deicod/archivedgames/ent/game"
 	"github.com/deicod/archivedgames/ent/predicate"
 )
@@ -19,14 +23,19 @@ import (
 // FileQuery is the builder for querying File entities.
 type FileQuery struct {
 	config
-	ctx        *QueryContext
-	order      []file.OrderOption
-	inters     []Interceptor
-	predicates []predicate.File
-	withGame   *GameQuery
-	withFKs    bool
-	modifiers  []func(*sql.Selector)
-	loadTotal  []func(context.Context, []*File) error
+	ctx                *QueryContext
+	order              []file.OrderOption
+	inters             []Interceptor
+	predicates         []predicate.File
+	withGame           *GameQuery
+	withGroup          *FileGroupQuery
+	withComments       *CommentQuery
+	withReactions      *FileReactionQuery
+	withFKs            bool
+	modifiers          []func(*sql.Selector)
+	loadTotal          []func(context.Context, []*File) error
+	withNamedComments  map[string]*CommentQuery
+	withNamedReactions map[string]*FileReactionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -78,6 +87,72 @@ func (_q *FileQuery) QueryGame() *GameQuery {
 			sqlgraph.From(file.Table, file.FieldID, selector),
 			sqlgraph.To(game.Table, game.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, file.GameTable, file.GameColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryGroup chains the current query on the "group" edge.
+func (_q *FileQuery) QueryGroup() *FileGroupQuery {
+	query := (&FileGroupClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, selector),
+			sqlgraph.To(filegroup.Table, filegroup.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, file.GroupTable, file.GroupColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryComments chains the current query on the "comments" edge.
+func (_q *FileQuery) QueryComments() *CommentQuery {
+	query := (&CommentClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, selector),
+			sqlgraph.To(comment.Table, comment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, file.CommentsTable, file.CommentsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryReactions chains the current query on the "reactions" edge.
+func (_q *FileQuery) QueryReactions() *FileReactionQuery {
+	query := (&FileReactionClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, selector),
+			sqlgraph.To(filereaction.Table, filereaction.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.ReactionsTable, file.ReactionsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -272,12 +347,15 @@ func (_q *FileQuery) Clone() *FileQuery {
 		return nil
 	}
 	return &FileQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]file.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.File{}, _q.predicates...),
-		withGame:   _q.withGame.Clone(),
+		config:        _q.config,
+		ctx:           _q.ctx.Clone(),
+		order:         append([]file.OrderOption{}, _q.order...),
+		inters:        append([]Interceptor{}, _q.inters...),
+		predicates:    append([]predicate.File{}, _q.predicates...),
+		withGame:      _q.withGame.Clone(),
+		withGroup:     _q.withGroup.Clone(),
+		withComments:  _q.withComments.Clone(),
+		withReactions: _q.withReactions.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -292,6 +370,39 @@ func (_q *FileQuery) WithGame(opts ...func(*GameQuery)) *FileQuery {
 		opt(query)
 	}
 	_q.withGame = query
+	return _q
+}
+
+// WithGroup tells the query-builder to eager-load the nodes that are connected to
+// the "group" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithGroup(opts ...func(*FileGroupQuery)) *FileQuery {
+	query := (&FileGroupClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withGroup = query
+	return _q
+}
+
+// WithComments tells the query-builder to eager-load the nodes that are connected to
+// the "comments" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithComments(opts ...func(*CommentQuery)) *FileQuery {
+	query := (&CommentClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withComments = query
+	return _q
+}
+
+// WithReactions tells the query-builder to eager-load the nodes that are connected to
+// the "reactions" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithReactions(opts ...func(*FileReactionQuery)) *FileQuery {
+	query := (&FileReactionClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withReactions = query
 	return _q
 }
 
@@ -374,11 +485,14 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 		nodes       = []*File{}
 		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [4]bool{
 			_q.withGame != nil,
+			_q.withGroup != nil,
+			_q.withComments != nil,
+			_q.withReactions != nil,
 		}
 	)
-	if _q.withGame != nil {
+	if _q.withGame != nil || _q.withGroup != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -408,6 +522,40 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 	if query := _q.withGame; query != nil {
 		if err := _q.loadGame(ctx, query, nodes, nil,
 			func(n *File, e *Game) { n.Edges.Game = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withGroup; query != nil {
+		if err := _q.loadGroup(ctx, query, nodes, nil,
+			func(n *File, e *FileGroup) { n.Edges.Group = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withComments; query != nil {
+		if err := _q.loadComments(ctx, query, nodes,
+			func(n *File) { n.Edges.Comments = []*Comment{} },
+			func(n *File, e *Comment) { n.Edges.Comments = append(n.Edges.Comments, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withReactions; query != nil {
+		if err := _q.loadReactions(ctx, query, nodes,
+			func(n *File) { n.Edges.Reactions = []*FileReaction{} },
+			func(n *File, e *FileReaction) { n.Edges.Reactions = append(n.Edges.Reactions, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedComments {
+		if err := _q.loadComments(ctx, query, nodes,
+			func(n *File) { n.appendNamedComments(name) },
+			func(n *File, e *Comment) { n.appendNamedComments(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedReactions {
+		if err := _q.loadReactions(ctx, query, nodes,
+			func(n *File) { n.appendNamedReactions(name) },
+			func(n *File, e *FileReaction) { n.appendNamedReactions(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -448,6 +596,100 @@ func (_q *FileQuery) loadGame(ctx context.Context, query *GameQuery, nodes []*Fi
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (_q *FileQuery) loadGroup(ctx context.Context, query *FileGroupQuery, nodes []*File, init func(*File), assign func(*File, *FileGroup)) error {
+	ids := make([]string, 0, len(nodes))
+	nodeids := make(map[string][]*File)
+	for i := range nodes {
+		if nodes[i].file_group_files == nil {
+			continue
+		}
+		fk := *nodes[i].file_group_files
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(filegroup.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "file_group_files" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (_q *FileQuery) loadComments(ctx context.Context, query *CommentQuery, nodes []*File, init func(*File), assign func(*File, *Comment)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*File)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Comment(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(file.CommentsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.file_comments
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "file_comments" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "file_comments" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *FileQuery) loadReactions(ctx context.Context, query *FileReactionQuery, nodes []*File, init func(*File), assign func(*File, *FileReaction)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*File)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.FileReaction(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(file.ReactionsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.file_reaction_file
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "file_reaction_file" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "file_reaction_file" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -534,6 +776,34 @@ func (_q *FileQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedComments tells the query-builder to eager-load the nodes that are connected to the "comments"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithNamedComments(name string, opts ...func(*CommentQuery)) *FileQuery {
+	query := (&CommentClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedComments == nil {
+		_q.withNamedComments = make(map[string]*CommentQuery)
+	}
+	_q.withNamedComments[name] = query
+	return _q
+}
+
+// WithNamedReactions tells the query-builder to eager-load the nodes that are connected to the "reactions"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithNamedReactions(name string, opts ...func(*FileReactionQuery)) *FileQuery {
+	query := (&FileReactionClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedReactions == nil {
+		_q.withNamedReactions = make(map[string]*FileReactionQuery)
+	}
+	_q.withNamedReactions[name] = query
+	return _q
 }
 
 // FileGroupBy is the group-by builder for File entities.

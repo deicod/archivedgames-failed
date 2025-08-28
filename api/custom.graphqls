@@ -53,4 +53,20 @@ extend type Mutation {
   addComment(subjectType: String!, subjectId: String!, content: String!, language: String): Comment!
   editComment(id: String!, content: String!): Comment!
   deleteComment(id: String!): Boolean!
+  rateGame(gameId: String!, like: Boolean!): Game!
+  reactToFile(fileId: String!, value: Int!): File!
+}
+
+extend type Game {
+  viewerDidLike: Boolean!
+}
+
+type ReactionSummary {
+  up: Int!
+  down: Int!
+  viewer: Int!
+}
+
+extend type File {
+  reactionSummary: ReactionSummary!
 }

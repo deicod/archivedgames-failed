@@ -40,14 +40,23 @@ type GameEdges struct {
 	Files []*File `json:"files,omitempty"`
 	// Images holds the value of the images edge.
 	Images []*Image `json:"images,omitempty"`
+	// Comments holds the value of the comments edge.
+	Comments []*Comment `json:"comments,omitempty"`
+	// Groups holds the value of the groups edge.
+	Groups []*FileGroup `json:"groups,omitempty"`
+	// Likes holds the value of the likes edge.
+	Likes []*GameLike `json:"likes,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [5]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [5]map[string]int
 
-	namedFiles  map[string][]*File
-	namedImages map[string][]*Image
+	namedFiles    map[string][]*File
+	namedImages   map[string][]*Image
+	namedComments map[string][]*Comment
+	namedGroups   map[string][]*FileGroup
+	namedLikes    map[string][]*GameLike
 }
 
 // FilesOrErr returns the Files value or an error if the edge
@@ -66,6 +75,33 @@ func (e GameEdges) ImagesOrErr() ([]*Image, error) {
 		return e.Images, nil
 	}
 	return nil, &NotLoadedError{edge: "images"}
+}
+
+// CommentsOrErr returns the Comments value or an error if the edge
+// was not loaded in eager-loading.
+func (e GameEdges) CommentsOrErr() ([]*Comment, error) {
+	if e.loadedTypes[2] {
+		return e.Comments, nil
+	}
+	return nil, &NotLoadedError{edge: "comments"}
+}
+
+// GroupsOrErr returns the Groups value or an error if the edge
+// was not loaded in eager-loading.
+func (e GameEdges) GroupsOrErr() ([]*FileGroup, error) {
+	if e.loadedTypes[3] {
+		return e.Groups, nil
+	}
+	return nil, &NotLoadedError{edge: "groups"}
+}
+
+// LikesOrErr returns the Likes value or an error if the edge
+// was not loaded in eager-loading.
+func (e GameEdges) LikesOrErr() ([]*GameLike, error) {
+	if e.loadedTypes[4] {
+		return e.Likes, nil
+	}
+	return nil, &NotLoadedError{edge: "likes"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -156,6 +192,21 @@ func (_m *Game) QueryFiles() *FileQuery {
 // QueryImages queries the "images" edge of the Game entity.
 func (_m *Game) QueryImages() *ImageQuery {
 	return NewGameClient(_m.config).QueryImages(_m)
+}
+
+// QueryComments queries the "comments" edge of the Game entity.
+func (_m *Game) QueryComments() *CommentQuery {
+	return NewGameClient(_m.config).QueryComments(_m)
+}
+
+// QueryGroups queries the "groups" edge of the Game entity.
+func (_m *Game) QueryGroups() *FileGroupQuery {
+	return NewGameClient(_m.config).QueryGroups(_m)
+}
+
+// QueryLikes queries the "likes" edge of the Game entity.
+func (_m *Game) QueryLikes() *GameLikeQuery {
+	return NewGameClient(_m.config).QueryLikes(_m)
 }
 
 // Update returns a builder for updating this Game.
@@ -249,6 +300,78 @@ func (_m *Game) appendNamedImages(name string, edges ...*Image) {
 		_m.Edges.namedImages[name] = []*Image{}
 	} else {
 		_m.Edges.namedImages[name] = append(_m.Edges.namedImages[name], edges...)
+	}
+}
+
+// NamedComments returns the Comments named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Game) NamedComments(name string) ([]*Comment, error) {
+	if _m.Edges.namedComments == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedComments[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Game) appendNamedComments(name string, edges ...*Comment) {
+	if _m.Edges.namedComments == nil {
+		_m.Edges.namedComments = make(map[string][]*Comment)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedComments[name] = []*Comment{}
+	} else {
+		_m.Edges.namedComments[name] = append(_m.Edges.namedComments[name], edges...)
+	}
+}
+
+// NamedGroups returns the Groups named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Game) NamedGroups(name string) ([]*FileGroup, error) {
+	if _m.Edges.namedGroups == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedGroups[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Game) appendNamedGroups(name string, edges ...*FileGroup) {
+	if _m.Edges.namedGroups == nil {
+		_m.Edges.namedGroups = make(map[string][]*FileGroup)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedGroups[name] = []*FileGroup{}
+	} else {
+		_m.Edges.namedGroups[name] = append(_m.Edges.namedGroups[name], edges...)
+	}
+}
+
+// NamedLikes returns the Likes named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Game) NamedLikes(name string) ([]*GameLike, error) {
+	if _m.Edges.namedLikes == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedLikes[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Game) appendNamedLikes(name string, edges ...*GameLike) {
+	if _m.Edges.namedLikes == nil {
+		_m.Edges.namedLikes = make(map[string][]*GameLike)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedLikes[name] = []*GameLike{}
+	} else {
+		_m.Edges.namedLikes[name] = append(_m.Edges.namedLikes[name], edges...)
 	}
 }
 

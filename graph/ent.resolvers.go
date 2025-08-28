@@ -14,6 +14,21 @@ import (
 	"github.com/deicod/archivedgames/internal/gqltypes"
 )
 
+// Comments is the resolver for the comments field.
+func (r *fileResolver) Comments(ctx context.Context, obj *ent.File, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.CommentWhereInput) (*ent.CommentConnection, error) {
+	panic(fmt.Errorf("not implemented: Comments - comments"))
+}
+
+// Reactions is the resolver for the reactions field.
+func (r *fileResolver) Reactions(ctx context.Context, obj *ent.File, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.FileReactionWhereInput) (*ent.FileReactionConnection, error) {
+	panic(fmt.Errorf("not implemented: Reactions - reactions"))
+}
+
+// Files is the resolver for the files field.
+func (r *fileGroupResolver) Files(ctx context.Context, obj *ent.FileGroup, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.FileWhereInput) (*ent.FileConnection, error) {
+	panic(fmt.Errorf("not implemented: Files - files"))
+}
+
 // Files is the resolver for the files field.
 func (r *gameResolver) Files(ctx context.Context, obj *ent.Game, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.FileWhereInput) (*ent.FileConnection, error) {
 	panic(fmt.Errorf("not implemented: Files - files"))
@@ -22,6 +37,21 @@ func (r *gameResolver) Files(ctx context.Context, obj *ent.Game, after *entgql.C
 // Images is the resolver for the images field.
 func (r *gameResolver) Images(ctx context.Context, obj *ent.Game, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.ImageWhereInput) (*ent.ImageConnection, error) {
 	panic(fmt.Errorf("not implemented: Images - images"))
+}
+
+// Comments is the resolver for the comments field.
+func (r *gameResolver) Comments(ctx context.Context, obj *ent.Game, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.CommentWhereInput) (*ent.CommentConnection, error) {
+	panic(fmt.Errorf("not implemented: Comments - comments"))
+}
+
+// Groups is the resolver for the groups field.
+func (r *gameResolver) Groups(ctx context.Context, obj *ent.Game, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.FileGroupWhereInput) (*ent.FileGroupConnection, error) {
+	panic(fmt.Errorf("not implemented: Groups - groups"))
+}
+
+// Likes is the resolver for the likes field.
+func (r *gameResolver) Likes(ctx context.Context, obj *ent.Game, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.GameLikeWhereInput) (*ent.GameLikeConnection, error) {
+	panic(fmt.Errorf("not implemented: Likes - likes"))
 }
 
 // Node is the resolver for the node field.
@@ -34,14 +64,34 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, e
 	return r.Client.Noders(ctx, ids)
 }
 
+// Comments is the resolver for the comments field.
+func (r *queryResolver) Comments(ctx context.Context, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.CommentWhereInput) (*ent.CommentConnection, error) {
+	panic(fmt.Errorf("not implemented: Comments - comments"))
+}
+
 // Files is the resolver for the files field.
 func (r *queryResolver) Files(ctx context.Context, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.FileWhereInput) (*ent.FileConnection, error) {
 	return r.Client.File.Query().Paginate(ctx, after, first, before, last)
 }
 
+// FileGroups is the resolver for the fileGroups field.
+func (r *queryResolver) FileGroups(ctx context.Context, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.FileGroupWhereInput) (*ent.FileGroupConnection, error) {
+	panic(fmt.Errorf("not implemented: FileGroups - fileGroups"))
+}
+
+// FileReactions is the resolver for the fileReactions field.
+func (r *queryResolver) FileReactions(ctx context.Context, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.FileReactionWhereInput) (*ent.FileReactionConnection, error) {
+	panic(fmt.Errorf("not implemented: FileReactions - fileReactions"))
+}
+
 // Games is the resolver for the games field.
 func (r *queryResolver) Games(ctx context.Context, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.GameWhereInput) (*ent.GameConnection, error) {
 	return r.Client.Game.Query().Paginate(ctx, after, first, before, last)
+}
+
+// GameLikes is the resolver for the gameLikes field.
+func (r *queryResolver) GameLikes(ctx context.Context, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, where *model.GameLikeWhereInput) (*ent.GameLikeConnection, error) {
+	panic(fmt.Errorf("not implemented: GameLikes - gameLikes"))
 }
 
 // Reports is the resolver for the reports field.
@@ -54,6 +104,12 @@ func (r *siteSettingResolver) Value(ctx context.Context, obj *ent.SiteSetting) (
 	panic(fmt.Errorf("not implemented: Value - value"))
 }
 
+// File returns FileResolver implementation.
+func (r *Resolver) File() FileResolver { return &fileResolver{r} }
+
+// FileGroup returns FileGroupResolver implementation.
+func (r *Resolver) FileGroup() FileGroupResolver { return &fileGroupResolver{r} }
+
 // Game returns GameResolver implementation.
 func (r *Resolver) Game() GameResolver { return &gameResolver{r} }
 
@@ -63,6 +119,8 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 // SiteSetting returns SiteSettingResolver implementation.
 func (r *Resolver) SiteSetting() SiteSettingResolver { return &siteSettingResolver{r} }
 
+type fileResolver struct{ *Resolver }
+type fileGroupResolver struct{ *Resolver }
 type gameResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type siteSettingResolver struct{ *Resolver }

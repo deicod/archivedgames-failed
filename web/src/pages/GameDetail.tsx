@@ -13,8 +13,10 @@ const Query = graphql`
       edges {
         node {
           id slug title year publisher platform
+          likes { totalCount }
+          viewerDidLike
           images(first: 4) { edges { node { id s3Key width height kind } } }
-          files(first: 50) { edges { node { id originalName sizeBytes format } } }
+          files(first: 50) { edges { node { id originalName sizeBytes format reactionSummary { up down viewer } } } }
           comments(first: 50) { edges { node { id userID contentSanitized createdAt editedAt deletedAt } } }
         }
       }
@@ -67,6 +69,29 @@ async function deleteImg(imageId: string){
   window.location.reload();
 }
 
+async function rateGame(gameId: string, like: boolean){
+  const url = (import.meta as any).env.VITE_GRAPHQL_URL as string;
+  const token = window.localStorage.getItem('access_token');
+  await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    body: JSON.stringify({ query: `mutation($id:String!,$like:Boolean!){ rateGame(gameId:$id, like:$like){ id } }`, variables: { id: gameId, like } })
+  });
+  window.location.reload();
+}
+
+async function reactTo(fileId: string, value: number, current: number){
+  const url = (import.meta as any).env.VITE_GRAPHQL_URL as string;
+  const token = window.localStorage.getItem('access_token');
+  const send = current === value ? 0 : value;
+  await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    body: JSON.stringify({ query: `mutation($id:String!,$v:Int!){ reactToFile(fileId:$id, value:$v){ id } }`, variables: { id: fileId, v: send } })
+  });
+  window.location.reload();
+}
+
 export default function GameDetail(){
   const { slug } = useParams();
   const auth = useAuth();
@@ -75,6 +100,8 @@ export default function GameDetail(){
   if (!node) return <div>Not found</div>;
   const images = node.images.edges?.map((e: any) => e.node) || [];
   const files = node.files.edges?.map((e: any) => e.node) || [];
+  const likeCount = node.likes?.totalCount || 0;
+  const viewerLiked = node.viewerDidLike;
   const [reportOpen, setReportOpen] = React.useState(false);
   const [reportId, setReportId] = React.useState<string | null>(null);
   const comments = (node.comments?.edges || []).map((e:any)=> e.node);
@@ -141,13 +168,21 @@ export default function GameDetail(){
             {node.year && <span>Year: <span className="text-gray-100">{node.year}</span></span>}
           </div>
         )}
+        <div className="flex items-center gap-2">
+          <button onClick={()=>rateGame(node.id, !viewerLiked)} className={`px-3 py-1 rounded ${viewerLiked? 'bg-white/20':'bg-white/10 hover:bg-white/20'}`}>{viewerLiked? 'Unlike':'Like'}</button>
+          <span className="text-sm">{likeCount}</span>
+        </div>
         <div className="space-y-2">
           {files.map((f:any)=> (
             <div key={f.id} className="flex items-center justify-between gap-3 text-sm">
               <div className="truncate">{f.originalName}</div>
-              <a href={`/d/${f.id}`} className="px-3 py-1 rounded bg-white/10 hover:bg-white/20">Download</a>
+              <div className="flex items-center gap-2">
+                <button onClick={()=>reactTo(f.id,1,f.reactionSummary.viewer)} className={`px-2 py-1 rounded ${f.reactionSummary.viewer===1?'bg-white/20':'bg-white/10 hover:bg-white/20'}`}>👍 {f.reactionSummary.up}</button>
+                <button onClick={()=>reactTo(f.id,-1,f.reactionSummary.viewer)} className={`px-2 py-1 rounded ${f.reactionSummary.viewer===-1?'bg-white/20':'bg-white/10 hover:bg-white/20'}`}>👎 {f.reactionSummary.down}</button>
+                <a href={`/d/${f.id}`} className="px-3 py-1 rounded bg-white/10 hover:bg-white/20">Download</a>
                 <button onClick={()=>{ setReportId(f.id); setReportOpen(true); }} className="px-2 py-1 rounded bg-red-500/20 hover:bg-red-500/30">Report</button>
               </div>
+            </div>
           ))}
         </div>
           {auth?.isAuthenticated ? <div className="space-y-3">

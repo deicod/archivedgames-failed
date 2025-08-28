@@ -12,8 +12,12 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/deicod/archivedgames/ent/comment"
 	"github.com/deicod/archivedgames/ent/file"
+	"github.com/deicod/archivedgames/ent/filegroup"
+	"github.com/deicod/archivedgames/ent/filereaction"
 	"github.com/deicod/archivedgames/ent/game"
+	"github.com/deicod/archivedgames/ent/gamelike"
 	"github.com/deicod/archivedgames/ent/image"
 	"github.com/deicod/archivedgames/ent/report"
 	"github.com/deicod/archivedgames/ent/sitesetting"
@@ -78,12 +82,16 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			file.Table:        file.ValidColumn,
-			game.Table:        game.ValidColumn,
-			image.Table:       image.ValidColumn,
-			report.Table:      report.ValidColumn,
-			sitesetting.Table: sitesetting.ValidColumn,
-			usershadow.Table:  usershadow.ValidColumn,
+			comment.Table:      comment.ValidColumn,
+			file.Table:         file.ValidColumn,
+			filegroup.Table:    filegroup.ValidColumn,
+			filereaction.Table: filereaction.ValidColumn,
+			game.Table:         game.ValidColumn,
+			gamelike.Table:     gamelike.ValidColumn,
+			image.Table:        image.ValidColumn,
+			report.Table:       report.ValidColumn,
+			sitesetting.Table:  sitesetting.ValidColumn,
+			usershadow.Table:   usershadow.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)
