@@ -45,20 +45,19 @@ Repo path assumed: **github.com/deicod/archivedgames** with frontend at `/web`.
 
 ---
 
-## 2) Vite & Tailwind
-**`web/tailwind.config.js`**
-```js
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: ["./index.html", "./src/**/*.{ts,tsx}"],
-  theme: { extend: {} },
-  plugins: []
-}
-```
+## 2) Vite & Tailwind (v4)
+Tailwind CSS v4 simplifies setup — no config file is required for basic usage. Define your sources in CSS using `@source` and import Tailwind with a single statement.
 
 **`web/postcss.config.js`**
 ```js
-export default { plugins: { tailwindcss: {}, autoprefixer: {} } }
+export default { plugins: { '@tailwindcss/postcss': {}, autoprefixer: {} } }
+```
+
+**`web/src/index.css`**
+```css
+@import "tailwindcss";
+@source "./index.html";
+@source "./src/**/*.{ts,tsx}";
 ```
 
 **`web/index.html`**
@@ -76,13 +75,6 @@ export default { plugins: { tailwindcss: {}, autoprefixer: {} } }
   <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
-```
-
-**`web/src/index.css`**
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 ```
 
 **`web/vite.config.ts`**

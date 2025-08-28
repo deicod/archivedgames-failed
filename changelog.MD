@@ -23,6 +23,14 @@ Entry template:
   - Update GraphQL config to map `FileGroup` types to ent models
   - Tracks: #44
 
+- 2025-08-28: Frontend — Tailwind CSS v4 + deps update
+  - Migrate to Tailwind CSS v4: `@import "tailwindcss";` and CSS `@source` directives; remove `tailwind.config.js`
+  - Switch PostCSS plugin to `@tailwindcss/postcss`; keep `autoprefixer`
+  - Update `@vitejs/plugin-react` to ^5; keep Vite 7
+  - Update `react-router-dom` to latest v6 (avoid v7 breaking changes), `react-oidc-context` to ^2.4, and `@types/react*`
+  - Docs: update Frontend Scaffold (Part 1) for Tailwind v4 setup
+  - Tracks: #49
+
 - 2025-08-28: Planning — NEXT.md linked to GitHub issues
   - Annotate `docs/NEXT.md` with direct links to open issues for each next step
   - Create tracking issues for missing items: #44 (FileGroup model), #45 (Platform validation & DOS zips), #46 (Image thumbnails), #47 (Publisher/year in body), #48 (Observability metrics/logging)
