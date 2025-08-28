@@ -17,6 +17,11 @@ This document captures current status and the prioritized next steps so we can p
 - Thumbnails/derived sizes (would need a background job or on‑the‑fly scaler; optional for MVP). [#46](https://github.com/deicod/archivedgames/issues/46)
 - Add “Set cover” control on current cover slot (if not cover), small UI polish. Tracked under [#40](https://github.com/deicod/archivedgames/issues/40)
 
+6) Frontend Polish
+- Adopt more shadcn/ui primitives (Dialog, Input, Select, Tabs) and refactor views. [#53](https://github.com/deicod/archivedgames/issues/53)
+- Theme toggle + tokens (Tailwind v4 CSS variables; persist preference). [#54](https://github.com/deicod/archivedgames/issues/54)
+- Replace remaining class-based buttons/controls with shadcn/ui variants. [#55](https://github.com/deicod/archivedgames/issues/55)
+
 3) Moderation (I2)
 - AdminReports paging polish (total counts), bulk actions. [#35](https://github.com/deicod/archivedgames/issues/35)
 - Report submission polish and flows. [#34](https://github.com/deicod/archivedgames/issues/34)

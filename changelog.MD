@@ -69,6 +69,11 @@ Entry template:
   - Vite: alias `@` → `src`; replace some buttons (Login/Logout/Support/Load more) with `<Button>`
   - Tracks: #52
 
+- 2025-08-28: Backlog — shadcn/ui follow-ups
+  - Add shadcn/ui components and refactor views (#53)
+  - Theme toggle and tokens (Tailwind v4) (#54)
+  - Replace remaining buttons/controls with shadcn/ui (#55)
+
 - 2025-08-28: Planning — NEXT.md linked to GitHub issues
   - Annotate `docs/NEXT.md` with direct links to open issues for each next step
   - Create tracking issues for missing items: #44 (FileGroup model), #45 (Platform validation & DOS zips), #46 (Image thumbnails), #47 (Publisher/year in body), #48 (Observability metrics/logging)
