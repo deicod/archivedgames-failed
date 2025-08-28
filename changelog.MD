@@ -92,6 +92,11 @@ Entry template:
   - Updated routing to render pages inside appropriate layout wrappers
   - Tracks: #56
 
+- 2025-08-28: Frontend — React Router v7
+  - Upgrade `react-router-dom` to v7; keep `BrowserRouter` + `Routes`/`Route` usage
+  - Build verified; no code changes required beyond version bump
+  - Tracks: #57
+
 - 2025-08-28: Backlog — shadcn/ui follow-ups
   - Add shadcn/ui components and refactor views (#53)
   - Theme toggle and tokens (Tailwind v4) (#54)
