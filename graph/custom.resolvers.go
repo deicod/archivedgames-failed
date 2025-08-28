@@ -277,7 +277,27 @@ func (r *mutationResolver) AddComment(ctx context.Context, subjectType string, s
 	if err != nil {
 		return nil, err
 	}
+	ip := reqctx.FromContextIP(ctx)
+	if r.Rate != nil {
+		if err := r.Rate.AllowComment(uid, ip); err != nil {
+			return nil, err
+		}
+	}
 	sanitized := sanitize.HTML(content)
+	// limit number of links
+	maxLinks := 3
+	if it, err := r.Client.SiteSetting.Query().Where(sitesetting.KeyEQ("comments.maxLinks")).Only(ctx); err == nil {
+		var v int
+		if len(it.Value) > 0 {
+			_ = json.Unmarshal(it.Value, &v)
+			if v > 0 {
+				maxLinks = v
+			}
+		}
+	}
+	if strings.Count(sanitized, "<a ") > maxLinks {
+		return nil, errors.New("too many links")
+	}
 	c := r.Client.Comment.Create().
 		SetSubjectType(subjectType).
 		SetSubjectID(subjectID).
@@ -305,6 +325,12 @@ func (r *mutationResolver) EditComment(ctx context.Context, id string, content s
 	if err != nil {
 		return nil, err
 	}
+	ip := reqctx.FromContextIP(ctx)
+	if r.Rate != nil {
+		if err := r.Rate.AllowComment(uid, ip); err != nil {
+			return nil, err
+		}
+	}
 	cm, err := r.Client.Comment.Get(ctx, id)
 	if err != nil {
 		return nil, err
@@ -320,6 +346,19 @@ func (r *mutationResolver) EditComment(ctx context.Context, id string, content s
 		return nil, errors.New("forbidden")
 	}
 	sanitized := sanitize.HTML(content)
+	maxLinks := 3
+	if it, err := r.Client.SiteSetting.Query().Where(sitesetting.KeyEQ("comments.maxLinks")).Only(ctx); err == nil {
+		var v int
+		if len(it.Value) > 0 {
+			_ = json.Unmarshal(it.Value, &v)
+			if v > 0 {
+				maxLinks = v
+			}
+		}
+	}
+	if strings.Count(sanitized, "<a ") > maxLinks {
+		return nil, errors.New("too many links")
+	}
 	now := time.Now()
 	if err := r.Client.Comment.UpdateOneID(id).SetContent(sanitized).SetEditedAt(now).Exec(ctx); err != nil {
 		return nil, err
@@ -332,6 +371,12 @@ func (r *mutationResolver) DeleteComment(ctx context.Context, id string) (bool, 
 	uid, err := auth.RequireUser(ctx)
 	if err != nil {
 		return false, err
+	}
+	ip := reqctx.FromContextIP(ctx)
+	if r.Rate != nil {
+		if err := r.Rate.AllowComment(uid, ip); err != nil {
+			return false, err
+		}
 	}
 	cm, err := r.Client.Comment.Get(ctx, id)
 	if err != nil {
