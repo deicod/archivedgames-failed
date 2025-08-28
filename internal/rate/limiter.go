@@ -9,18 +9,21 @@ import (
 )
 
 type Limiter struct {
-    mu sync.Mutex
-    // key -> counter
-    hour map[string]*counter
-    day  map[string]*counter
-    min  map[string]*counter
-    // caps
-    anonMBPerDay         int64
-    anonDownloadsPerHour int64
-    userMBPerDay         int64
-    userDownloadsPerHour int64
-    anonCommentsPerMin   int64
-    userCommentsPerMin   int64
+	mu sync.Mutex
+	// key -> counter
+	hour map[string]*counter
+	day  map[string]*counter
+	min  map[string]*counter
+	// caps
+	anonMBPerDay         int64
+	anonDownloadsPerHour int64
+	userMBPerDay         int64
+	userDownloadsPerHour int64
+	anonCommentsPerMin   int64
+	userCommentsPerMin   int64
+	anonCommentCooldown  int64
+	userCommentCooldown  int64
+	lastComment          map[string]time.Time
 }
 
 type counter struct {
@@ -37,23 +40,27 @@ func getInt64Env(key string, def int64) int64 {
 }
 
 func NewFromEnv() *Limiter {
-    return &Limiter{
-        hour:                 make(map[string]*counter),
-        day:                  make(map[string]*counter),
-        min:                  make(map[string]*counter),
-        anonMBPerDay:         getInt64Env("RATE_LIMIT_ANON_MB_PER_DAY", 500),
-        anonDownloadsPerHour: getInt64Env("RATE_LIMIT_ANON_DOWNLOADS_PER_HOUR", 8),
-        userMBPerDay:         getInt64Env("RATE_LIMIT_USER_MB_PER_DAY", 2048),
-        userDownloadsPerHour: getInt64Env("RATE_LIMIT_USER_DOWNLOADS_PER_HOUR", 20),
-        anonCommentsPerMin:   getInt64Env("RATE_LIMIT_ANON_COMMENTS_PER_MIN", 5),
-        userCommentsPerMin:   getInt64Env("RATE_LIMIT_USER_COMMENTS_PER_MIN", 15),
-    }
+	return &Limiter{
+		hour:                 make(map[string]*counter),
+		day:                  make(map[string]*counter),
+		min:                  make(map[string]*counter),
+		lastComment:          make(map[string]time.Time),
+		anonMBPerDay:         getInt64Env("RATE_LIMIT_ANON_MB_PER_DAY", 500),
+		anonDownloadsPerHour: getInt64Env("RATE_LIMIT_ANON_DOWNLOADS_PER_HOUR", 8),
+		userMBPerDay:         getInt64Env("RATE_LIMIT_USER_MB_PER_DAY", 2048),
+		userDownloadsPerHour: getInt64Env("RATE_LIMIT_USER_DOWNLOADS_PER_HOUR", 20),
+		anonCommentsPerMin:   getInt64Env("RATE_LIMIT_ANON_COMMENTS_PER_MIN", 5),
+		userCommentsPerMin:   getInt64Env("RATE_LIMIT_USER_COMMENTS_PER_MIN", 15),
+		anonCommentCooldown:  getInt64Env("RATE_LIMIT_ANON_COMMENT_COOLDOWN_SECONDS", 30),
+		userCommentCooldown:  getInt64Env("RATE_LIMIT_USER_COMMENT_COOLDOWN_SECONDS", 10),
+	}
 }
 
 var (
-    ErrTooManyDownloads = errors.New("download rate limit exceeded")
-    ErrTooMuchData      = errors.New("daily data cap exceeded")
-    ErrTooManyComments  = errors.New("comment rate limit exceeded")
+	ErrTooManyDownloads = errors.New("download rate limit exceeded")
+	ErrTooMuchData      = errors.New("daily data cap exceeded")
+	ErrTooManyComments  = errors.New("comment rate limit exceeded")
+	ErrCommentCooldown  = errors.New("comment cooldown active")
 )
 
 func (l *Limiter) AllowDownload(userID, ip string, sizeBytes int64) error {
@@ -96,23 +103,32 @@ func (l *Limiter) AllowDownload(userID, ip string, sizeBytes int64) error {
 
 // AllowComment enforces a per-minute comment cap per user/ip.
 func (l *Limiter) AllowComment(userID, ip string) error {
-    l.mu.Lock()
-    defer l.mu.Unlock()
-    key := "ip:" + ip
-    capCount := l.anonCommentsPerMin
-    if userID != "" {
-        key = "user:" + userID
-        capCount = l.userCommentsPerMin
-    }
-    now := time.Now()
-    mc := l.min[key]
-    if mc == nil || now.After(mc.end) {
-        mc = &counter{used: 0, end: now.Truncate(time.Minute).Add(time.Minute)}
-        l.min[key] = mc
-    }
-    if mc.used+1 > capCount {
-        return ErrTooManyComments
-    }
-    mc.used += 1
-    return nil
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	key := "ip:" + ip
+	capCount := l.anonCommentsPerMin
+	cooldown := l.anonCommentCooldown
+	if userID != "" {
+		key = "user:" + userID
+		capCount = l.userCommentsPerMin
+		cooldown = l.userCommentCooldown
+	}
+	now := time.Now()
+	// Cooldown check
+	if t, ok := l.lastComment[key]; ok {
+		if now.Before(t.Add(time.Duration(cooldown) * time.Second)) {
+			return ErrCommentCooldown
+		}
+	}
+	mc := l.min[key]
+	if mc == nil || now.After(mc.end) {
+		mc = &counter{used: 0, end: now.Truncate(time.Minute).Add(time.Minute)}
+		l.min[key] = mc
+	}
+	if mc.used+1 > capCount {
+		return ErrTooManyComments
+	}
+	mc.used += 1
+	l.lastComment[key] = now
+	return nil
 }
