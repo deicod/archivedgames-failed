@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import ImageUploader from '../components/ImageUploader';
+import Seo from '../components/Seo';
 import { useAuth } from 'react-oidc-context';
 
 const Query = graphql`
@@ -9,7 +10,7 @@ const Query = graphql`
     games(first: 1, where: { slug: $slug }) {
       edges {
         node {
-          id slug title year publisher
+          id slug title year publisher platform
           images(first: 4) { edges { node { id s3Key width height kind } } }
           files(first: 50) { edges { node { id originalName sizeBytes format } } }
         }
@@ -72,8 +73,34 @@ export default function GameDetail(){
   if (!node) return <div>Not found</div>;
   const images = node.images.edges?.map((e: any) => e.node) || [];
   const files = node.files.edges?.map((e: any) => e.node) || [];
+  const origin = (typeof window !== 'undefined') ? window.location.origin : '';
+  const canonical = `/game/${node.slug}`;
+  const platform = (node.platform || '').toString();
+  const coverUrl = images[0] ? `${origin}/img/${images[0].id}` : undefined;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: node.title,
+    url: origin + canonical,
+    ...(coverUrl ? { image: coverUrl } : {}),
+    ...(node.publisher ? { publisher: { '@type': 'Organization', name: node.publisher } } : {}),
+    ...(node.year ? { datePublished: String(node.year) } : {}),
+    ...(platform ? { gamePlatform: platform } : {}),
+    // Breadcrumb as a separate graph item
+    '@graph': [
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: origin + '/' },
+          { '@type': 'ListItem', position: 2, name: platform || 'Platform', item: origin + '/platform/' + (platform || '').toLowerCase() },
+          { '@type': 'ListItem', position: 3, name: node.title, item: origin + canonical }
+        ]
+      }
+    ]
+  };
   return (
     <div className="grid md:grid-cols-3 gap-6">
+      <Seo title={`ArchivedGames — ${node.title}`} canonicalPath={canonical} jsonLd={jsonLd} />
       <div className="md:col-span-2 space-y-4">
         <div className="aspect-video bg-white/5 rounded-2xl flex items-center justify-center">{images[0] ? <img src={`/img/${images[0].id}`} alt="cover" className="w-full h-full object-cover rounded-2xl"/> : null}</div>
         <div className="grid grid-cols-2 gap-3">

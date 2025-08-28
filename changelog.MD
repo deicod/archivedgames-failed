@@ -36,6 +36,13 @@ Entry template:
   - GraphQL query updated accordingly; build verified
   - Tracks: #47
 
+- 2025-08-28: SEO — Canonical URLs + JSON-LD
+  - Add runtime `<link rel="canonical">` for Home, PlatformList, and GameDetail
+  - Inject JSON-LD on GameDetail: `VideoGame` + `BreadcrumbList` with Home → Platform → Game
+  - Implemented lightweight `Seo` helper component (no external deps)
+  - Build verified (Relay + Vite)
+  - Tracks: #36
+
 - 2025-08-28: Planning — NEXT.md linked to GitHub issues
   - Annotate `docs/NEXT.md` with direct links to open issues for each next step
   - Create tracking issues for missing items: #44 (FileGroup model), #45 (Platform validation & DOS zips), #46 (Image thumbnails), #47 (Publisher/year in body), #48 (Observability metrics/logging)

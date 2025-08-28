@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
+import Seo from '../components/Seo';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 const Query = graphql`
@@ -20,6 +21,7 @@ export default function PlatformList(){
   const loadMore = () => { if (conn.pageInfo.hasNextPage) setAfter(conn.pageInfo.endCursor as any); };
   return (
     <div>
+      <Seo title={`ArchivedGames — ${plat}`} canonicalPath={`/platform/${(platform||'').toLowerCase()}`} />
       <h1 className="text-2xl font-bold mb-4 uppercase">{plat}</h1>
       <ul className="space-y-2">
         {conn.edges?.map((e: any) => (
