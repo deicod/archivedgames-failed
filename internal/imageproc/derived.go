@@ -5,6 +5,7 @@ import (
     "context"
     "image"
     "image/jpeg"
+    "strconv"
     "strings"
 
     "golang.org/x/image/draw"
@@ -43,17 +44,7 @@ func Derive(ctx context.Context, s3 *s3client.Client, origKey string, widths []i
 
 func deriveKey(orig string, w int) string {
     dot := strings.LastIndex(orig, ".")
-    if dot <= 0 { return orig + "_w" + itoa(w) }
-    return orig[:dot] + "_w" + itoa(w) + orig[dot:]
-}
-
-func itoa(n int) string {
-    if n == 0 { return "0" }
-    s := ""
-    neg := false
-    if n < 0 { neg = true; n = -n }
-    for n > 0 { s = string('0'+(n%10)) + s; n /= 10 }
-    if neg { s = "-" + s }
-    return s
+    if dot <= 0 { return orig + "_w" + strconv.Itoa(w) }
+    return orig[:dot] + "_w" + strconv.Itoa(w) + orig[dot:]
 }
 

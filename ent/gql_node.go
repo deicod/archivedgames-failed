@@ -8,8 +8,12 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/deicod/archivedgames/ent/comment"
 	"github.com/deicod/archivedgames/ent/file"
+	"github.com/deicod/archivedgames/ent/filegroup"
+	"github.com/deicod/archivedgames/ent/filereaction"
 	"github.com/deicod/archivedgames/ent/game"
+	"github.com/deicod/archivedgames/ent/gamelike"
 	"github.com/deicod/archivedgames/ent/image"
 	"github.com/deicod/archivedgames/ent/report"
 	"github.com/deicod/archivedgames/ent/sitesetting"
@@ -22,15 +26,35 @@ type Noder interface {
 	IsNode()
 }
 
+var commentImplementors = []string{"Comment", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Comment) IsNode() {}
+
 var fileImplementors = []string{"File", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*File) IsNode() {}
 
+var filegroupImplementors = []string{"FileGroup", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*FileGroup) IsNode() {}
+
+var filereactionImplementors = []string{"FileReaction", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*FileReaction) IsNode() {}
+
 var gameImplementors = []string{"Game", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*Game) IsNode() {}
+
+var gamelikeImplementors = []string{"GameLike", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*GameLike) IsNode() {}
 
 var imageImplementors = []string{"Image", "Node"}
 
@@ -110,6 +134,15 @@ func (c *Client) Noder(ctx context.Context, id string, opts ...NodeOption) (_ No
 
 func (c *Client) noder(ctx context.Context, table string, id string) (Noder, error) {
 	switch table {
+	case comment.Table:
+		query := c.Comment.Query().
+			Where(comment.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, commentImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
 	case file.Table:
 		query := c.File.Query().
 			Where(file.ID(id))
@@ -119,11 +152,38 @@ func (c *Client) noder(ctx context.Context, table string, id string) (Noder, err
 			}
 		}
 		return query.Only(ctx)
+	case filegroup.Table:
+		query := c.FileGroup.Query().
+			Where(filegroup.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, filegroupImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case filereaction.Table:
+		query := c.FileReaction.Query().
+			Where(filereaction.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, filereactionImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
 	case game.Table:
 		query := c.Game.Query().
 			Where(game.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, gameImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case gamelike.Table:
+		query := c.GameLike.Query().
+			Where(gamelike.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, gamelikeImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -237,6 +297,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []string) ([]Node
 		idmap[id] = append(idmap[id], &noders[i])
 	}
 	switch table {
+	case comment.Table:
+		query := c.Comment.Query().
+			Where(comment.IDIn(ids...))
+		query, err := query.CollectFields(ctx, commentImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	case file.Table:
 		query := c.File.Query().
 			Where(file.IDIn(ids...))
@@ -253,10 +329,58 @@ func (c *Client) noders(ctx context.Context, table string, ids []string) ([]Node
 				*noder = node
 			}
 		}
+	case filegroup.Table:
+		query := c.FileGroup.Query().
+			Where(filegroup.IDIn(ids...))
+		query, err := query.CollectFields(ctx, filegroupImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case filereaction.Table:
+		query := c.FileReaction.Query().
+			Where(filereaction.IDIn(ids...))
+		query, err := query.CollectFields(ctx, filereactionImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	case game.Table:
 		query := c.Game.Query().
 			Where(game.IDIn(ids...))
 		query, err := query.CollectFields(ctx, gameImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case gamelike.Table:
+		query := c.GameLike.Query().
+			Where(gamelike.IDIn(ids...))
+		query, err := query.CollectFields(ctx, gamelikeImplementors...)
 		if err != nil {
 			return nil, err
 		}

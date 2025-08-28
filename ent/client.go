@@ -15,8 +15,12 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/deicod/archivedgames/ent/comment"
 	"github.com/deicod/archivedgames/ent/file"
+	"github.com/deicod/archivedgames/ent/filegroup"
+	"github.com/deicod/archivedgames/ent/filereaction"
 	"github.com/deicod/archivedgames/ent/game"
+	"github.com/deicod/archivedgames/ent/gamelike"
 	"github.com/deicod/archivedgames/ent/image"
 	"github.com/deicod/archivedgames/ent/report"
 	"github.com/deicod/archivedgames/ent/sitesetting"
@@ -28,10 +32,18 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Comment is the client for interacting with the Comment builders.
+	Comment *CommentClient
 	// File is the client for interacting with the File builders.
 	File *FileClient
+	// FileGroup is the client for interacting with the FileGroup builders.
+	FileGroup *FileGroupClient
+	// FileReaction is the client for interacting with the FileReaction builders.
+	FileReaction *FileReactionClient
 	// Game is the client for interacting with the Game builders.
 	Game *GameClient
+	// GameLike is the client for interacting with the GameLike builders.
+	GameLike *GameLikeClient
 	// Image is the client for interacting with the Image builders.
 	Image *ImageClient
 	// Report is the client for interacting with the Report builders.
@@ -51,8 +63,12 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Comment = NewCommentClient(c.config)
 	c.File = NewFileClient(c.config)
+	c.FileGroup = NewFileGroupClient(c.config)
+	c.FileReaction = NewFileReactionClient(c.config)
 	c.Game = NewGameClient(c.config)
+	c.GameLike = NewGameLikeClient(c.config)
 	c.Image = NewImageClient(c.config)
 	c.Report = NewReportClient(c.config)
 	c.SiteSetting = NewSiteSettingClient(c.config)
@@ -147,14 +163,18 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		File:        NewFileClient(cfg),
-		Game:        NewGameClient(cfg),
-		Image:       NewImageClient(cfg),
-		Report:      NewReportClient(cfg),
-		SiteSetting: NewSiteSettingClient(cfg),
-		UserShadow:  NewUserShadowClient(cfg),
+		ctx:          ctx,
+		config:       cfg,
+		Comment:      NewCommentClient(cfg),
+		File:         NewFileClient(cfg),
+		FileGroup:    NewFileGroupClient(cfg),
+		FileReaction: NewFileReactionClient(cfg),
+		Game:         NewGameClient(cfg),
+		GameLike:     NewGameLikeClient(cfg),
+		Image:        NewImageClient(cfg),
+		Report:       NewReportClient(cfg),
+		SiteSetting:  NewSiteSettingClient(cfg),
+		UserShadow:   NewUserShadowClient(cfg),
 	}, nil
 }
 
@@ -172,21 +192,25 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		File:        NewFileClient(cfg),
-		Game:        NewGameClient(cfg),
-		Image:       NewImageClient(cfg),
-		Report:      NewReportClient(cfg),
-		SiteSetting: NewSiteSettingClient(cfg),
-		UserShadow:  NewUserShadowClient(cfg),
+		ctx:          ctx,
+		config:       cfg,
+		Comment:      NewCommentClient(cfg),
+		File:         NewFileClient(cfg),
+		FileGroup:    NewFileGroupClient(cfg),
+		FileReaction: NewFileReactionClient(cfg),
+		Game:         NewGameClient(cfg),
+		GameLike:     NewGameLikeClient(cfg),
+		Image:        NewImageClient(cfg),
+		Report:       NewReportClient(cfg),
+		SiteSetting:  NewSiteSettingClient(cfg),
+		UserShadow:   NewUserShadowClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		File.
+//		Comment.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -209,7 +233,8 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.File, c.Game, c.Image, c.Report, c.SiteSetting, c.UserShadow,
+		c.Comment, c.File, c.FileGroup, c.FileReaction, c.Game, c.GameLike, c.Image,
+		c.Report, c.SiteSetting, c.UserShadow,
 	} {
 		n.Use(hooks...)
 	}
@@ -219,7 +244,8 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.File, c.Game, c.Image, c.Report, c.SiteSetting, c.UserShadow,
+		c.Comment, c.File, c.FileGroup, c.FileReaction, c.Game, c.GameLike, c.Image,
+		c.Report, c.SiteSetting, c.UserShadow,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -228,10 +254,18 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *CommentMutation:
+		return c.Comment.mutate(ctx, m)
 	case *FileMutation:
 		return c.File.mutate(ctx, m)
+	case *FileGroupMutation:
+		return c.FileGroup.mutate(ctx, m)
+	case *FileReactionMutation:
+		return c.FileReaction.mutate(ctx, m)
 	case *GameMutation:
 		return c.Game.mutate(ctx, m)
+	case *GameLikeMutation:
+		return c.GameLike.mutate(ctx, m)
 	case *ImageMutation:
 		return c.Image.mutate(ctx, m)
 	case *ReportMutation:
@@ -242,6 +276,171 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.UserShadow.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// CommentClient is a client for the Comment schema.
+type CommentClient struct {
+	config
+}
+
+// NewCommentClient returns a client for the Comment from the given config.
+func NewCommentClient(c config) *CommentClient {
+	return &CommentClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `comment.Hooks(f(g(h())))`.
+func (c *CommentClient) Use(hooks ...Hook) {
+	c.hooks.Comment = append(c.hooks.Comment, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `comment.Intercept(f(g(h())))`.
+func (c *CommentClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Comment = append(c.inters.Comment, interceptors...)
+}
+
+// Create returns a builder for creating a Comment entity.
+func (c *CommentClient) Create() *CommentCreate {
+	mutation := newCommentMutation(c.config, OpCreate)
+	return &CommentCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Comment entities.
+func (c *CommentClient) CreateBulk(builders ...*CommentCreate) *CommentCreateBulk {
+	return &CommentCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *CommentClient) MapCreateBulk(slice any, setFunc func(*CommentCreate, int)) *CommentCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &CommentCreateBulk{err: fmt.Errorf("calling to CommentClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*CommentCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &CommentCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Comment.
+func (c *CommentClient) Update() *CommentUpdate {
+	mutation := newCommentMutation(c.config, OpUpdate)
+	return &CommentUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CommentClient) UpdateOne(_m *Comment) *CommentUpdateOne {
+	mutation := newCommentMutation(c.config, OpUpdateOne, withComment(_m))
+	return &CommentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CommentClient) UpdateOneID(id string) *CommentUpdateOne {
+	mutation := newCommentMutation(c.config, OpUpdateOne, withCommentID(id))
+	return &CommentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Comment.
+func (c *CommentClient) Delete() *CommentDelete {
+	mutation := newCommentMutation(c.config, OpDelete)
+	return &CommentDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CommentClient) DeleteOne(_m *Comment) *CommentDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CommentClient) DeleteOneID(id string) *CommentDeleteOne {
+	builder := c.Delete().Where(comment.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CommentDeleteOne{builder}
+}
+
+// Query returns a query builder for Comment.
+func (c *CommentClient) Query() *CommentQuery {
+	return &CommentQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeComment},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Comment entity by its id.
+func (c *CommentClient) Get(ctx context.Context, id string) (*Comment, error) {
+	return c.Query().Where(comment.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CommentClient) GetX(ctx context.Context, id string) *Comment {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryGame queries the game edge of a Comment.
+func (c *CommentClient) QueryGame(_m *Comment) *GameQuery {
+	query := (&GameClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(comment.Table, comment.FieldID, id),
+			sqlgraph.To(game.Table, game.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, comment.GameTable, comment.GameColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFile queries the file edge of a Comment.
+func (c *CommentClient) QueryFile(_m *Comment) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(comment.Table, comment.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, comment.FileTable, comment.FileColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *CommentClient) Hooks() []Hook {
+	return c.hooks.Comment
+}
+
+// Interceptors returns the client interceptors.
+func (c *CommentClient) Interceptors() []Interceptor {
+	return c.inters.Comment
+}
+
+func (c *CommentClient) mutate(ctx context.Context, m *CommentMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&CommentCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&CommentUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&CommentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&CommentDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Comment mutation op: %q", m.Op())
 	}
 }
 
@@ -369,6 +568,54 @@ func (c *FileClient) QueryGame(_m *File) *GameQuery {
 	return query
 }
 
+// QueryGroup queries the group edge of a File.
+func (c *FileClient) QueryGroup(_m *File) *FileGroupQuery {
+	query := (&FileGroupClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, id),
+			sqlgraph.To(filegroup.Table, filegroup.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, file.GroupTable, file.GroupColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryComments queries the comments edge of a File.
+func (c *FileClient) QueryComments(_m *File) *CommentQuery {
+	query := (&CommentClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, id),
+			sqlgraph.To(comment.Table, comment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, file.CommentsTable, file.CommentsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryReactions queries the reactions edge of a File.
+func (c *FileClient) QueryReactions(_m *File) *FileReactionQuery {
+	query := (&FileReactionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, id),
+			sqlgraph.To(filereaction.Table, filereaction.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.ReactionsTable, file.ReactionsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *FileClient) Hooks() []Hook {
 	return c.hooks.File
@@ -391,6 +638,320 @@ func (c *FileClient) mutate(ctx context.Context, m *FileMutation) (Value, error)
 		return (&FileDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown File mutation op: %q", m.Op())
+	}
+}
+
+// FileGroupClient is a client for the FileGroup schema.
+type FileGroupClient struct {
+	config
+}
+
+// NewFileGroupClient returns a client for the FileGroup from the given config.
+func NewFileGroupClient(c config) *FileGroupClient {
+	return &FileGroupClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `filegroup.Hooks(f(g(h())))`.
+func (c *FileGroupClient) Use(hooks ...Hook) {
+	c.hooks.FileGroup = append(c.hooks.FileGroup, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `filegroup.Intercept(f(g(h())))`.
+func (c *FileGroupClient) Intercept(interceptors ...Interceptor) {
+	c.inters.FileGroup = append(c.inters.FileGroup, interceptors...)
+}
+
+// Create returns a builder for creating a FileGroup entity.
+func (c *FileGroupClient) Create() *FileGroupCreate {
+	mutation := newFileGroupMutation(c.config, OpCreate)
+	return &FileGroupCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of FileGroup entities.
+func (c *FileGroupClient) CreateBulk(builders ...*FileGroupCreate) *FileGroupCreateBulk {
+	return &FileGroupCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *FileGroupClient) MapCreateBulk(slice any, setFunc func(*FileGroupCreate, int)) *FileGroupCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &FileGroupCreateBulk{err: fmt.Errorf("calling to FileGroupClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*FileGroupCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &FileGroupCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for FileGroup.
+func (c *FileGroupClient) Update() *FileGroupUpdate {
+	mutation := newFileGroupMutation(c.config, OpUpdate)
+	return &FileGroupUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FileGroupClient) UpdateOne(_m *FileGroup) *FileGroupUpdateOne {
+	mutation := newFileGroupMutation(c.config, OpUpdateOne, withFileGroup(_m))
+	return &FileGroupUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FileGroupClient) UpdateOneID(id string) *FileGroupUpdateOne {
+	mutation := newFileGroupMutation(c.config, OpUpdateOne, withFileGroupID(id))
+	return &FileGroupUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for FileGroup.
+func (c *FileGroupClient) Delete() *FileGroupDelete {
+	mutation := newFileGroupMutation(c.config, OpDelete)
+	return &FileGroupDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FileGroupClient) DeleteOne(_m *FileGroup) *FileGroupDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *FileGroupClient) DeleteOneID(id string) *FileGroupDeleteOne {
+	builder := c.Delete().Where(filegroup.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FileGroupDeleteOne{builder}
+}
+
+// Query returns a query builder for FileGroup.
+func (c *FileGroupClient) Query() *FileGroupQuery {
+	return &FileGroupQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeFileGroup},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a FileGroup entity by its id.
+func (c *FileGroupClient) Get(ctx context.Context, id string) (*FileGroup, error) {
+	return c.Query().Where(filegroup.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FileGroupClient) GetX(ctx context.Context, id string) *FileGroup {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryFiles queries the files edge of a FileGroup.
+func (c *FileGroupClient) QueryFiles(_m *FileGroup) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(filegroup.Table, filegroup.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, filegroup.FilesTable, filegroup.FilesColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryGame queries the game edge of a FileGroup.
+func (c *FileGroupClient) QueryGame(_m *FileGroup) *GameQuery {
+	query := (&GameClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(filegroup.Table, filegroup.FieldID, id),
+			sqlgraph.To(game.Table, game.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, filegroup.GameTable, filegroup.GameColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *FileGroupClient) Hooks() []Hook {
+	return c.hooks.FileGroup
+}
+
+// Interceptors returns the client interceptors.
+func (c *FileGroupClient) Interceptors() []Interceptor {
+	return c.inters.FileGroup
+}
+
+func (c *FileGroupClient) mutate(ctx context.Context, m *FileGroupMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FileGroupCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FileGroupUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FileGroupUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FileGroupDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown FileGroup mutation op: %q", m.Op())
+	}
+}
+
+// FileReactionClient is a client for the FileReaction schema.
+type FileReactionClient struct {
+	config
+}
+
+// NewFileReactionClient returns a client for the FileReaction from the given config.
+func NewFileReactionClient(c config) *FileReactionClient {
+	return &FileReactionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `filereaction.Hooks(f(g(h())))`.
+func (c *FileReactionClient) Use(hooks ...Hook) {
+	c.hooks.FileReaction = append(c.hooks.FileReaction, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `filereaction.Intercept(f(g(h())))`.
+func (c *FileReactionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.FileReaction = append(c.inters.FileReaction, interceptors...)
+}
+
+// Create returns a builder for creating a FileReaction entity.
+func (c *FileReactionClient) Create() *FileReactionCreate {
+	mutation := newFileReactionMutation(c.config, OpCreate)
+	return &FileReactionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of FileReaction entities.
+func (c *FileReactionClient) CreateBulk(builders ...*FileReactionCreate) *FileReactionCreateBulk {
+	return &FileReactionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *FileReactionClient) MapCreateBulk(slice any, setFunc func(*FileReactionCreate, int)) *FileReactionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &FileReactionCreateBulk{err: fmt.Errorf("calling to FileReactionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*FileReactionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &FileReactionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for FileReaction.
+func (c *FileReactionClient) Update() *FileReactionUpdate {
+	mutation := newFileReactionMutation(c.config, OpUpdate)
+	return &FileReactionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FileReactionClient) UpdateOne(_m *FileReaction) *FileReactionUpdateOne {
+	mutation := newFileReactionMutation(c.config, OpUpdateOne, withFileReaction(_m))
+	return &FileReactionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FileReactionClient) UpdateOneID(id string) *FileReactionUpdateOne {
+	mutation := newFileReactionMutation(c.config, OpUpdateOne, withFileReactionID(id))
+	return &FileReactionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for FileReaction.
+func (c *FileReactionClient) Delete() *FileReactionDelete {
+	mutation := newFileReactionMutation(c.config, OpDelete)
+	return &FileReactionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FileReactionClient) DeleteOne(_m *FileReaction) *FileReactionDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *FileReactionClient) DeleteOneID(id string) *FileReactionDeleteOne {
+	builder := c.Delete().Where(filereaction.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FileReactionDeleteOne{builder}
+}
+
+// Query returns a query builder for FileReaction.
+func (c *FileReactionClient) Query() *FileReactionQuery {
+	return &FileReactionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeFileReaction},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a FileReaction entity by its id.
+func (c *FileReactionClient) Get(ctx context.Context, id string) (*FileReaction, error) {
+	return c.Query().Where(filereaction.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FileReactionClient) GetX(ctx context.Context, id string) *FileReaction {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryFile queries the file edge of a FileReaction.
+func (c *FileReactionClient) QueryFile(_m *FileReaction) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(filereaction.Table, filereaction.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, filereaction.FileTable, filereaction.FileColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *FileReactionClient) Hooks() []Hook {
+	return c.hooks.FileReaction
+}
+
+// Interceptors returns the client interceptors.
+func (c *FileReactionClient) Interceptors() []Interceptor {
+	return c.inters.FileReaction
+}
+
+func (c *FileReactionClient) mutate(ctx context.Context, m *FileReactionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FileReactionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FileReactionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FileReactionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FileReactionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown FileReaction mutation op: %q", m.Op())
 	}
 }
 
@@ -534,6 +1095,54 @@ func (c *GameClient) QueryImages(_m *Game) *ImageQuery {
 	return query
 }
 
+// QueryComments queries the comments edge of a Game.
+func (c *GameClient) QueryComments(_m *Game) *CommentQuery {
+	query := (&CommentClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(game.Table, game.FieldID, id),
+			sqlgraph.To(comment.Table, comment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, game.CommentsTable, game.CommentsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryGroups queries the groups edge of a Game.
+func (c *GameClient) QueryGroups(_m *Game) *FileGroupQuery {
+	query := (&FileGroupClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(game.Table, game.FieldID, id),
+			sqlgraph.To(filegroup.Table, filegroup.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, game.GroupsTable, game.GroupsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryLikes queries the likes edge of a Game.
+func (c *GameClient) QueryLikes(_m *Game) *GameLikeQuery {
+	query := (&GameLikeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(game.Table, game.FieldID, id),
+			sqlgraph.To(gamelike.Table, gamelike.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, game.LikesTable, game.LikesColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *GameClient) Hooks() []Hook {
 	return c.hooks.Game
@@ -556,6 +1165,155 @@ func (c *GameClient) mutate(ctx context.Context, m *GameMutation) (Value, error)
 		return (&GameDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Game mutation op: %q", m.Op())
+	}
+}
+
+// GameLikeClient is a client for the GameLike schema.
+type GameLikeClient struct {
+	config
+}
+
+// NewGameLikeClient returns a client for the GameLike from the given config.
+func NewGameLikeClient(c config) *GameLikeClient {
+	return &GameLikeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `gamelike.Hooks(f(g(h())))`.
+func (c *GameLikeClient) Use(hooks ...Hook) {
+	c.hooks.GameLike = append(c.hooks.GameLike, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `gamelike.Intercept(f(g(h())))`.
+func (c *GameLikeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.GameLike = append(c.inters.GameLike, interceptors...)
+}
+
+// Create returns a builder for creating a GameLike entity.
+func (c *GameLikeClient) Create() *GameLikeCreate {
+	mutation := newGameLikeMutation(c.config, OpCreate)
+	return &GameLikeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of GameLike entities.
+func (c *GameLikeClient) CreateBulk(builders ...*GameLikeCreate) *GameLikeCreateBulk {
+	return &GameLikeCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *GameLikeClient) MapCreateBulk(slice any, setFunc func(*GameLikeCreate, int)) *GameLikeCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &GameLikeCreateBulk{err: fmt.Errorf("calling to GameLikeClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*GameLikeCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &GameLikeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for GameLike.
+func (c *GameLikeClient) Update() *GameLikeUpdate {
+	mutation := newGameLikeMutation(c.config, OpUpdate)
+	return &GameLikeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *GameLikeClient) UpdateOne(_m *GameLike) *GameLikeUpdateOne {
+	mutation := newGameLikeMutation(c.config, OpUpdateOne, withGameLike(_m))
+	return &GameLikeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *GameLikeClient) UpdateOneID(id string) *GameLikeUpdateOne {
+	mutation := newGameLikeMutation(c.config, OpUpdateOne, withGameLikeID(id))
+	return &GameLikeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for GameLike.
+func (c *GameLikeClient) Delete() *GameLikeDelete {
+	mutation := newGameLikeMutation(c.config, OpDelete)
+	return &GameLikeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *GameLikeClient) DeleteOne(_m *GameLike) *GameLikeDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *GameLikeClient) DeleteOneID(id string) *GameLikeDeleteOne {
+	builder := c.Delete().Where(gamelike.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &GameLikeDeleteOne{builder}
+}
+
+// Query returns a query builder for GameLike.
+func (c *GameLikeClient) Query() *GameLikeQuery {
+	return &GameLikeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeGameLike},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a GameLike entity by its id.
+func (c *GameLikeClient) Get(ctx context.Context, id string) (*GameLike, error) {
+	return c.Query().Where(gamelike.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *GameLikeClient) GetX(ctx context.Context, id string) *GameLike {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryGame queries the game edge of a GameLike.
+func (c *GameLikeClient) QueryGame(_m *GameLike) *GameQuery {
+	query := (&GameClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(gamelike.Table, gamelike.FieldID, id),
+			sqlgraph.To(game.Table, game.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, gamelike.GameTable, gamelike.GameColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *GameLikeClient) Hooks() []Hook {
+	return c.hooks.GameLike
+}
+
+// Interceptors returns the client interceptors.
+func (c *GameLikeClient) Interceptors() []Interceptor {
+	return c.inters.GameLike
+}
+
+func (c *GameLikeClient) mutate(ctx context.Context, m *GameLikeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&GameLikeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&GameLikeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&GameLikeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&GameLikeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown GameLike mutation op: %q", m.Op())
 	}
 }
 
@@ -1110,9 +1868,11 @@ func (c *UserShadowClient) mutate(ctx context.Context, m *UserShadowMutation) (V
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		File, Game, Image, Report, SiteSetting, UserShadow []ent.Hook
+		Comment, File, FileGroup, FileReaction, Game, GameLike, Image, Report,
+		SiteSetting, UserShadow []ent.Hook
 	}
 	inters struct {
-		File, Game, Image, Report, SiteSetting, UserShadow []ent.Interceptor
+		Comment, File, FileGroup, FileReaction, Game, GameLike, Image, Report,
+		SiteSetting, UserShadow []ent.Interceptor
 	}
 )

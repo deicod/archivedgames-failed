@@ -8,11 +8,16 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/deicod/archivedgames/ent/comment"
 	"github.com/deicod/archivedgames/ent/file"
+	"github.com/deicod/archivedgames/ent/filegroup"
+	"github.com/deicod/archivedgames/ent/filereaction"
 	"github.com/deicod/archivedgames/ent/game"
+	"github.com/deicod/archivedgames/ent/gamelike"
 	"github.com/deicod/archivedgames/ent/image"
 	"github.com/deicod/archivedgames/ent/predicate"
 	"github.com/deicod/archivedgames/ent/report"
@@ -29,41 +34,949 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeFile        = "File"
-	TypeGame        = "Game"
-	TypeImage       = "Image"
-	TypeReport      = "Report"
-	TypeSiteSetting = "SiteSetting"
-	TypeUserShadow  = "UserShadow"
+	TypeComment      = "Comment"
+	TypeFile         = "File"
+	TypeFileGroup    = "FileGroup"
+	TypeFileReaction = "FileReaction"
+	TypeGame         = "Game"
+	TypeGameLike     = "GameLike"
+	TypeImage        = "Image"
+	TypeReport       = "Report"
+	TypeSiteSetting  = "SiteSetting"
+	TypeUserShadow   = "UserShadow"
 )
+
+// CommentMutation represents an operation that mutates the Comment nodes in the graph.
+type CommentMutation struct {
+	config
+	op                Op
+	typ               string
+	id                *string
+	subject_type      *string
+	subject_id        *string
+	user_id           *string
+	language          *string
+	content_sanitized *string
+	created_at        *time.Time
+	edited_at         *time.Time
+	deleted_at        *time.Time
+	clearedFields     map[string]struct{}
+	game              *string
+	clearedgame       bool
+	file              *string
+	clearedfile       bool
+	done              bool
+	oldValue          func(context.Context) (*Comment, error)
+	predicates        []predicate.Comment
+}
+
+var _ ent.Mutation = (*CommentMutation)(nil)
+
+// commentOption allows management of the mutation configuration using functional options.
+type commentOption func(*CommentMutation)
+
+// newCommentMutation creates new mutation for the Comment entity.
+func newCommentMutation(c config, op Op, opts ...commentOption) *CommentMutation {
+	m := &CommentMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeComment,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withCommentID sets the ID field of the mutation.
+func withCommentID(id string) commentOption {
+	return func(m *CommentMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Comment
+		)
+		m.oldValue = func(ctx context.Context) (*Comment, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Comment.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withComment sets the old Comment of the mutation.
+func withComment(node *Comment) commentOption {
+	return func(m *CommentMutation) {
+		m.oldValue = func(context.Context) (*Comment, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m CommentMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m CommentMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Comment entities.
+func (m *CommentMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *CommentMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *CommentMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Comment.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetSubjectType sets the "subject_type" field.
+func (m *CommentMutation) SetSubjectType(s string) {
+	m.subject_type = &s
+}
+
+// SubjectType returns the value of the "subject_type" field in the mutation.
+func (m *CommentMutation) SubjectType() (r string, exists bool) {
+	v := m.subject_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSubjectType returns the old "subject_type" field's value of the Comment entity.
+// If the Comment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CommentMutation) OldSubjectType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSubjectType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSubjectType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSubjectType: %w", err)
+	}
+	return oldValue.SubjectType, nil
+}
+
+// ResetSubjectType resets all changes to the "subject_type" field.
+func (m *CommentMutation) ResetSubjectType() {
+	m.subject_type = nil
+}
+
+// SetSubjectID sets the "subject_id" field.
+func (m *CommentMutation) SetSubjectID(s string) {
+	m.subject_id = &s
+}
+
+// SubjectID returns the value of the "subject_id" field in the mutation.
+func (m *CommentMutation) SubjectID() (r string, exists bool) {
+	v := m.subject_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSubjectID returns the old "subject_id" field's value of the Comment entity.
+// If the Comment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CommentMutation) OldSubjectID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSubjectID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSubjectID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSubjectID: %w", err)
+	}
+	return oldValue.SubjectID, nil
+}
+
+// ResetSubjectID resets all changes to the "subject_id" field.
+func (m *CommentMutation) ResetSubjectID() {
+	m.subject_id = nil
+}
+
+// SetUserID sets the "user_id" field.
+func (m *CommentMutation) SetUserID(s string) {
+	m.user_id = &s
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *CommentMutation) UserID() (r string, exists bool) {
+	v := m.user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the Comment entity.
+// If the Comment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CommentMutation) OldUserID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *CommentMutation) ResetUserID() {
+	m.user_id = nil
+}
+
+// SetLanguage sets the "language" field.
+func (m *CommentMutation) SetLanguage(s string) {
+	m.language = &s
+}
+
+// Language returns the value of the "language" field in the mutation.
+func (m *CommentMutation) Language() (r string, exists bool) {
+	v := m.language
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguage returns the old "language" field's value of the Comment entity.
+// If the Comment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CommentMutation) OldLanguage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguage: %w", err)
+	}
+	return oldValue.Language, nil
+}
+
+// ClearLanguage clears the value of the "language" field.
+func (m *CommentMutation) ClearLanguage() {
+	m.language = nil
+	m.clearedFields[comment.FieldLanguage] = struct{}{}
+}
+
+// LanguageCleared returns if the "language" field was cleared in this mutation.
+func (m *CommentMutation) LanguageCleared() bool {
+	_, ok := m.clearedFields[comment.FieldLanguage]
+	return ok
+}
+
+// ResetLanguage resets all changes to the "language" field.
+func (m *CommentMutation) ResetLanguage() {
+	m.language = nil
+	delete(m.clearedFields, comment.FieldLanguage)
+}
+
+// SetContentSanitized sets the "content_sanitized" field.
+func (m *CommentMutation) SetContentSanitized(s string) {
+	m.content_sanitized = &s
+}
+
+// ContentSanitized returns the value of the "content_sanitized" field in the mutation.
+func (m *CommentMutation) ContentSanitized() (r string, exists bool) {
+	v := m.content_sanitized
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldContentSanitized returns the old "content_sanitized" field's value of the Comment entity.
+// If the Comment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CommentMutation) OldContentSanitized(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldContentSanitized is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldContentSanitized requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldContentSanitized: %w", err)
+	}
+	return oldValue.ContentSanitized, nil
+}
+
+// ResetContentSanitized resets all changes to the "content_sanitized" field.
+func (m *CommentMutation) ResetContentSanitized() {
+	m.content_sanitized = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *CommentMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *CommentMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Comment entity.
+// If the Comment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CommentMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *CommentMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetEditedAt sets the "edited_at" field.
+func (m *CommentMutation) SetEditedAt(t time.Time) {
+	m.edited_at = &t
+}
+
+// EditedAt returns the value of the "edited_at" field in the mutation.
+func (m *CommentMutation) EditedAt() (r time.Time, exists bool) {
+	v := m.edited_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEditedAt returns the old "edited_at" field's value of the Comment entity.
+// If the Comment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CommentMutation) OldEditedAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEditedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEditedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEditedAt: %w", err)
+	}
+	return oldValue.EditedAt, nil
+}
+
+// ClearEditedAt clears the value of the "edited_at" field.
+func (m *CommentMutation) ClearEditedAt() {
+	m.edited_at = nil
+	m.clearedFields[comment.FieldEditedAt] = struct{}{}
+}
+
+// EditedAtCleared returns if the "edited_at" field was cleared in this mutation.
+func (m *CommentMutation) EditedAtCleared() bool {
+	_, ok := m.clearedFields[comment.FieldEditedAt]
+	return ok
+}
+
+// ResetEditedAt resets all changes to the "edited_at" field.
+func (m *CommentMutation) ResetEditedAt() {
+	m.edited_at = nil
+	delete(m.clearedFields, comment.FieldEditedAt)
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (m *CommentMutation) SetDeletedAt(t time.Time) {
+	m.deleted_at = &t
+}
+
+// DeletedAt returns the value of the "deleted_at" field in the mutation.
+func (m *CommentMutation) DeletedAt() (r time.Time, exists bool) {
+	v := m.deleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedAt returns the old "deleted_at" field's value of the Comment entity.
+// If the Comment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CommentMutation) OldDeletedAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedAt: %w", err)
+	}
+	return oldValue.DeletedAt, nil
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (m *CommentMutation) ClearDeletedAt() {
+	m.deleted_at = nil
+	m.clearedFields[comment.FieldDeletedAt] = struct{}{}
+}
+
+// DeletedAtCleared returns if the "deleted_at" field was cleared in this mutation.
+func (m *CommentMutation) DeletedAtCleared() bool {
+	_, ok := m.clearedFields[comment.FieldDeletedAt]
+	return ok
+}
+
+// ResetDeletedAt resets all changes to the "deleted_at" field.
+func (m *CommentMutation) ResetDeletedAt() {
+	m.deleted_at = nil
+	delete(m.clearedFields, comment.FieldDeletedAt)
+}
+
+// SetGameID sets the "game" edge to the Game entity by id.
+func (m *CommentMutation) SetGameID(id string) {
+	m.game = &id
+}
+
+// ClearGame clears the "game" edge to the Game entity.
+func (m *CommentMutation) ClearGame() {
+	m.clearedgame = true
+}
+
+// GameCleared reports if the "game" edge to the Game entity was cleared.
+func (m *CommentMutation) GameCleared() bool {
+	return m.clearedgame
+}
+
+// GameID returns the "game" edge ID in the mutation.
+func (m *CommentMutation) GameID() (id string, exists bool) {
+	if m.game != nil {
+		return *m.game, true
+	}
+	return
+}
+
+// GameIDs returns the "game" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// GameID instead. It exists only for internal usage by the builders.
+func (m *CommentMutation) GameIDs() (ids []string) {
+	if id := m.game; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetGame resets all changes to the "game" edge.
+func (m *CommentMutation) ResetGame() {
+	m.game = nil
+	m.clearedgame = false
+}
+
+// SetFileID sets the "file" edge to the File entity by id.
+func (m *CommentMutation) SetFileID(id string) {
+	m.file = &id
+}
+
+// ClearFile clears the "file" edge to the File entity.
+func (m *CommentMutation) ClearFile() {
+	m.clearedfile = true
+}
+
+// FileCleared reports if the "file" edge to the File entity was cleared.
+func (m *CommentMutation) FileCleared() bool {
+	return m.clearedfile
+}
+
+// FileID returns the "file" edge ID in the mutation.
+func (m *CommentMutation) FileID() (id string, exists bool) {
+	if m.file != nil {
+		return *m.file, true
+	}
+	return
+}
+
+// FileIDs returns the "file" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// FileID instead. It exists only for internal usage by the builders.
+func (m *CommentMutation) FileIDs() (ids []string) {
+	if id := m.file; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetFile resets all changes to the "file" edge.
+func (m *CommentMutation) ResetFile() {
+	m.file = nil
+	m.clearedfile = false
+}
+
+// Where appends a list predicates to the CommentMutation builder.
+func (m *CommentMutation) Where(ps ...predicate.Comment) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the CommentMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *CommentMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Comment, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *CommentMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *CommentMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Comment).
+func (m *CommentMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *CommentMutation) Fields() []string {
+	fields := make([]string, 0, 8)
+	if m.subject_type != nil {
+		fields = append(fields, comment.FieldSubjectType)
+	}
+	if m.subject_id != nil {
+		fields = append(fields, comment.FieldSubjectID)
+	}
+	if m.user_id != nil {
+		fields = append(fields, comment.FieldUserID)
+	}
+	if m.language != nil {
+		fields = append(fields, comment.FieldLanguage)
+	}
+	if m.content_sanitized != nil {
+		fields = append(fields, comment.FieldContentSanitized)
+	}
+	if m.created_at != nil {
+		fields = append(fields, comment.FieldCreatedAt)
+	}
+	if m.edited_at != nil {
+		fields = append(fields, comment.FieldEditedAt)
+	}
+	if m.deleted_at != nil {
+		fields = append(fields, comment.FieldDeletedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *CommentMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case comment.FieldSubjectType:
+		return m.SubjectType()
+	case comment.FieldSubjectID:
+		return m.SubjectID()
+	case comment.FieldUserID:
+		return m.UserID()
+	case comment.FieldLanguage:
+		return m.Language()
+	case comment.FieldContentSanitized:
+		return m.ContentSanitized()
+	case comment.FieldCreatedAt:
+		return m.CreatedAt()
+	case comment.FieldEditedAt:
+		return m.EditedAt()
+	case comment.FieldDeletedAt:
+		return m.DeletedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *CommentMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case comment.FieldSubjectType:
+		return m.OldSubjectType(ctx)
+	case comment.FieldSubjectID:
+		return m.OldSubjectID(ctx)
+	case comment.FieldUserID:
+		return m.OldUserID(ctx)
+	case comment.FieldLanguage:
+		return m.OldLanguage(ctx)
+	case comment.FieldContentSanitized:
+		return m.OldContentSanitized(ctx)
+	case comment.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case comment.FieldEditedAt:
+		return m.OldEditedAt(ctx)
+	case comment.FieldDeletedAt:
+		return m.OldDeletedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown Comment field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CommentMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case comment.FieldSubjectType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSubjectType(v)
+		return nil
+	case comment.FieldSubjectID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSubjectID(v)
+		return nil
+	case comment.FieldUserID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	case comment.FieldLanguage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguage(v)
+		return nil
+	case comment.FieldContentSanitized:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetContentSanitized(v)
+		return nil
+	case comment.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case comment.FieldEditedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEditedAt(v)
+		return nil
+	case comment.FieldDeletedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Comment field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *CommentMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *CommentMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CommentMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Comment numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *CommentMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(comment.FieldLanguage) {
+		fields = append(fields, comment.FieldLanguage)
+	}
+	if m.FieldCleared(comment.FieldEditedAt) {
+		fields = append(fields, comment.FieldEditedAt)
+	}
+	if m.FieldCleared(comment.FieldDeletedAt) {
+		fields = append(fields, comment.FieldDeletedAt)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *CommentMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *CommentMutation) ClearField(name string) error {
+	switch name {
+	case comment.FieldLanguage:
+		m.ClearLanguage()
+		return nil
+	case comment.FieldEditedAt:
+		m.ClearEditedAt()
+		return nil
+	case comment.FieldDeletedAt:
+		m.ClearDeletedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown Comment nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *CommentMutation) ResetField(name string) error {
+	switch name {
+	case comment.FieldSubjectType:
+		m.ResetSubjectType()
+		return nil
+	case comment.FieldSubjectID:
+		m.ResetSubjectID()
+		return nil
+	case comment.FieldUserID:
+		m.ResetUserID()
+		return nil
+	case comment.FieldLanguage:
+		m.ResetLanguage()
+		return nil
+	case comment.FieldContentSanitized:
+		m.ResetContentSanitized()
+		return nil
+	case comment.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case comment.FieldEditedAt:
+		m.ResetEditedAt()
+		return nil
+	case comment.FieldDeletedAt:
+		m.ResetDeletedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown Comment field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *CommentMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.game != nil {
+		edges = append(edges, comment.EdgeGame)
+	}
+	if m.file != nil {
+		edges = append(edges, comment.EdgeFile)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *CommentMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case comment.EdgeGame:
+		if id := m.game; id != nil {
+			return []ent.Value{*id}
+		}
+	case comment.EdgeFile:
+		if id := m.file; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *CommentMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *CommentMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *CommentMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedgame {
+		edges = append(edges, comment.EdgeGame)
+	}
+	if m.clearedfile {
+		edges = append(edges, comment.EdgeFile)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *CommentMutation) EdgeCleared(name string) bool {
+	switch name {
+	case comment.EdgeGame:
+		return m.clearedgame
+	case comment.EdgeFile:
+		return m.clearedfile
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *CommentMutation) ClearEdge(name string) error {
+	switch name {
+	case comment.EdgeGame:
+		m.ClearGame()
+		return nil
+	case comment.EdgeFile:
+		m.ClearFile()
+		return nil
+	}
+	return fmt.Errorf("unknown Comment unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *CommentMutation) ResetEdge(name string) error {
+	switch name {
+	case comment.EdgeGame:
+		m.ResetGame()
+		return nil
+	case comment.EdgeFile:
+		m.ResetFile()
+		return nil
+	}
+	return fmt.Errorf("unknown Comment edge %s", name)
+}
 
 // FileMutation represents an operation that mutates the File nodes in the graph.
 type FileMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *string
-	_path           *string
-	original_name   *string
-	normalized_name *string
-	set_key         *string
-	checksum        *string
-	size_bytes      *int64
-	addsize_bytes   *int64
-	mime_type       *string
-	format          *string
-	source          *string
-	quarantine      *bool
-	needs_review    *bool
-	disk_number     *int
-	adddisk_number  *int
-	side            *string
-	clearedFields   map[string]struct{}
-	game            *string
-	clearedgame     bool
-	done            bool
-	oldValue        func(context.Context) (*File, error)
-	predicates      []predicate.File
+	op               Op
+	typ              string
+	id               *string
+	_path            *string
+	original_name    *string
+	normalized_name  *string
+	set_key          *string
+	checksum         *string
+	size_bytes       *int64
+	addsize_bytes    *int64
+	mime_type        *string
+	format           *string
+	source           *string
+	quarantine       *bool
+	needs_review     *bool
+	disk_number      *int
+	adddisk_number   *int
+	side             *string
+	clearedFields    map[string]struct{}
+	game             *string
+	clearedgame      bool
+	group            *string
+	clearedgroup     bool
+	comments         map[string]struct{}
+	removedcomments  map[string]struct{}
+	clearedcomments  bool
+	reactions        map[string]struct{}
+	removedreactions map[string]struct{}
+	clearedreactions bool
+	done             bool
+	oldValue         func(context.Context) (*File, error)
+	predicates       []predicate.File
 }
 
 var _ ent.Mutation = (*FileMutation)(nil)
@@ -783,6 +1696,153 @@ func (m *FileMutation) ResetGame() {
 	m.clearedgame = false
 }
 
+// SetGroupID sets the "group" edge to the FileGroup entity by id.
+func (m *FileMutation) SetGroupID(id string) {
+	m.group = &id
+}
+
+// ClearGroup clears the "group" edge to the FileGroup entity.
+func (m *FileMutation) ClearGroup() {
+	m.clearedgroup = true
+}
+
+// GroupCleared reports if the "group" edge to the FileGroup entity was cleared.
+func (m *FileMutation) GroupCleared() bool {
+	return m.clearedgroup
+}
+
+// GroupID returns the "group" edge ID in the mutation.
+func (m *FileMutation) GroupID() (id string, exists bool) {
+	if m.group != nil {
+		return *m.group, true
+	}
+	return
+}
+
+// GroupIDs returns the "group" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// GroupID instead. It exists only for internal usage by the builders.
+func (m *FileMutation) GroupIDs() (ids []string) {
+	if id := m.group; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetGroup resets all changes to the "group" edge.
+func (m *FileMutation) ResetGroup() {
+	m.group = nil
+	m.clearedgroup = false
+}
+
+// AddCommentIDs adds the "comments" edge to the Comment entity by ids.
+func (m *FileMutation) AddCommentIDs(ids ...string) {
+	if m.comments == nil {
+		m.comments = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.comments[ids[i]] = struct{}{}
+	}
+}
+
+// ClearComments clears the "comments" edge to the Comment entity.
+func (m *FileMutation) ClearComments() {
+	m.clearedcomments = true
+}
+
+// CommentsCleared reports if the "comments" edge to the Comment entity was cleared.
+func (m *FileMutation) CommentsCleared() bool {
+	return m.clearedcomments
+}
+
+// RemoveCommentIDs removes the "comments" edge to the Comment entity by IDs.
+func (m *FileMutation) RemoveCommentIDs(ids ...string) {
+	if m.removedcomments == nil {
+		m.removedcomments = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.comments, ids[i])
+		m.removedcomments[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedComments returns the removed IDs of the "comments" edge to the Comment entity.
+func (m *FileMutation) RemovedCommentsIDs() (ids []string) {
+	for id := range m.removedcomments {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CommentsIDs returns the "comments" edge IDs in the mutation.
+func (m *FileMutation) CommentsIDs() (ids []string) {
+	for id := range m.comments {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetComments resets all changes to the "comments" edge.
+func (m *FileMutation) ResetComments() {
+	m.comments = nil
+	m.clearedcomments = false
+	m.removedcomments = nil
+}
+
+// AddReactionIDs adds the "reactions" edge to the FileReaction entity by ids.
+func (m *FileMutation) AddReactionIDs(ids ...string) {
+	if m.reactions == nil {
+		m.reactions = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.reactions[ids[i]] = struct{}{}
+	}
+}
+
+// ClearReactions clears the "reactions" edge to the FileReaction entity.
+func (m *FileMutation) ClearReactions() {
+	m.clearedreactions = true
+}
+
+// ReactionsCleared reports if the "reactions" edge to the FileReaction entity was cleared.
+func (m *FileMutation) ReactionsCleared() bool {
+	return m.clearedreactions
+}
+
+// RemoveReactionIDs removes the "reactions" edge to the FileReaction entity by IDs.
+func (m *FileMutation) RemoveReactionIDs(ids ...string) {
+	if m.removedreactions == nil {
+		m.removedreactions = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.reactions, ids[i])
+		m.removedreactions[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedReactions returns the removed IDs of the "reactions" edge to the FileReaction entity.
+func (m *FileMutation) RemovedReactionsIDs() (ids []string) {
+	for id := range m.removedreactions {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ReactionsIDs returns the "reactions" edge IDs in the mutation.
+func (m *FileMutation) ReactionsIDs() (ids []string) {
+	for id := range m.reactions {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetReactions resets all changes to the "reactions" edge.
+func (m *FileMutation) ResetReactions() {
+	m.reactions = nil
+	m.clearedreactions = false
+	m.removedreactions = nil
+}
+
 // Where appends a list predicates to the FileMutation builder.
 func (m *FileMutation) Where(ps ...predicate.File) {
 	m.predicates = append(m.predicates, ps...)
@@ -1180,9 +2240,18 @@ func (m *FileMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FileMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 4)
 	if m.game != nil {
 		edges = append(edges, file.EdgeGame)
+	}
+	if m.group != nil {
+		edges = append(edges, file.EdgeGroup)
+	}
+	if m.comments != nil {
+		edges = append(edges, file.EdgeComments)
+	}
+	if m.reactions != nil {
+		edges = append(edges, file.EdgeReactions)
 	}
 	return edges
 }
@@ -1195,27 +2264,72 @@ func (m *FileMutation) AddedIDs(name string) []ent.Value {
 		if id := m.game; id != nil {
 			return []ent.Value{*id}
 		}
+	case file.EdgeGroup:
+		if id := m.group; id != nil {
+			return []ent.Value{*id}
+		}
+	case file.EdgeComments:
+		ids := make([]ent.Value, 0, len(m.comments))
+		for id := range m.comments {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeReactions:
+		ids := make([]ent.Value, 0, len(m.reactions))
+		for id := range m.reactions {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FileMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 4)
+	if m.removedcomments != nil {
+		edges = append(edges, file.EdgeComments)
+	}
+	if m.removedreactions != nil {
+		edges = append(edges, file.EdgeReactions)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *FileMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case file.EdgeComments:
+		ids := make([]ent.Value, 0, len(m.removedcomments))
+		for id := range m.removedcomments {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeReactions:
+		ids := make([]ent.Value, 0, len(m.removedreactions))
+		for id := range m.removedreactions {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FileMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 4)
 	if m.clearedgame {
 		edges = append(edges, file.EdgeGame)
+	}
+	if m.clearedgroup {
+		edges = append(edges, file.EdgeGroup)
+	}
+	if m.clearedcomments {
+		edges = append(edges, file.EdgeComments)
+	}
+	if m.clearedreactions {
+		edges = append(edges, file.EdgeReactions)
 	}
 	return edges
 }
@@ -1226,6 +2340,12 @@ func (m *FileMutation) EdgeCleared(name string) bool {
 	switch name {
 	case file.EdgeGame:
 		return m.clearedgame
+	case file.EdgeGroup:
+		return m.clearedgroup
+	case file.EdgeComments:
+		return m.clearedcomments
+	case file.EdgeReactions:
+		return m.clearedreactions
 	}
 	return false
 }
@@ -1236,6 +2356,9 @@ func (m *FileMutation) ClearEdge(name string) error {
 	switch name {
 	case file.EdgeGame:
 		m.ClearGame()
+		return nil
+	case file.EdgeGroup:
+		m.ClearGroup()
 		return nil
 	}
 	return fmt.Errorf("unknown File unique edge %s", name)
@@ -1248,33 +2371,1024 @@ func (m *FileMutation) ResetEdge(name string) error {
 	case file.EdgeGame:
 		m.ResetGame()
 		return nil
+	case file.EdgeGroup:
+		m.ResetGroup()
+		return nil
+	case file.EdgeComments:
+		m.ResetComments()
+		return nil
+	case file.EdgeReactions:
+		m.ResetReactions()
+		return nil
 	}
 	return fmt.Errorf("unknown File edge %s", name)
+}
+
+// FileGroupMutation represents an operation that mutates the FileGroup nodes in the graph.
+type FileGroupMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *string
+	key           *string
+	clearedFields map[string]struct{}
+	files         map[string]struct{}
+	removedfiles  map[string]struct{}
+	clearedfiles  bool
+	game          *string
+	clearedgame   bool
+	done          bool
+	oldValue      func(context.Context) (*FileGroup, error)
+	predicates    []predicate.FileGroup
+}
+
+var _ ent.Mutation = (*FileGroupMutation)(nil)
+
+// filegroupOption allows management of the mutation configuration using functional options.
+type filegroupOption func(*FileGroupMutation)
+
+// newFileGroupMutation creates new mutation for the FileGroup entity.
+func newFileGroupMutation(c config, op Op, opts ...filegroupOption) *FileGroupMutation {
+	m := &FileGroupMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeFileGroup,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withFileGroupID sets the ID field of the mutation.
+func withFileGroupID(id string) filegroupOption {
+	return func(m *FileGroupMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *FileGroup
+		)
+		m.oldValue = func(ctx context.Context) (*FileGroup, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().FileGroup.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withFileGroup sets the old FileGroup of the mutation.
+func withFileGroup(node *FileGroup) filegroupOption {
+	return func(m *FileGroupMutation) {
+		m.oldValue = func(context.Context) (*FileGroup, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m FileGroupMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m FileGroupMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of FileGroup entities.
+func (m *FileGroupMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *FileGroupMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *FileGroupMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().FileGroup.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetKey sets the "key" field.
+func (m *FileGroupMutation) SetKey(s string) {
+	m.key = &s
+}
+
+// Key returns the value of the "key" field in the mutation.
+func (m *FileGroupMutation) Key() (r string, exists bool) {
+	v := m.key
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldKey returns the old "key" field's value of the FileGroup entity.
+// If the FileGroup object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileGroupMutation) OldKey(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldKey is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldKey requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldKey: %w", err)
+	}
+	return oldValue.Key, nil
+}
+
+// ResetKey resets all changes to the "key" field.
+func (m *FileGroupMutation) ResetKey() {
+	m.key = nil
+}
+
+// AddFileIDs adds the "files" edge to the File entity by ids.
+func (m *FileGroupMutation) AddFileIDs(ids ...string) {
+	if m.files == nil {
+		m.files = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.files[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFiles clears the "files" edge to the File entity.
+func (m *FileGroupMutation) ClearFiles() {
+	m.clearedfiles = true
+}
+
+// FilesCleared reports if the "files" edge to the File entity was cleared.
+func (m *FileGroupMutation) FilesCleared() bool {
+	return m.clearedfiles
+}
+
+// RemoveFileIDs removes the "files" edge to the File entity by IDs.
+func (m *FileGroupMutation) RemoveFileIDs(ids ...string) {
+	if m.removedfiles == nil {
+		m.removedfiles = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.files, ids[i])
+		m.removedfiles[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFiles returns the removed IDs of the "files" edge to the File entity.
+func (m *FileGroupMutation) RemovedFilesIDs() (ids []string) {
+	for id := range m.removedfiles {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FilesIDs returns the "files" edge IDs in the mutation.
+func (m *FileGroupMutation) FilesIDs() (ids []string) {
+	for id := range m.files {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFiles resets all changes to the "files" edge.
+func (m *FileGroupMutation) ResetFiles() {
+	m.files = nil
+	m.clearedfiles = false
+	m.removedfiles = nil
+}
+
+// SetGameID sets the "game" edge to the Game entity by id.
+func (m *FileGroupMutation) SetGameID(id string) {
+	m.game = &id
+}
+
+// ClearGame clears the "game" edge to the Game entity.
+func (m *FileGroupMutation) ClearGame() {
+	m.clearedgame = true
+}
+
+// GameCleared reports if the "game" edge to the Game entity was cleared.
+func (m *FileGroupMutation) GameCleared() bool {
+	return m.clearedgame
+}
+
+// GameID returns the "game" edge ID in the mutation.
+func (m *FileGroupMutation) GameID() (id string, exists bool) {
+	if m.game != nil {
+		return *m.game, true
+	}
+	return
+}
+
+// GameIDs returns the "game" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// GameID instead. It exists only for internal usage by the builders.
+func (m *FileGroupMutation) GameIDs() (ids []string) {
+	if id := m.game; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetGame resets all changes to the "game" edge.
+func (m *FileGroupMutation) ResetGame() {
+	m.game = nil
+	m.clearedgame = false
+}
+
+// Where appends a list predicates to the FileGroupMutation builder.
+func (m *FileGroupMutation) Where(ps ...predicate.FileGroup) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the FileGroupMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *FileGroupMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.FileGroup, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *FileGroupMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *FileGroupMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (FileGroup).
+func (m *FileGroupMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *FileGroupMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.key != nil {
+		fields = append(fields, filegroup.FieldKey)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *FileGroupMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case filegroup.FieldKey:
+		return m.Key()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *FileGroupMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case filegroup.FieldKey:
+		return m.OldKey(ctx)
+	}
+	return nil, fmt.Errorf("unknown FileGroup field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FileGroupMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case filegroup.FieldKey:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetKey(v)
+		return nil
+	}
+	return fmt.Errorf("unknown FileGroup field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *FileGroupMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *FileGroupMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FileGroupMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown FileGroup numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *FileGroupMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *FileGroupMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *FileGroupMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown FileGroup nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *FileGroupMutation) ResetField(name string) error {
+	switch name {
+	case filegroup.FieldKey:
+		m.ResetKey()
+		return nil
+	}
+	return fmt.Errorf("unknown FileGroup field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *FileGroupMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.files != nil {
+		edges = append(edges, filegroup.EdgeFiles)
+	}
+	if m.game != nil {
+		edges = append(edges, filegroup.EdgeGame)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *FileGroupMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case filegroup.EdgeFiles:
+		ids := make([]ent.Value, 0, len(m.files))
+		for id := range m.files {
+			ids = append(ids, id)
+		}
+		return ids
+	case filegroup.EdgeGame:
+		if id := m.game; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *FileGroupMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.removedfiles != nil {
+		edges = append(edges, filegroup.EdgeFiles)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *FileGroupMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case filegroup.EdgeFiles:
+		ids := make([]ent.Value, 0, len(m.removedfiles))
+		for id := range m.removedfiles {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *FileGroupMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedfiles {
+		edges = append(edges, filegroup.EdgeFiles)
+	}
+	if m.clearedgame {
+		edges = append(edges, filegroup.EdgeGame)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *FileGroupMutation) EdgeCleared(name string) bool {
+	switch name {
+	case filegroup.EdgeFiles:
+		return m.clearedfiles
+	case filegroup.EdgeGame:
+		return m.clearedgame
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *FileGroupMutation) ClearEdge(name string) error {
+	switch name {
+	case filegroup.EdgeGame:
+		m.ClearGame()
+		return nil
+	}
+	return fmt.Errorf("unknown FileGroup unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *FileGroupMutation) ResetEdge(name string) error {
+	switch name {
+	case filegroup.EdgeFiles:
+		m.ResetFiles()
+		return nil
+	case filegroup.EdgeGame:
+		m.ResetGame()
+		return nil
+	}
+	return fmt.Errorf("unknown FileGroup edge %s", name)
+}
+
+// FileReactionMutation represents an operation that mutates the FileReaction nodes in the graph.
+type FileReactionMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *string
+	user_id       *string
+	value         *int
+	addvalue      *int
+	clearedFields map[string]struct{}
+	file          *string
+	clearedfile   bool
+	done          bool
+	oldValue      func(context.Context) (*FileReaction, error)
+	predicates    []predicate.FileReaction
+}
+
+var _ ent.Mutation = (*FileReactionMutation)(nil)
+
+// filereactionOption allows management of the mutation configuration using functional options.
+type filereactionOption func(*FileReactionMutation)
+
+// newFileReactionMutation creates new mutation for the FileReaction entity.
+func newFileReactionMutation(c config, op Op, opts ...filereactionOption) *FileReactionMutation {
+	m := &FileReactionMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeFileReaction,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withFileReactionID sets the ID field of the mutation.
+func withFileReactionID(id string) filereactionOption {
+	return func(m *FileReactionMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *FileReaction
+		)
+		m.oldValue = func(ctx context.Context) (*FileReaction, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().FileReaction.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withFileReaction sets the old FileReaction of the mutation.
+func withFileReaction(node *FileReaction) filereactionOption {
+	return func(m *FileReactionMutation) {
+		m.oldValue = func(context.Context) (*FileReaction, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m FileReactionMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m FileReactionMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of FileReaction entities.
+func (m *FileReactionMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *FileReactionMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *FileReactionMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().FileReaction.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetUserID sets the "user_id" field.
+func (m *FileReactionMutation) SetUserID(s string) {
+	m.user_id = &s
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *FileReactionMutation) UserID() (r string, exists bool) {
+	v := m.user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the FileReaction entity.
+// If the FileReaction object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileReactionMutation) OldUserID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *FileReactionMutation) ResetUserID() {
+	m.user_id = nil
+}
+
+// SetValue sets the "value" field.
+func (m *FileReactionMutation) SetValue(i int) {
+	m.value = &i
+	m.addvalue = nil
+}
+
+// Value returns the value of the "value" field in the mutation.
+func (m *FileReactionMutation) Value() (r int, exists bool) {
+	v := m.value
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldValue returns the old "value" field's value of the FileReaction entity.
+// If the FileReaction object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileReactionMutation) OldValue(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldValue is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldValue requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldValue: %w", err)
+	}
+	return oldValue.Value, nil
+}
+
+// AddValue adds i to the "value" field.
+func (m *FileReactionMutation) AddValue(i int) {
+	if m.addvalue != nil {
+		*m.addvalue += i
+	} else {
+		m.addvalue = &i
+	}
+}
+
+// AddedValue returns the value that was added to the "value" field in this mutation.
+func (m *FileReactionMutation) AddedValue() (r int, exists bool) {
+	v := m.addvalue
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetValue resets all changes to the "value" field.
+func (m *FileReactionMutation) ResetValue() {
+	m.value = nil
+	m.addvalue = nil
+}
+
+// SetFileID sets the "file" edge to the File entity by id.
+func (m *FileReactionMutation) SetFileID(id string) {
+	m.file = &id
+}
+
+// ClearFile clears the "file" edge to the File entity.
+func (m *FileReactionMutation) ClearFile() {
+	m.clearedfile = true
+}
+
+// FileCleared reports if the "file" edge to the File entity was cleared.
+func (m *FileReactionMutation) FileCleared() bool {
+	return m.clearedfile
+}
+
+// FileID returns the "file" edge ID in the mutation.
+func (m *FileReactionMutation) FileID() (id string, exists bool) {
+	if m.file != nil {
+		return *m.file, true
+	}
+	return
+}
+
+// FileIDs returns the "file" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// FileID instead. It exists only for internal usage by the builders.
+func (m *FileReactionMutation) FileIDs() (ids []string) {
+	if id := m.file; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetFile resets all changes to the "file" edge.
+func (m *FileReactionMutation) ResetFile() {
+	m.file = nil
+	m.clearedfile = false
+}
+
+// Where appends a list predicates to the FileReactionMutation builder.
+func (m *FileReactionMutation) Where(ps ...predicate.FileReaction) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the FileReactionMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *FileReactionMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.FileReaction, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *FileReactionMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *FileReactionMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (FileReaction).
+func (m *FileReactionMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *FileReactionMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.user_id != nil {
+		fields = append(fields, filereaction.FieldUserID)
+	}
+	if m.value != nil {
+		fields = append(fields, filereaction.FieldValue)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *FileReactionMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case filereaction.FieldUserID:
+		return m.UserID()
+	case filereaction.FieldValue:
+		return m.Value()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *FileReactionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case filereaction.FieldUserID:
+		return m.OldUserID(ctx)
+	case filereaction.FieldValue:
+		return m.OldValue(ctx)
+	}
+	return nil, fmt.Errorf("unknown FileReaction field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FileReactionMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case filereaction.FieldUserID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	case filereaction.FieldValue:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetValue(v)
+		return nil
+	}
+	return fmt.Errorf("unknown FileReaction field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *FileReactionMutation) AddedFields() []string {
+	var fields []string
+	if m.addvalue != nil {
+		fields = append(fields, filereaction.FieldValue)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *FileReactionMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case filereaction.FieldValue:
+		return m.AddedValue()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FileReactionMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case filereaction.FieldValue:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddValue(v)
+		return nil
+	}
+	return fmt.Errorf("unknown FileReaction numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *FileReactionMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *FileReactionMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *FileReactionMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown FileReaction nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *FileReactionMutation) ResetField(name string) error {
+	switch name {
+	case filereaction.FieldUserID:
+		m.ResetUserID()
+		return nil
+	case filereaction.FieldValue:
+		m.ResetValue()
+		return nil
+	}
+	return fmt.Errorf("unknown FileReaction field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *FileReactionMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.file != nil {
+		edges = append(edges, filereaction.EdgeFile)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *FileReactionMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case filereaction.EdgeFile:
+		if id := m.file; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *FileReactionMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *FileReactionMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *FileReactionMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedfile {
+		edges = append(edges, filereaction.EdgeFile)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *FileReactionMutation) EdgeCleared(name string) bool {
+	switch name {
+	case filereaction.EdgeFile:
+		return m.clearedfile
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *FileReactionMutation) ClearEdge(name string) error {
+	switch name {
+	case filereaction.EdgeFile:
+		m.ClearFile()
+		return nil
+	}
+	return fmt.Errorf("unknown FileReaction unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *FileReactionMutation) ResetEdge(name string) error {
+	switch name {
+	case filereaction.EdgeFile:
+		m.ResetFile()
+		return nil
+	}
+	return fmt.Errorf("unknown FileReaction edge %s", name)
 }
 
 // GameMutation represents an operation that mutates the Game nodes in the graph.
 type GameMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *string
-	slug          *string
-	platform      *game.Platform
-	title         *string
-	year          *int
-	addyear       *int
-	publisher     *string
-	developer     *string
-	clearedFields map[string]struct{}
-	files         map[string]struct{}
-	removedfiles  map[string]struct{}
-	clearedfiles  bool
-	images        map[string]struct{}
-	removedimages map[string]struct{}
-	clearedimages bool
-	done          bool
-	oldValue      func(context.Context) (*Game, error)
-	predicates    []predicate.Game
+	op              Op
+	typ             string
+	id              *string
+	slug            *string
+	platform        *game.Platform
+	title           *string
+	year            *int
+	addyear         *int
+	publisher       *string
+	developer       *string
+	clearedFields   map[string]struct{}
+	files           map[string]struct{}
+	removedfiles    map[string]struct{}
+	clearedfiles    bool
+	images          map[string]struct{}
+	removedimages   map[string]struct{}
+	clearedimages   bool
+	comments        map[string]struct{}
+	removedcomments map[string]struct{}
+	clearedcomments bool
+	groups          map[string]struct{}
+	removedgroups   map[string]struct{}
+	clearedgroups   bool
+	likes           map[string]struct{}
+	removedlikes    map[string]struct{}
+	clearedlikes    bool
+	done            bool
+	oldValue        func(context.Context) (*Game, error)
+	predicates      []predicate.Game
 }
 
 var _ ent.Mutation = (*GameMutation)(nil)
@@ -1765,6 +3879,168 @@ func (m *GameMutation) ResetImages() {
 	m.removedimages = nil
 }
 
+// AddCommentIDs adds the "comments" edge to the Comment entity by ids.
+func (m *GameMutation) AddCommentIDs(ids ...string) {
+	if m.comments == nil {
+		m.comments = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.comments[ids[i]] = struct{}{}
+	}
+}
+
+// ClearComments clears the "comments" edge to the Comment entity.
+func (m *GameMutation) ClearComments() {
+	m.clearedcomments = true
+}
+
+// CommentsCleared reports if the "comments" edge to the Comment entity was cleared.
+func (m *GameMutation) CommentsCleared() bool {
+	return m.clearedcomments
+}
+
+// RemoveCommentIDs removes the "comments" edge to the Comment entity by IDs.
+func (m *GameMutation) RemoveCommentIDs(ids ...string) {
+	if m.removedcomments == nil {
+		m.removedcomments = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.comments, ids[i])
+		m.removedcomments[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedComments returns the removed IDs of the "comments" edge to the Comment entity.
+func (m *GameMutation) RemovedCommentsIDs() (ids []string) {
+	for id := range m.removedcomments {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CommentsIDs returns the "comments" edge IDs in the mutation.
+func (m *GameMutation) CommentsIDs() (ids []string) {
+	for id := range m.comments {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetComments resets all changes to the "comments" edge.
+func (m *GameMutation) ResetComments() {
+	m.comments = nil
+	m.clearedcomments = false
+	m.removedcomments = nil
+}
+
+// AddGroupIDs adds the "groups" edge to the FileGroup entity by ids.
+func (m *GameMutation) AddGroupIDs(ids ...string) {
+	if m.groups == nil {
+		m.groups = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.groups[ids[i]] = struct{}{}
+	}
+}
+
+// ClearGroups clears the "groups" edge to the FileGroup entity.
+func (m *GameMutation) ClearGroups() {
+	m.clearedgroups = true
+}
+
+// GroupsCleared reports if the "groups" edge to the FileGroup entity was cleared.
+func (m *GameMutation) GroupsCleared() bool {
+	return m.clearedgroups
+}
+
+// RemoveGroupIDs removes the "groups" edge to the FileGroup entity by IDs.
+func (m *GameMutation) RemoveGroupIDs(ids ...string) {
+	if m.removedgroups == nil {
+		m.removedgroups = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.groups, ids[i])
+		m.removedgroups[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedGroups returns the removed IDs of the "groups" edge to the FileGroup entity.
+func (m *GameMutation) RemovedGroupsIDs() (ids []string) {
+	for id := range m.removedgroups {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// GroupsIDs returns the "groups" edge IDs in the mutation.
+func (m *GameMutation) GroupsIDs() (ids []string) {
+	for id := range m.groups {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetGroups resets all changes to the "groups" edge.
+func (m *GameMutation) ResetGroups() {
+	m.groups = nil
+	m.clearedgroups = false
+	m.removedgroups = nil
+}
+
+// AddLikeIDs adds the "likes" edge to the GameLike entity by ids.
+func (m *GameMutation) AddLikeIDs(ids ...string) {
+	if m.likes == nil {
+		m.likes = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.likes[ids[i]] = struct{}{}
+	}
+}
+
+// ClearLikes clears the "likes" edge to the GameLike entity.
+func (m *GameMutation) ClearLikes() {
+	m.clearedlikes = true
+}
+
+// LikesCleared reports if the "likes" edge to the GameLike entity was cleared.
+func (m *GameMutation) LikesCleared() bool {
+	return m.clearedlikes
+}
+
+// RemoveLikeIDs removes the "likes" edge to the GameLike entity by IDs.
+func (m *GameMutation) RemoveLikeIDs(ids ...string) {
+	if m.removedlikes == nil {
+		m.removedlikes = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.likes, ids[i])
+		m.removedlikes[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedLikes returns the removed IDs of the "likes" edge to the GameLike entity.
+func (m *GameMutation) RemovedLikesIDs() (ids []string) {
+	for id := range m.removedlikes {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// LikesIDs returns the "likes" edge IDs in the mutation.
+func (m *GameMutation) LikesIDs() (ids []string) {
+	for id := range m.likes {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetLikes resets all changes to the "likes" edge.
+func (m *GameMutation) ResetLikes() {
+	m.likes = nil
+	m.clearedlikes = false
+	m.removedlikes = nil
+}
+
 // Where appends a list predicates to the GameMutation builder.
 func (m *GameMutation) Where(ps ...predicate.Game) {
 	m.predicates = append(m.predicates, ps...)
@@ -2019,12 +4295,21 @@ func (m *GameMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *GameMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 5)
 	if m.files != nil {
 		edges = append(edges, game.EdgeFiles)
 	}
 	if m.images != nil {
 		edges = append(edges, game.EdgeImages)
+	}
+	if m.comments != nil {
+		edges = append(edges, game.EdgeComments)
+	}
+	if m.groups != nil {
+		edges = append(edges, game.EdgeGroups)
+	}
+	if m.likes != nil {
+		edges = append(edges, game.EdgeLikes)
 	}
 	return edges
 }
@@ -2045,18 +4330,45 @@ func (m *GameMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case game.EdgeComments:
+		ids := make([]ent.Value, 0, len(m.comments))
+		for id := range m.comments {
+			ids = append(ids, id)
+		}
+		return ids
+	case game.EdgeGroups:
+		ids := make([]ent.Value, 0, len(m.groups))
+		for id := range m.groups {
+			ids = append(ids, id)
+		}
+		return ids
+	case game.EdgeLikes:
+		ids := make([]ent.Value, 0, len(m.likes))
+		for id := range m.likes {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *GameMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 5)
 	if m.removedfiles != nil {
 		edges = append(edges, game.EdgeFiles)
 	}
 	if m.removedimages != nil {
 		edges = append(edges, game.EdgeImages)
+	}
+	if m.removedcomments != nil {
+		edges = append(edges, game.EdgeComments)
+	}
+	if m.removedgroups != nil {
+		edges = append(edges, game.EdgeGroups)
+	}
+	if m.removedlikes != nil {
+		edges = append(edges, game.EdgeLikes)
 	}
 	return edges
 }
@@ -2077,18 +4389,45 @@ func (m *GameMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case game.EdgeComments:
+		ids := make([]ent.Value, 0, len(m.removedcomments))
+		for id := range m.removedcomments {
+			ids = append(ids, id)
+		}
+		return ids
+	case game.EdgeGroups:
+		ids := make([]ent.Value, 0, len(m.removedgroups))
+		for id := range m.removedgroups {
+			ids = append(ids, id)
+		}
+		return ids
+	case game.EdgeLikes:
+		ids := make([]ent.Value, 0, len(m.removedlikes))
+		for id := range m.removedlikes {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *GameMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 5)
 	if m.clearedfiles {
 		edges = append(edges, game.EdgeFiles)
 	}
 	if m.clearedimages {
 		edges = append(edges, game.EdgeImages)
+	}
+	if m.clearedcomments {
+		edges = append(edges, game.EdgeComments)
+	}
+	if m.clearedgroups {
+		edges = append(edges, game.EdgeGroups)
+	}
+	if m.clearedlikes {
+		edges = append(edges, game.EdgeLikes)
 	}
 	return edges
 }
@@ -2101,6 +4440,12 @@ func (m *GameMutation) EdgeCleared(name string) bool {
 		return m.clearedfiles
 	case game.EdgeImages:
 		return m.clearedimages
+	case game.EdgeComments:
+		return m.clearedcomments
+	case game.EdgeGroups:
+		return m.clearedgroups
+	case game.EdgeLikes:
+		return m.clearedlikes
 	}
 	return false
 }
@@ -2123,8 +4468,416 @@ func (m *GameMutation) ResetEdge(name string) error {
 	case game.EdgeImages:
 		m.ResetImages()
 		return nil
+	case game.EdgeComments:
+		m.ResetComments()
+		return nil
+	case game.EdgeGroups:
+		m.ResetGroups()
+		return nil
+	case game.EdgeLikes:
+		m.ResetLikes()
+		return nil
 	}
 	return fmt.Errorf("unknown Game edge %s", name)
+}
+
+// GameLikeMutation represents an operation that mutates the GameLike nodes in the graph.
+type GameLikeMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *string
+	user_id       *string
+	clearedFields map[string]struct{}
+	game          *string
+	clearedgame   bool
+	done          bool
+	oldValue      func(context.Context) (*GameLike, error)
+	predicates    []predicate.GameLike
+}
+
+var _ ent.Mutation = (*GameLikeMutation)(nil)
+
+// gamelikeOption allows management of the mutation configuration using functional options.
+type gamelikeOption func(*GameLikeMutation)
+
+// newGameLikeMutation creates new mutation for the GameLike entity.
+func newGameLikeMutation(c config, op Op, opts ...gamelikeOption) *GameLikeMutation {
+	m := &GameLikeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeGameLike,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withGameLikeID sets the ID field of the mutation.
+func withGameLikeID(id string) gamelikeOption {
+	return func(m *GameLikeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *GameLike
+		)
+		m.oldValue = func(ctx context.Context) (*GameLike, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().GameLike.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withGameLike sets the old GameLike of the mutation.
+func withGameLike(node *GameLike) gamelikeOption {
+	return func(m *GameLikeMutation) {
+		m.oldValue = func(context.Context) (*GameLike, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m GameLikeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m GameLikeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of GameLike entities.
+func (m *GameLikeMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *GameLikeMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *GameLikeMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().GameLike.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetUserID sets the "user_id" field.
+func (m *GameLikeMutation) SetUserID(s string) {
+	m.user_id = &s
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *GameLikeMutation) UserID() (r string, exists bool) {
+	v := m.user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the GameLike entity.
+// If the GameLike object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameLikeMutation) OldUserID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *GameLikeMutation) ResetUserID() {
+	m.user_id = nil
+}
+
+// SetGameID sets the "game" edge to the Game entity by id.
+func (m *GameLikeMutation) SetGameID(id string) {
+	m.game = &id
+}
+
+// ClearGame clears the "game" edge to the Game entity.
+func (m *GameLikeMutation) ClearGame() {
+	m.clearedgame = true
+}
+
+// GameCleared reports if the "game" edge to the Game entity was cleared.
+func (m *GameLikeMutation) GameCleared() bool {
+	return m.clearedgame
+}
+
+// GameID returns the "game" edge ID in the mutation.
+func (m *GameLikeMutation) GameID() (id string, exists bool) {
+	if m.game != nil {
+		return *m.game, true
+	}
+	return
+}
+
+// GameIDs returns the "game" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// GameID instead. It exists only for internal usage by the builders.
+func (m *GameLikeMutation) GameIDs() (ids []string) {
+	if id := m.game; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetGame resets all changes to the "game" edge.
+func (m *GameLikeMutation) ResetGame() {
+	m.game = nil
+	m.clearedgame = false
+}
+
+// Where appends a list predicates to the GameLikeMutation builder.
+func (m *GameLikeMutation) Where(ps ...predicate.GameLike) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the GameLikeMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *GameLikeMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.GameLike, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *GameLikeMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *GameLikeMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (GameLike).
+func (m *GameLikeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *GameLikeMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.user_id != nil {
+		fields = append(fields, gamelike.FieldUserID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *GameLikeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case gamelike.FieldUserID:
+		return m.UserID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *GameLikeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case gamelike.FieldUserID:
+		return m.OldUserID(ctx)
+	}
+	return nil, fmt.Errorf("unknown GameLike field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GameLikeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case gamelike.FieldUserID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown GameLike field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *GameLikeMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *GameLikeMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GameLikeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown GameLike numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *GameLikeMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *GameLikeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *GameLikeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown GameLike nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *GameLikeMutation) ResetField(name string) error {
+	switch name {
+	case gamelike.FieldUserID:
+		m.ResetUserID()
+		return nil
+	}
+	return fmt.Errorf("unknown GameLike field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *GameLikeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.game != nil {
+		edges = append(edges, gamelike.EdgeGame)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *GameLikeMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case gamelike.EdgeGame:
+		if id := m.game; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *GameLikeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *GameLikeMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *GameLikeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedgame {
+		edges = append(edges, gamelike.EdgeGame)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *GameLikeMutation) EdgeCleared(name string) bool {
+	switch name {
+	case gamelike.EdgeGame:
+		return m.clearedgame
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *GameLikeMutation) ClearEdge(name string) error {
+	switch name {
+	case gamelike.EdgeGame:
+		m.ClearGame()
+		return nil
+	}
+	return fmt.Errorf("unknown GameLike unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *GameLikeMutation) ResetEdge(name string) error {
+	switch name {
+	case gamelike.EdgeGame:
+		m.ResetGame()
+		return nil
+	}
+	return fmt.Errorf("unknown GameLike edge %s", name)
 }
 
 // ImageMutation represents an operation that mutates the Image nodes in the graph.

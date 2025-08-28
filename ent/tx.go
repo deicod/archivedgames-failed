@@ -12,10 +12,18 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// Comment is the client for interacting with the Comment builders.
+	Comment *CommentClient
 	// File is the client for interacting with the File builders.
 	File *FileClient
+	// FileGroup is the client for interacting with the FileGroup builders.
+	FileGroup *FileGroupClient
+	// FileReaction is the client for interacting with the FileReaction builders.
+	FileReaction *FileReactionClient
 	// Game is the client for interacting with the Game builders.
 	Game *GameClient
+	// GameLike is the client for interacting with the GameLike builders.
+	GameLike *GameLikeClient
 	// Image is the client for interacting with the Image builders.
 	Image *ImageClient
 	// Report is the client for interacting with the Report builders.
@@ -155,8 +163,12 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.Comment = NewCommentClient(tx.config)
 	tx.File = NewFileClient(tx.config)
+	tx.FileGroup = NewFileGroupClient(tx.config)
+	tx.FileReaction = NewFileReactionClient(tx.config)
 	tx.Game = NewGameClient(tx.config)
+	tx.GameLike = NewGameLikeClient(tx.config)
 	tx.Image = NewImageClient(tx.config)
 	tx.Report = NewReportClient(tx.config)
 	tx.SiteSetting = NewSiteSettingClient(tx.config)
@@ -170,7 +182,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: File.QueryXXX(), the query will be executed
+// applies a query, for example: Comment.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

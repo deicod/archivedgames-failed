@@ -40,6 +40,12 @@ const (
 	FieldSide = "side"
 	// EdgeGame holds the string denoting the game edge name in mutations.
 	EdgeGame = "game"
+	// EdgeGroup holds the string denoting the group edge name in mutations.
+	EdgeGroup = "group"
+	// EdgeComments holds the string denoting the comments edge name in mutations.
+	EdgeComments = "comments"
+	// EdgeReactions holds the string denoting the reactions edge name in mutations.
+	EdgeReactions = "reactions"
 	// Table holds the table name of the file in the database.
 	Table = "files"
 	// GameTable is the table that holds the game relation/edge.
@@ -49,6 +55,27 @@ const (
 	GameInverseTable = "games"
 	// GameColumn is the table column denoting the game relation/edge.
 	GameColumn = "game_files"
+	// GroupTable is the table that holds the group relation/edge.
+	GroupTable = "files"
+	// GroupInverseTable is the table name for the FileGroup entity.
+	// It exists in this package in order to avoid circular dependency with the "filegroup" package.
+	GroupInverseTable = "file_groups"
+	// GroupColumn is the table column denoting the group relation/edge.
+	GroupColumn = "file_group_files"
+	// CommentsTable is the table that holds the comments relation/edge.
+	CommentsTable = "comments"
+	// CommentsInverseTable is the table name for the Comment entity.
+	// It exists in this package in order to avoid circular dependency with the "comment" package.
+	CommentsInverseTable = "comments"
+	// CommentsColumn is the table column denoting the comments relation/edge.
+	CommentsColumn = "file_comments"
+	// ReactionsTable is the table that holds the reactions relation/edge.
+	ReactionsTable = "file_reactions"
+	// ReactionsInverseTable is the table name for the FileReaction entity.
+	// It exists in this package in order to avoid circular dependency with the "filereaction" package.
+	ReactionsInverseTable = "file_reactions"
+	// ReactionsColumn is the table column denoting the reactions relation/edge.
+	ReactionsColumn = "file_reaction_file"
 )
 
 // Columns holds all SQL columns for file fields.
@@ -72,6 +99,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "files"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
+	"file_group_files",
 	"game_files",
 }
 
@@ -178,10 +206,66 @@ func ByGameField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newGameStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByGroupField orders the results by group field.
+func ByGroupField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newGroupStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByCommentsCount orders the results by comments count.
+func ByCommentsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newCommentsStep(), opts...)
+	}
+}
+
+// ByComments orders the results by comments terms.
+func ByComments(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCommentsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByReactionsCount orders the results by reactions count.
+func ByReactionsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newReactionsStep(), opts...)
+	}
+}
+
+// ByReactions orders the results by reactions terms.
+func ByReactions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newReactionsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newGameStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(GameInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, GameTable, GameColumn),
+	)
+}
+func newGroupStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(GroupInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, GroupTable, GroupColumn),
+	)
+}
+func newCommentsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CommentsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, CommentsTable, CommentsColumn),
+	)
+}
+func newReactionsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ReactionsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, ReactionsTable, ReactionsColumn),
 	)
 }

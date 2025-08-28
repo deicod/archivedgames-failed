@@ -6,11 +6,23 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Comment is the predicate function for comment builders.
+type Comment func(*sql.Selector)
+
 // File is the predicate function for file builders.
 type File func(*sql.Selector)
 
+// FileGroup is the predicate function for filegroup builders.
+type FileGroup func(*sql.Selector)
+
+// FileReaction is the predicate function for filereaction builders.
+type FileReaction func(*sql.Selector)
+
 // Game is the predicate function for game builders.
 type Game func(*sql.Selector)
+
+// GameLike is the predicate function for gamelike builders.
+type GameLike func(*sql.Selector)
 
 // Image is the predicate function for image builders.
 type Image func(*sql.Selector)

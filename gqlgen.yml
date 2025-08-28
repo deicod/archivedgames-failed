@@ -79,3 +79,30 @@ models:
   ReportEdge:
     model:
       - github.com/deicod/archivedgames/ent.ReportEdge
+  Comment:
+    model:
+      - github.com/deicod/archivedgames/ent.Comment
+  CommentConnection:
+    model:
+      - github.com/deicod/archivedgames/ent.CommentConnection
+  CommentEdge:
+    model:
+      - github.com/deicod/archivedgames/ent.CommentEdge
+  GameLike:
+    model:
+      - github.com/deicod/archivedgames/ent.GameLike
+  GameLikeConnection:
+    model:
+      - github.com/deicod/archivedgames/ent.GameLikeConnection
+  GameLikeEdge:
+    model:
+      - github.com/deicod/archivedgames/ent.GameLikeEdge
+  FileReaction:
+    model:
+      - github.com/deicod/archivedgames/ent.FileReaction
+  FileReactionConnection:
+    model:
+      - github.com/deicod/archivedgames/ent.FileReactionConnection
+  FileReactionEdge:
+    model:
+      - github.com/deicod/archivedgames/ent.FileReactionEdge

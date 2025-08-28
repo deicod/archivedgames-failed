@@ -5,15 +5,592 @@ package ent
 import (
 	"errors"
 	"fmt"
+	"time"
 
+	"github.com/deicod/archivedgames/ent/comment"
 	"github.com/deicod/archivedgames/ent/file"
+	"github.com/deicod/archivedgames/ent/filegroup"
+	"github.com/deicod/archivedgames/ent/filereaction"
 	"github.com/deicod/archivedgames/ent/game"
+	"github.com/deicod/archivedgames/ent/gamelike"
 	"github.com/deicod/archivedgames/ent/image"
 	"github.com/deicod/archivedgames/ent/predicate"
 	"github.com/deicod/archivedgames/ent/report"
 	"github.com/deicod/archivedgames/ent/sitesetting"
 	"github.com/deicod/archivedgames/ent/usershadow"
 )
+
+// CommentWhereInput represents a where input for filtering Comment queries.
+type CommentWhereInput struct {
+	Predicates []predicate.Comment  `json:"-"`
+	Not        *CommentWhereInput   `json:"not,omitempty"`
+	Or         []*CommentWhereInput `json:"or,omitempty"`
+	And        []*CommentWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
+
+	// "subject_type" field predicates.
+	SubjectType             *string  `json:"subjectType,omitempty"`
+	SubjectTypeNEQ          *string  `json:"subjectTypeNEQ,omitempty"`
+	SubjectTypeIn           []string `json:"subjectTypeIn,omitempty"`
+	SubjectTypeNotIn        []string `json:"subjectTypeNotIn,omitempty"`
+	SubjectTypeGT           *string  `json:"subjectTypeGT,omitempty"`
+	SubjectTypeGTE          *string  `json:"subjectTypeGTE,omitempty"`
+	SubjectTypeLT           *string  `json:"subjectTypeLT,omitempty"`
+	SubjectTypeLTE          *string  `json:"subjectTypeLTE,omitempty"`
+	SubjectTypeContains     *string  `json:"subjectTypeContains,omitempty"`
+	SubjectTypeHasPrefix    *string  `json:"subjectTypeHasPrefix,omitempty"`
+	SubjectTypeHasSuffix    *string  `json:"subjectTypeHasSuffix,omitempty"`
+	SubjectTypeEqualFold    *string  `json:"subjectTypeEqualFold,omitempty"`
+	SubjectTypeContainsFold *string  `json:"subjectTypeContainsFold,omitempty"`
+
+	// "subject_id" field predicates.
+	SubjectID             *string  `json:"subjectID,omitempty"`
+	SubjectIDNEQ          *string  `json:"subjectIDNEQ,omitempty"`
+	SubjectIDIn           []string `json:"subjectIDIn,omitempty"`
+	SubjectIDNotIn        []string `json:"subjectIDNotIn,omitempty"`
+	SubjectIDGT           *string  `json:"subjectIDGT,omitempty"`
+	SubjectIDGTE          *string  `json:"subjectIDGTE,omitempty"`
+	SubjectIDLT           *string  `json:"subjectIDLT,omitempty"`
+	SubjectIDLTE          *string  `json:"subjectIDLTE,omitempty"`
+	SubjectIDContains     *string  `json:"subjectIDContains,omitempty"`
+	SubjectIDHasPrefix    *string  `json:"subjectIDHasPrefix,omitempty"`
+	SubjectIDHasSuffix    *string  `json:"subjectIDHasSuffix,omitempty"`
+	SubjectIDEqualFold    *string  `json:"subjectIDEqualFold,omitempty"`
+	SubjectIDContainsFold *string  `json:"subjectIDContainsFold,omitempty"`
+
+	// "user_id" field predicates.
+	UserID             *string  `json:"userID,omitempty"`
+	UserIDNEQ          *string  `json:"userIDNEQ,omitempty"`
+	UserIDIn           []string `json:"userIDIn,omitempty"`
+	UserIDNotIn        []string `json:"userIDNotIn,omitempty"`
+	UserIDGT           *string  `json:"userIDGT,omitempty"`
+	UserIDGTE          *string  `json:"userIDGTE,omitempty"`
+	UserIDLT           *string  `json:"userIDLT,omitempty"`
+	UserIDLTE          *string  `json:"userIDLTE,omitempty"`
+	UserIDContains     *string  `json:"userIDContains,omitempty"`
+	UserIDHasPrefix    *string  `json:"userIDHasPrefix,omitempty"`
+	UserIDHasSuffix    *string  `json:"userIDHasSuffix,omitempty"`
+	UserIDEqualFold    *string  `json:"userIDEqualFold,omitempty"`
+	UserIDContainsFold *string  `json:"userIDContainsFold,omitempty"`
+
+	// "language" field predicates.
+	Language             *string  `json:"language,omitempty"`
+	LanguageNEQ          *string  `json:"languageNEQ,omitempty"`
+	LanguageIn           []string `json:"languageIn,omitempty"`
+	LanguageNotIn        []string `json:"languageNotIn,omitempty"`
+	LanguageGT           *string  `json:"languageGT,omitempty"`
+	LanguageGTE          *string  `json:"languageGTE,omitempty"`
+	LanguageLT           *string  `json:"languageLT,omitempty"`
+	LanguageLTE          *string  `json:"languageLTE,omitempty"`
+	LanguageContains     *string  `json:"languageContains,omitempty"`
+	LanguageHasPrefix    *string  `json:"languageHasPrefix,omitempty"`
+	LanguageHasSuffix    *string  `json:"languageHasSuffix,omitempty"`
+	LanguageIsNil        bool     `json:"languageIsNil,omitempty"`
+	LanguageNotNil       bool     `json:"languageNotNil,omitempty"`
+	LanguageEqualFold    *string  `json:"languageEqualFold,omitempty"`
+	LanguageContainsFold *string  `json:"languageContainsFold,omitempty"`
+
+	// "content_sanitized" field predicates.
+	ContentSanitized             *string  `json:"contentSanitized,omitempty"`
+	ContentSanitizedNEQ          *string  `json:"contentSanitizedNEQ,omitempty"`
+	ContentSanitizedIn           []string `json:"contentSanitizedIn,omitempty"`
+	ContentSanitizedNotIn        []string `json:"contentSanitizedNotIn,omitempty"`
+	ContentSanitizedGT           *string  `json:"contentSanitizedGT,omitempty"`
+	ContentSanitizedGTE          *string  `json:"contentSanitizedGTE,omitempty"`
+	ContentSanitizedLT           *string  `json:"contentSanitizedLT,omitempty"`
+	ContentSanitizedLTE          *string  `json:"contentSanitizedLTE,omitempty"`
+	ContentSanitizedContains     *string  `json:"contentSanitizedContains,omitempty"`
+	ContentSanitizedHasPrefix    *string  `json:"contentSanitizedHasPrefix,omitempty"`
+	ContentSanitizedHasSuffix    *string  `json:"contentSanitizedHasSuffix,omitempty"`
+	ContentSanitizedEqualFold    *string  `json:"contentSanitizedEqualFold,omitempty"`
+	ContentSanitizedContainsFold *string  `json:"contentSanitizedContainsFold,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "edited_at" field predicates.
+	EditedAt       *time.Time  `json:"editedAt,omitempty"`
+	EditedAtNEQ    *time.Time  `json:"editedAtNEQ,omitempty"`
+	EditedAtIn     []time.Time `json:"editedAtIn,omitempty"`
+	EditedAtNotIn  []time.Time `json:"editedAtNotIn,omitempty"`
+	EditedAtGT     *time.Time  `json:"editedAtGT,omitempty"`
+	EditedAtGTE    *time.Time  `json:"editedAtGTE,omitempty"`
+	EditedAtLT     *time.Time  `json:"editedAtLT,omitempty"`
+	EditedAtLTE    *time.Time  `json:"editedAtLTE,omitempty"`
+	EditedAtIsNil  bool        `json:"editedAtIsNil,omitempty"`
+	EditedAtNotNil bool        `json:"editedAtNotNil,omitempty"`
+
+	// "deleted_at" field predicates.
+	DeletedAt       *time.Time  `json:"deletedAt,omitempty"`
+	DeletedAtNEQ    *time.Time  `json:"deletedAtNEQ,omitempty"`
+	DeletedAtIn     []time.Time `json:"deletedAtIn,omitempty"`
+	DeletedAtNotIn  []time.Time `json:"deletedAtNotIn,omitempty"`
+	DeletedAtGT     *time.Time  `json:"deletedAtGT,omitempty"`
+	DeletedAtGTE    *time.Time  `json:"deletedAtGTE,omitempty"`
+	DeletedAtLT     *time.Time  `json:"deletedAtLT,omitempty"`
+	DeletedAtLTE    *time.Time  `json:"deletedAtLTE,omitempty"`
+	DeletedAtIsNil  bool        `json:"deletedAtIsNil,omitempty"`
+	DeletedAtNotNil bool        `json:"deletedAtNotNil,omitempty"`
+
+	// "game" edge predicates.
+	HasGame     *bool             `json:"hasGame,omitempty"`
+	HasGameWith []*GameWhereInput `json:"hasGameWith,omitempty"`
+
+	// "file" edge predicates.
+	HasFile     *bool             `json:"hasFile,omitempty"`
+	HasFileWith []*FileWhereInput `json:"hasFileWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *CommentWhereInput) AddPredicates(predicates ...predicate.Comment) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the CommentWhereInput filter on the CommentQuery builder.
+func (i *CommentWhereInput) Filter(q *CommentQuery) (*CommentQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyCommentWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyCommentWhereInput is returned in case the CommentWhereInput is empty.
+var ErrEmptyCommentWhereInput = errors.New("ent: empty predicate CommentWhereInput")
+
+// P returns a predicate for filtering comments.
+// An error is returned if the input is empty or invalid.
+func (i *CommentWhereInput) P() (predicate.Comment, error) {
+	var predicates []predicate.Comment
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, comment.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.Comment, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, comment.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.Comment, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, comment.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, comment.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, comment.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, comment.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, comment.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, comment.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, comment.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, comment.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, comment.IDLTE(*i.IDLTE))
+	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, comment.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, comment.IDContainsFold(*i.IDContainsFold))
+	}
+	if i.SubjectType != nil {
+		predicates = append(predicates, comment.SubjectTypeEQ(*i.SubjectType))
+	}
+	if i.SubjectTypeNEQ != nil {
+		predicates = append(predicates, comment.SubjectTypeNEQ(*i.SubjectTypeNEQ))
+	}
+	if len(i.SubjectTypeIn) > 0 {
+		predicates = append(predicates, comment.SubjectTypeIn(i.SubjectTypeIn...))
+	}
+	if len(i.SubjectTypeNotIn) > 0 {
+		predicates = append(predicates, comment.SubjectTypeNotIn(i.SubjectTypeNotIn...))
+	}
+	if i.SubjectTypeGT != nil {
+		predicates = append(predicates, comment.SubjectTypeGT(*i.SubjectTypeGT))
+	}
+	if i.SubjectTypeGTE != nil {
+		predicates = append(predicates, comment.SubjectTypeGTE(*i.SubjectTypeGTE))
+	}
+	if i.SubjectTypeLT != nil {
+		predicates = append(predicates, comment.SubjectTypeLT(*i.SubjectTypeLT))
+	}
+	if i.SubjectTypeLTE != nil {
+		predicates = append(predicates, comment.SubjectTypeLTE(*i.SubjectTypeLTE))
+	}
+	if i.SubjectTypeContains != nil {
+		predicates = append(predicates, comment.SubjectTypeContains(*i.SubjectTypeContains))
+	}
+	if i.SubjectTypeHasPrefix != nil {
+		predicates = append(predicates, comment.SubjectTypeHasPrefix(*i.SubjectTypeHasPrefix))
+	}
+	if i.SubjectTypeHasSuffix != nil {
+		predicates = append(predicates, comment.SubjectTypeHasSuffix(*i.SubjectTypeHasSuffix))
+	}
+	if i.SubjectTypeEqualFold != nil {
+		predicates = append(predicates, comment.SubjectTypeEqualFold(*i.SubjectTypeEqualFold))
+	}
+	if i.SubjectTypeContainsFold != nil {
+		predicates = append(predicates, comment.SubjectTypeContainsFold(*i.SubjectTypeContainsFold))
+	}
+	if i.SubjectID != nil {
+		predicates = append(predicates, comment.SubjectIDEQ(*i.SubjectID))
+	}
+	if i.SubjectIDNEQ != nil {
+		predicates = append(predicates, comment.SubjectIDNEQ(*i.SubjectIDNEQ))
+	}
+	if len(i.SubjectIDIn) > 0 {
+		predicates = append(predicates, comment.SubjectIDIn(i.SubjectIDIn...))
+	}
+	if len(i.SubjectIDNotIn) > 0 {
+		predicates = append(predicates, comment.SubjectIDNotIn(i.SubjectIDNotIn...))
+	}
+	if i.SubjectIDGT != nil {
+		predicates = append(predicates, comment.SubjectIDGT(*i.SubjectIDGT))
+	}
+	if i.SubjectIDGTE != nil {
+		predicates = append(predicates, comment.SubjectIDGTE(*i.SubjectIDGTE))
+	}
+	if i.SubjectIDLT != nil {
+		predicates = append(predicates, comment.SubjectIDLT(*i.SubjectIDLT))
+	}
+	if i.SubjectIDLTE != nil {
+		predicates = append(predicates, comment.SubjectIDLTE(*i.SubjectIDLTE))
+	}
+	if i.SubjectIDContains != nil {
+		predicates = append(predicates, comment.SubjectIDContains(*i.SubjectIDContains))
+	}
+	if i.SubjectIDHasPrefix != nil {
+		predicates = append(predicates, comment.SubjectIDHasPrefix(*i.SubjectIDHasPrefix))
+	}
+	if i.SubjectIDHasSuffix != nil {
+		predicates = append(predicates, comment.SubjectIDHasSuffix(*i.SubjectIDHasSuffix))
+	}
+	if i.SubjectIDEqualFold != nil {
+		predicates = append(predicates, comment.SubjectIDEqualFold(*i.SubjectIDEqualFold))
+	}
+	if i.SubjectIDContainsFold != nil {
+		predicates = append(predicates, comment.SubjectIDContainsFold(*i.SubjectIDContainsFold))
+	}
+	if i.UserID != nil {
+		predicates = append(predicates, comment.UserIDEQ(*i.UserID))
+	}
+	if i.UserIDNEQ != nil {
+		predicates = append(predicates, comment.UserIDNEQ(*i.UserIDNEQ))
+	}
+	if len(i.UserIDIn) > 0 {
+		predicates = append(predicates, comment.UserIDIn(i.UserIDIn...))
+	}
+	if len(i.UserIDNotIn) > 0 {
+		predicates = append(predicates, comment.UserIDNotIn(i.UserIDNotIn...))
+	}
+	if i.UserIDGT != nil {
+		predicates = append(predicates, comment.UserIDGT(*i.UserIDGT))
+	}
+	if i.UserIDGTE != nil {
+		predicates = append(predicates, comment.UserIDGTE(*i.UserIDGTE))
+	}
+	if i.UserIDLT != nil {
+		predicates = append(predicates, comment.UserIDLT(*i.UserIDLT))
+	}
+	if i.UserIDLTE != nil {
+		predicates = append(predicates, comment.UserIDLTE(*i.UserIDLTE))
+	}
+	if i.UserIDContains != nil {
+		predicates = append(predicates, comment.UserIDContains(*i.UserIDContains))
+	}
+	if i.UserIDHasPrefix != nil {
+		predicates = append(predicates, comment.UserIDHasPrefix(*i.UserIDHasPrefix))
+	}
+	if i.UserIDHasSuffix != nil {
+		predicates = append(predicates, comment.UserIDHasSuffix(*i.UserIDHasSuffix))
+	}
+	if i.UserIDEqualFold != nil {
+		predicates = append(predicates, comment.UserIDEqualFold(*i.UserIDEqualFold))
+	}
+	if i.UserIDContainsFold != nil {
+		predicates = append(predicates, comment.UserIDContainsFold(*i.UserIDContainsFold))
+	}
+	if i.Language != nil {
+		predicates = append(predicates, comment.LanguageEQ(*i.Language))
+	}
+	if i.LanguageNEQ != nil {
+		predicates = append(predicates, comment.LanguageNEQ(*i.LanguageNEQ))
+	}
+	if len(i.LanguageIn) > 0 {
+		predicates = append(predicates, comment.LanguageIn(i.LanguageIn...))
+	}
+	if len(i.LanguageNotIn) > 0 {
+		predicates = append(predicates, comment.LanguageNotIn(i.LanguageNotIn...))
+	}
+	if i.LanguageGT != nil {
+		predicates = append(predicates, comment.LanguageGT(*i.LanguageGT))
+	}
+	if i.LanguageGTE != nil {
+		predicates = append(predicates, comment.LanguageGTE(*i.LanguageGTE))
+	}
+	if i.LanguageLT != nil {
+		predicates = append(predicates, comment.LanguageLT(*i.LanguageLT))
+	}
+	if i.LanguageLTE != nil {
+		predicates = append(predicates, comment.LanguageLTE(*i.LanguageLTE))
+	}
+	if i.LanguageContains != nil {
+		predicates = append(predicates, comment.LanguageContains(*i.LanguageContains))
+	}
+	if i.LanguageHasPrefix != nil {
+		predicates = append(predicates, comment.LanguageHasPrefix(*i.LanguageHasPrefix))
+	}
+	if i.LanguageHasSuffix != nil {
+		predicates = append(predicates, comment.LanguageHasSuffix(*i.LanguageHasSuffix))
+	}
+	if i.LanguageIsNil {
+		predicates = append(predicates, comment.LanguageIsNil())
+	}
+	if i.LanguageNotNil {
+		predicates = append(predicates, comment.LanguageNotNil())
+	}
+	if i.LanguageEqualFold != nil {
+		predicates = append(predicates, comment.LanguageEqualFold(*i.LanguageEqualFold))
+	}
+	if i.LanguageContainsFold != nil {
+		predicates = append(predicates, comment.LanguageContainsFold(*i.LanguageContainsFold))
+	}
+	if i.ContentSanitized != nil {
+		predicates = append(predicates, comment.ContentSanitizedEQ(*i.ContentSanitized))
+	}
+	if i.ContentSanitizedNEQ != nil {
+		predicates = append(predicates, comment.ContentSanitizedNEQ(*i.ContentSanitizedNEQ))
+	}
+	if len(i.ContentSanitizedIn) > 0 {
+		predicates = append(predicates, comment.ContentSanitizedIn(i.ContentSanitizedIn...))
+	}
+	if len(i.ContentSanitizedNotIn) > 0 {
+		predicates = append(predicates, comment.ContentSanitizedNotIn(i.ContentSanitizedNotIn...))
+	}
+	if i.ContentSanitizedGT != nil {
+		predicates = append(predicates, comment.ContentSanitizedGT(*i.ContentSanitizedGT))
+	}
+	if i.ContentSanitizedGTE != nil {
+		predicates = append(predicates, comment.ContentSanitizedGTE(*i.ContentSanitizedGTE))
+	}
+	if i.ContentSanitizedLT != nil {
+		predicates = append(predicates, comment.ContentSanitizedLT(*i.ContentSanitizedLT))
+	}
+	if i.ContentSanitizedLTE != nil {
+		predicates = append(predicates, comment.ContentSanitizedLTE(*i.ContentSanitizedLTE))
+	}
+	if i.ContentSanitizedContains != nil {
+		predicates = append(predicates, comment.ContentSanitizedContains(*i.ContentSanitizedContains))
+	}
+	if i.ContentSanitizedHasPrefix != nil {
+		predicates = append(predicates, comment.ContentSanitizedHasPrefix(*i.ContentSanitizedHasPrefix))
+	}
+	if i.ContentSanitizedHasSuffix != nil {
+		predicates = append(predicates, comment.ContentSanitizedHasSuffix(*i.ContentSanitizedHasSuffix))
+	}
+	if i.ContentSanitizedEqualFold != nil {
+		predicates = append(predicates, comment.ContentSanitizedEqualFold(*i.ContentSanitizedEqualFold))
+	}
+	if i.ContentSanitizedContainsFold != nil {
+		predicates = append(predicates, comment.ContentSanitizedContainsFold(*i.ContentSanitizedContainsFold))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, comment.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, comment.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, comment.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, comment.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, comment.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, comment.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, comment.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, comment.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.EditedAt != nil {
+		predicates = append(predicates, comment.EditedAtEQ(*i.EditedAt))
+	}
+	if i.EditedAtNEQ != nil {
+		predicates = append(predicates, comment.EditedAtNEQ(*i.EditedAtNEQ))
+	}
+	if len(i.EditedAtIn) > 0 {
+		predicates = append(predicates, comment.EditedAtIn(i.EditedAtIn...))
+	}
+	if len(i.EditedAtNotIn) > 0 {
+		predicates = append(predicates, comment.EditedAtNotIn(i.EditedAtNotIn...))
+	}
+	if i.EditedAtGT != nil {
+		predicates = append(predicates, comment.EditedAtGT(*i.EditedAtGT))
+	}
+	if i.EditedAtGTE != nil {
+		predicates = append(predicates, comment.EditedAtGTE(*i.EditedAtGTE))
+	}
+	if i.EditedAtLT != nil {
+		predicates = append(predicates, comment.EditedAtLT(*i.EditedAtLT))
+	}
+	if i.EditedAtLTE != nil {
+		predicates = append(predicates, comment.EditedAtLTE(*i.EditedAtLTE))
+	}
+	if i.EditedAtIsNil {
+		predicates = append(predicates, comment.EditedAtIsNil())
+	}
+	if i.EditedAtNotNil {
+		predicates = append(predicates, comment.EditedAtNotNil())
+	}
+	if i.DeletedAt != nil {
+		predicates = append(predicates, comment.DeletedAtEQ(*i.DeletedAt))
+	}
+	if i.DeletedAtNEQ != nil {
+		predicates = append(predicates, comment.DeletedAtNEQ(*i.DeletedAtNEQ))
+	}
+	if len(i.DeletedAtIn) > 0 {
+		predicates = append(predicates, comment.DeletedAtIn(i.DeletedAtIn...))
+	}
+	if len(i.DeletedAtNotIn) > 0 {
+		predicates = append(predicates, comment.DeletedAtNotIn(i.DeletedAtNotIn...))
+	}
+	if i.DeletedAtGT != nil {
+		predicates = append(predicates, comment.DeletedAtGT(*i.DeletedAtGT))
+	}
+	if i.DeletedAtGTE != nil {
+		predicates = append(predicates, comment.DeletedAtGTE(*i.DeletedAtGTE))
+	}
+	if i.DeletedAtLT != nil {
+		predicates = append(predicates, comment.DeletedAtLT(*i.DeletedAtLT))
+	}
+	if i.DeletedAtLTE != nil {
+		predicates = append(predicates, comment.DeletedAtLTE(*i.DeletedAtLTE))
+	}
+	if i.DeletedAtIsNil {
+		predicates = append(predicates, comment.DeletedAtIsNil())
+	}
+	if i.DeletedAtNotNil {
+		predicates = append(predicates, comment.DeletedAtNotNil())
+	}
+
+	if i.HasGame != nil {
+		p := comment.HasGame()
+		if !*i.HasGame {
+			p = comment.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasGameWith) > 0 {
+		with := make([]predicate.Game, 0, len(i.HasGameWith))
+		for _, w := range i.HasGameWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasGameWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, comment.HasGameWith(with...))
+	}
+	if i.HasFile != nil {
+		p := comment.HasFile()
+		if !*i.HasFile {
+			p = comment.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasFileWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasFileWith))
+		for _, w := range i.HasFileWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasFileWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, comment.HasFileWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyCommentWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return comment.And(predicates...), nil
+	}
+}
 
 // FileWhereInput represents a where input for filtering File queries.
 type FileWhereInput struct {
@@ -210,6 +787,18 @@ type FileWhereInput struct {
 	// "game" edge predicates.
 	HasGame     *bool             `json:"hasGame,omitempty"`
 	HasGameWith []*GameWhereInput `json:"hasGameWith,omitempty"`
+
+	// "group" edge predicates.
+	HasGroup     *bool                  `json:"hasGroup,omitempty"`
+	HasGroupWith []*FileGroupWhereInput `json:"hasGroupWith,omitempty"`
+
+	// "comments" edge predicates.
+	HasComments     *bool                `json:"hasComments,omitempty"`
+	HasCommentsWith []*CommentWhereInput `json:"hasCommentsWith,omitempty"`
+
+	// "reactions" edge predicates.
+	HasReactions     *bool                     `json:"hasReactions,omitempty"`
+	HasReactionsWith []*FileReactionWhereInput `json:"hasReactionsWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -773,6 +1362,60 @@ func (i *FileWhereInput) P() (predicate.File, error) {
 		}
 		predicates = append(predicates, file.HasGameWith(with...))
 	}
+	if i.HasGroup != nil {
+		p := file.HasGroup()
+		if !*i.HasGroup {
+			p = file.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasGroupWith) > 0 {
+		with := make([]predicate.FileGroup, 0, len(i.HasGroupWith))
+		for _, w := range i.HasGroupWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasGroupWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, file.HasGroupWith(with...))
+	}
+	if i.HasComments != nil {
+		p := file.HasComments()
+		if !*i.HasComments {
+			p = file.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasCommentsWith) > 0 {
+		with := make([]predicate.Comment, 0, len(i.HasCommentsWith))
+		for _, w := range i.HasCommentsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasCommentsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, file.HasCommentsWith(with...))
+	}
+	if i.HasReactions != nil {
+		p := file.HasReactions()
+		if !*i.HasReactions {
+			p = file.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasReactionsWith) > 0 {
+		with := make([]predicate.FileReaction, 0, len(i.HasReactionsWith))
+		for _, w := range i.HasReactionsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasReactionsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, file.HasReactionsWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyFileWhereInput
@@ -780,6 +1423,478 @@ func (i *FileWhereInput) P() (predicate.File, error) {
 		return predicates[0], nil
 	default:
 		return file.And(predicates...), nil
+	}
+}
+
+// FileGroupWhereInput represents a where input for filtering FileGroup queries.
+type FileGroupWhereInput struct {
+	Predicates []predicate.FileGroup  `json:"-"`
+	Not        *FileGroupWhereInput   `json:"not,omitempty"`
+	Or         []*FileGroupWhereInput `json:"or,omitempty"`
+	And        []*FileGroupWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
+
+	// "key" field predicates.
+	Key             *string  `json:"key,omitempty"`
+	KeyNEQ          *string  `json:"keyNEQ,omitempty"`
+	KeyIn           []string `json:"keyIn,omitempty"`
+	KeyNotIn        []string `json:"keyNotIn,omitempty"`
+	KeyGT           *string  `json:"keyGT,omitempty"`
+	KeyGTE          *string  `json:"keyGTE,omitempty"`
+	KeyLT           *string  `json:"keyLT,omitempty"`
+	KeyLTE          *string  `json:"keyLTE,omitempty"`
+	KeyContains     *string  `json:"keyContains,omitempty"`
+	KeyHasPrefix    *string  `json:"keyHasPrefix,omitempty"`
+	KeyHasSuffix    *string  `json:"keyHasSuffix,omitempty"`
+	KeyEqualFold    *string  `json:"keyEqualFold,omitempty"`
+	KeyContainsFold *string  `json:"keyContainsFold,omitempty"`
+
+	// "files" edge predicates.
+	HasFiles     *bool             `json:"hasFiles,omitempty"`
+	HasFilesWith []*FileWhereInput `json:"hasFilesWith,omitempty"`
+
+	// "game" edge predicates.
+	HasGame     *bool             `json:"hasGame,omitempty"`
+	HasGameWith []*GameWhereInput `json:"hasGameWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *FileGroupWhereInput) AddPredicates(predicates ...predicate.FileGroup) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the FileGroupWhereInput filter on the FileGroupQuery builder.
+func (i *FileGroupWhereInput) Filter(q *FileGroupQuery) (*FileGroupQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyFileGroupWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyFileGroupWhereInput is returned in case the FileGroupWhereInput is empty.
+var ErrEmptyFileGroupWhereInput = errors.New("ent: empty predicate FileGroupWhereInput")
+
+// P returns a predicate for filtering filegroups.
+// An error is returned if the input is empty or invalid.
+func (i *FileGroupWhereInput) P() (predicate.FileGroup, error) {
+	var predicates []predicate.FileGroup
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, filegroup.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.FileGroup, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, filegroup.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.FileGroup, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, filegroup.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, filegroup.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, filegroup.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, filegroup.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, filegroup.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, filegroup.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, filegroup.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, filegroup.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, filegroup.IDLTE(*i.IDLTE))
+	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, filegroup.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, filegroup.IDContainsFold(*i.IDContainsFold))
+	}
+	if i.Key != nil {
+		predicates = append(predicates, filegroup.KeyEQ(*i.Key))
+	}
+	if i.KeyNEQ != nil {
+		predicates = append(predicates, filegroup.KeyNEQ(*i.KeyNEQ))
+	}
+	if len(i.KeyIn) > 0 {
+		predicates = append(predicates, filegroup.KeyIn(i.KeyIn...))
+	}
+	if len(i.KeyNotIn) > 0 {
+		predicates = append(predicates, filegroup.KeyNotIn(i.KeyNotIn...))
+	}
+	if i.KeyGT != nil {
+		predicates = append(predicates, filegroup.KeyGT(*i.KeyGT))
+	}
+	if i.KeyGTE != nil {
+		predicates = append(predicates, filegroup.KeyGTE(*i.KeyGTE))
+	}
+	if i.KeyLT != nil {
+		predicates = append(predicates, filegroup.KeyLT(*i.KeyLT))
+	}
+	if i.KeyLTE != nil {
+		predicates = append(predicates, filegroup.KeyLTE(*i.KeyLTE))
+	}
+	if i.KeyContains != nil {
+		predicates = append(predicates, filegroup.KeyContains(*i.KeyContains))
+	}
+	if i.KeyHasPrefix != nil {
+		predicates = append(predicates, filegroup.KeyHasPrefix(*i.KeyHasPrefix))
+	}
+	if i.KeyHasSuffix != nil {
+		predicates = append(predicates, filegroup.KeyHasSuffix(*i.KeyHasSuffix))
+	}
+	if i.KeyEqualFold != nil {
+		predicates = append(predicates, filegroup.KeyEqualFold(*i.KeyEqualFold))
+	}
+	if i.KeyContainsFold != nil {
+		predicates = append(predicates, filegroup.KeyContainsFold(*i.KeyContainsFold))
+	}
+
+	if i.HasFiles != nil {
+		p := filegroup.HasFiles()
+		if !*i.HasFiles {
+			p = filegroup.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasFilesWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasFilesWith))
+		for _, w := range i.HasFilesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasFilesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, filegroup.HasFilesWith(with...))
+	}
+	if i.HasGame != nil {
+		p := filegroup.HasGame()
+		if !*i.HasGame {
+			p = filegroup.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasGameWith) > 0 {
+		with := make([]predicate.Game, 0, len(i.HasGameWith))
+		for _, w := range i.HasGameWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasGameWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, filegroup.HasGameWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyFileGroupWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return filegroup.And(predicates...), nil
+	}
+}
+
+// FileReactionWhereInput represents a where input for filtering FileReaction queries.
+type FileReactionWhereInput struct {
+	Predicates []predicate.FileReaction  `json:"-"`
+	Not        *FileReactionWhereInput   `json:"not,omitempty"`
+	Or         []*FileReactionWhereInput `json:"or,omitempty"`
+	And        []*FileReactionWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
+
+	// "user_id" field predicates.
+	UserID             *string  `json:"userID,omitempty"`
+	UserIDNEQ          *string  `json:"userIDNEQ,omitempty"`
+	UserIDIn           []string `json:"userIDIn,omitempty"`
+	UserIDNotIn        []string `json:"userIDNotIn,omitempty"`
+	UserIDGT           *string  `json:"userIDGT,omitempty"`
+	UserIDGTE          *string  `json:"userIDGTE,omitempty"`
+	UserIDLT           *string  `json:"userIDLT,omitempty"`
+	UserIDLTE          *string  `json:"userIDLTE,omitempty"`
+	UserIDContains     *string  `json:"userIDContains,omitempty"`
+	UserIDHasPrefix    *string  `json:"userIDHasPrefix,omitempty"`
+	UserIDHasSuffix    *string  `json:"userIDHasSuffix,omitempty"`
+	UserIDEqualFold    *string  `json:"userIDEqualFold,omitempty"`
+	UserIDContainsFold *string  `json:"userIDContainsFold,omitempty"`
+
+	// "value" field predicates.
+	Value      *int  `json:"value,omitempty"`
+	ValueNEQ   *int  `json:"valueNEQ,omitempty"`
+	ValueIn    []int `json:"valueIn,omitempty"`
+	ValueNotIn []int `json:"valueNotIn,omitempty"`
+	ValueGT    *int  `json:"valueGT,omitempty"`
+	ValueGTE   *int  `json:"valueGTE,omitempty"`
+	ValueLT    *int  `json:"valueLT,omitempty"`
+	ValueLTE   *int  `json:"valueLTE,omitempty"`
+
+	// "file" edge predicates.
+	HasFile     *bool             `json:"hasFile,omitempty"`
+	HasFileWith []*FileWhereInput `json:"hasFileWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *FileReactionWhereInput) AddPredicates(predicates ...predicate.FileReaction) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the FileReactionWhereInput filter on the FileReactionQuery builder.
+func (i *FileReactionWhereInput) Filter(q *FileReactionQuery) (*FileReactionQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyFileReactionWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyFileReactionWhereInput is returned in case the FileReactionWhereInput is empty.
+var ErrEmptyFileReactionWhereInput = errors.New("ent: empty predicate FileReactionWhereInput")
+
+// P returns a predicate for filtering filereactions.
+// An error is returned if the input is empty or invalid.
+func (i *FileReactionWhereInput) P() (predicate.FileReaction, error) {
+	var predicates []predicate.FileReaction
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, filereaction.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.FileReaction, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, filereaction.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.FileReaction, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, filereaction.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, filereaction.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, filereaction.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, filereaction.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, filereaction.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, filereaction.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, filereaction.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, filereaction.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, filereaction.IDLTE(*i.IDLTE))
+	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, filereaction.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, filereaction.IDContainsFold(*i.IDContainsFold))
+	}
+	if i.UserID != nil {
+		predicates = append(predicates, filereaction.UserIDEQ(*i.UserID))
+	}
+	if i.UserIDNEQ != nil {
+		predicates = append(predicates, filereaction.UserIDNEQ(*i.UserIDNEQ))
+	}
+	if len(i.UserIDIn) > 0 {
+		predicates = append(predicates, filereaction.UserIDIn(i.UserIDIn...))
+	}
+	if len(i.UserIDNotIn) > 0 {
+		predicates = append(predicates, filereaction.UserIDNotIn(i.UserIDNotIn...))
+	}
+	if i.UserIDGT != nil {
+		predicates = append(predicates, filereaction.UserIDGT(*i.UserIDGT))
+	}
+	if i.UserIDGTE != nil {
+		predicates = append(predicates, filereaction.UserIDGTE(*i.UserIDGTE))
+	}
+	if i.UserIDLT != nil {
+		predicates = append(predicates, filereaction.UserIDLT(*i.UserIDLT))
+	}
+	if i.UserIDLTE != nil {
+		predicates = append(predicates, filereaction.UserIDLTE(*i.UserIDLTE))
+	}
+	if i.UserIDContains != nil {
+		predicates = append(predicates, filereaction.UserIDContains(*i.UserIDContains))
+	}
+	if i.UserIDHasPrefix != nil {
+		predicates = append(predicates, filereaction.UserIDHasPrefix(*i.UserIDHasPrefix))
+	}
+	if i.UserIDHasSuffix != nil {
+		predicates = append(predicates, filereaction.UserIDHasSuffix(*i.UserIDHasSuffix))
+	}
+	if i.UserIDEqualFold != nil {
+		predicates = append(predicates, filereaction.UserIDEqualFold(*i.UserIDEqualFold))
+	}
+	if i.UserIDContainsFold != nil {
+		predicates = append(predicates, filereaction.UserIDContainsFold(*i.UserIDContainsFold))
+	}
+	if i.Value != nil {
+		predicates = append(predicates, filereaction.ValueEQ(*i.Value))
+	}
+	if i.ValueNEQ != nil {
+		predicates = append(predicates, filereaction.ValueNEQ(*i.ValueNEQ))
+	}
+	if len(i.ValueIn) > 0 {
+		predicates = append(predicates, filereaction.ValueIn(i.ValueIn...))
+	}
+	if len(i.ValueNotIn) > 0 {
+		predicates = append(predicates, filereaction.ValueNotIn(i.ValueNotIn...))
+	}
+	if i.ValueGT != nil {
+		predicates = append(predicates, filereaction.ValueGT(*i.ValueGT))
+	}
+	if i.ValueGTE != nil {
+		predicates = append(predicates, filereaction.ValueGTE(*i.ValueGTE))
+	}
+	if i.ValueLT != nil {
+		predicates = append(predicates, filereaction.ValueLT(*i.ValueLT))
+	}
+	if i.ValueLTE != nil {
+		predicates = append(predicates, filereaction.ValueLTE(*i.ValueLTE))
+	}
+
+	if i.HasFile != nil {
+		p := filereaction.HasFile()
+		if !*i.HasFile {
+			p = filereaction.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasFileWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasFileWith))
+		for _, w := range i.HasFileWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasFileWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, filereaction.HasFileWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyFileReactionWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return filereaction.And(predicates...), nil
 	}
 }
 
@@ -891,6 +2006,18 @@ type GameWhereInput struct {
 	// "images" edge predicates.
 	HasImages     *bool              `json:"hasImages,omitempty"`
 	HasImagesWith []*ImageWhereInput `json:"hasImagesWith,omitempty"`
+
+	// "comments" edge predicates.
+	HasComments     *bool                `json:"hasComments,omitempty"`
+	HasCommentsWith []*CommentWhereInput `json:"hasCommentsWith,omitempty"`
+
+	// "groups" edge predicates.
+	HasGroups     *bool                  `json:"hasGroups,omitempty"`
+	HasGroupsWith []*FileGroupWhereInput `json:"hasGroupsWith,omitempty"`
+
+	// "likes" edge predicates.
+	HasLikes     *bool                 `json:"hasLikes,omitempty"`
+	HasLikesWith []*GameLikeWhereInput `json:"hasLikesWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -1241,6 +2368,60 @@ func (i *GameWhereInput) P() (predicate.Game, error) {
 		}
 		predicates = append(predicates, game.HasImagesWith(with...))
 	}
+	if i.HasComments != nil {
+		p := game.HasComments()
+		if !*i.HasComments {
+			p = game.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasCommentsWith) > 0 {
+		with := make([]predicate.Comment, 0, len(i.HasCommentsWith))
+		for _, w := range i.HasCommentsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasCommentsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, game.HasCommentsWith(with...))
+	}
+	if i.HasGroups != nil {
+		p := game.HasGroups()
+		if !*i.HasGroups {
+			p = game.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasGroupsWith) > 0 {
+		with := make([]predicate.FileGroup, 0, len(i.HasGroupsWith))
+		for _, w := range i.HasGroupsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasGroupsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, game.HasGroupsWith(with...))
+	}
+	if i.HasLikes != nil {
+		p := game.HasLikes()
+		if !*i.HasLikes {
+			p = game.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasLikesWith) > 0 {
+		with := make([]predicate.GameLike, 0, len(i.HasLikesWith))
+		for _, w := range i.HasLikesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasLikesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, game.HasLikesWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyGameWhereInput
@@ -1248,6 +2429,214 @@ func (i *GameWhereInput) P() (predicate.Game, error) {
 		return predicates[0], nil
 	default:
 		return game.And(predicates...), nil
+	}
+}
+
+// GameLikeWhereInput represents a where input for filtering GameLike queries.
+type GameLikeWhereInput struct {
+	Predicates []predicate.GameLike  `json:"-"`
+	Not        *GameLikeWhereInput   `json:"not,omitempty"`
+	Or         []*GameLikeWhereInput `json:"or,omitempty"`
+	And        []*GameLikeWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
+
+	// "user_id" field predicates.
+	UserID             *string  `json:"userID,omitempty"`
+	UserIDNEQ          *string  `json:"userIDNEQ,omitempty"`
+	UserIDIn           []string `json:"userIDIn,omitempty"`
+	UserIDNotIn        []string `json:"userIDNotIn,omitempty"`
+	UserIDGT           *string  `json:"userIDGT,omitempty"`
+	UserIDGTE          *string  `json:"userIDGTE,omitempty"`
+	UserIDLT           *string  `json:"userIDLT,omitempty"`
+	UserIDLTE          *string  `json:"userIDLTE,omitempty"`
+	UserIDContains     *string  `json:"userIDContains,omitempty"`
+	UserIDHasPrefix    *string  `json:"userIDHasPrefix,omitempty"`
+	UserIDHasSuffix    *string  `json:"userIDHasSuffix,omitempty"`
+	UserIDEqualFold    *string  `json:"userIDEqualFold,omitempty"`
+	UserIDContainsFold *string  `json:"userIDContainsFold,omitempty"`
+
+	// "game" edge predicates.
+	HasGame     *bool             `json:"hasGame,omitempty"`
+	HasGameWith []*GameWhereInput `json:"hasGameWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *GameLikeWhereInput) AddPredicates(predicates ...predicate.GameLike) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the GameLikeWhereInput filter on the GameLikeQuery builder.
+func (i *GameLikeWhereInput) Filter(q *GameLikeQuery) (*GameLikeQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyGameLikeWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyGameLikeWhereInput is returned in case the GameLikeWhereInput is empty.
+var ErrEmptyGameLikeWhereInput = errors.New("ent: empty predicate GameLikeWhereInput")
+
+// P returns a predicate for filtering gamelikes.
+// An error is returned if the input is empty or invalid.
+func (i *GameLikeWhereInput) P() (predicate.GameLike, error) {
+	var predicates []predicate.GameLike
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, gamelike.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.GameLike, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, gamelike.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.GameLike, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, gamelike.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, gamelike.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, gamelike.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, gamelike.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, gamelike.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, gamelike.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, gamelike.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, gamelike.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, gamelike.IDLTE(*i.IDLTE))
+	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, gamelike.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, gamelike.IDContainsFold(*i.IDContainsFold))
+	}
+	if i.UserID != nil {
+		predicates = append(predicates, gamelike.UserIDEQ(*i.UserID))
+	}
+	if i.UserIDNEQ != nil {
+		predicates = append(predicates, gamelike.UserIDNEQ(*i.UserIDNEQ))
+	}
+	if len(i.UserIDIn) > 0 {
+		predicates = append(predicates, gamelike.UserIDIn(i.UserIDIn...))
+	}
+	if len(i.UserIDNotIn) > 0 {
+		predicates = append(predicates, gamelike.UserIDNotIn(i.UserIDNotIn...))
+	}
+	if i.UserIDGT != nil {
+		predicates = append(predicates, gamelike.UserIDGT(*i.UserIDGT))
+	}
+	if i.UserIDGTE != nil {
+		predicates = append(predicates, gamelike.UserIDGTE(*i.UserIDGTE))
+	}
+	if i.UserIDLT != nil {
+		predicates = append(predicates, gamelike.UserIDLT(*i.UserIDLT))
+	}
+	if i.UserIDLTE != nil {
+		predicates = append(predicates, gamelike.UserIDLTE(*i.UserIDLTE))
+	}
+	if i.UserIDContains != nil {
+		predicates = append(predicates, gamelike.UserIDContains(*i.UserIDContains))
+	}
+	if i.UserIDHasPrefix != nil {
+		predicates = append(predicates, gamelike.UserIDHasPrefix(*i.UserIDHasPrefix))
+	}
+	if i.UserIDHasSuffix != nil {
+		predicates = append(predicates, gamelike.UserIDHasSuffix(*i.UserIDHasSuffix))
+	}
+	if i.UserIDEqualFold != nil {
+		predicates = append(predicates, gamelike.UserIDEqualFold(*i.UserIDEqualFold))
+	}
+	if i.UserIDContainsFold != nil {
+		predicates = append(predicates, gamelike.UserIDContainsFold(*i.UserIDContainsFold))
+	}
+
+	if i.HasGame != nil {
+		p := gamelike.HasGame()
+		if !*i.HasGame {
+			p = gamelike.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasGameWith) > 0 {
+		with := make([]predicate.Game, 0, len(i.HasGameWith))
+		for _, w := range i.HasGameWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasGameWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, gamelike.HasGameWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyGameLikeWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return gamelike.And(predicates...), nil
 	}
 }
 

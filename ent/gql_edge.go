@@ -8,10 +8,110 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
+func (_m *Comment) Game(ctx context.Context) (*Game, error) {
+	result, err := _m.Edges.GameOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryGame().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *Comment) File(ctx context.Context) (*File, error) {
+	result, err := _m.Edges.FileOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryFile().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *File) Game(ctx context.Context) (*Game, error) {
 	result, err := _m.Edges.GameOrErr()
 	if IsNotLoaded(err) {
 		result, err = _m.QueryGame().Only(ctx)
+	}
+	return result, err
+}
+
+func (_m *File) Group(ctx context.Context) (*FileGroup, error) {
+	result, err := _m.Edges.GroupOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryGroup().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *File) Comments(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *CommentWhereInput,
+) (*CommentConnection, error) {
+	opts := []CommentPaginateOption{
+		WithCommentFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := _m.Edges.totalCount[2][alias]
+	if nodes, err := _m.NamedComments(alias); err == nil || hasTotalCount {
+		pager, err := newCommentPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &CommentConnection{Edges: []*CommentEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return _m.QueryComments().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (_m *File) Reactions(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *FileReactionWhereInput,
+) (*FileReactionConnection, error) {
+	opts := []FileReactionPaginateOption{
+		WithFileReactionFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := _m.Edges.totalCount[3][alias]
+	if nodes, err := _m.NamedReactions(alias); err == nil || hasTotalCount {
+		pager, err := newFileReactionPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &FileReactionConnection{Edges: []*FileReactionEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return _m.QueryReactions().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (_m *FileGroup) Files(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *FileWhereInput,
+) (*FileConnection, error) {
+	opts := []FilePaginateOption{
+		WithFileFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := _m.Edges.totalCount[0][alias]
+	if nodes, err := _m.NamedFiles(alias); err == nil || hasTotalCount {
+		pager, err := newFilePager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &FileConnection{Edges: []*FileEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return _m.QueryFiles().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (_m *FileGroup) Game(ctx context.Context) (*Game, error) {
+	result, err := _m.Edges.GameOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryGame().Only(ctx)
+	}
+	return result, err
+}
+
+func (_m *FileReaction) File(ctx context.Context) (*File, error) {
+	result, err := _m.Edges.FileOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryFile().Only(ctx)
 	}
 	return result, err
 }
@@ -54,6 +154,74 @@ func (_m *Game) Images(
 		return conn, nil
 	}
 	return _m.QueryImages().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (_m *Game) Comments(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *CommentWhereInput,
+) (*CommentConnection, error) {
+	opts := []CommentPaginateOption{
+		WithCommentFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := _m.Edges.totalCount[2][alias]
+	if nodes, err := _m.NamedComments(alias); err == nil || hasTotalCount {
+		pager, err := newCommentPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &CommentConnection{Edges: []*CommentEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return _m.QueryComments().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (_m *Game) Groups(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *FileGroupWhereInput,
+) (*FileGroupConnection, error) {
+	opts := []FileGroupPaginateOption{
+		WithFileGroupFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := _m.Edges.totalCount[3][alias]
+	if nodes, err := _m.NamedGroups(alias); err == nil || hasTotalCount {
+		pager, err := newFileGroupPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &FileGroupConnection{Edges: []*FileGroupEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return _m.QueryGroups().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (_m *Game) Likes(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *GameLikeWhereInput,
+) (*GameLikeConnection, error) {
+	opts := []GameLikePaginateOption{
+		WithGameLikeFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := _m.Edges.totalCount[4][alias]
+	if nodes, err := _m.NamedLikes(alias); err == nil || hasTotalCount {
+		pager, err := newGameLikePager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &GameLikeConnection{Edges: []*GameLikeEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return _m.QueryLikes().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (_m *GameLike) Game(ctx context.Context) (*Game, error) {
+	result, err := _m.Edges.GameOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryGame().Only(ctx)
+	}
+	return result, err
 }
 
 func (_m *Image) Game(ctx context.Context) (*Game, error) {

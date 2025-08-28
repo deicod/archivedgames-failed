@@ -12,8 +12,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/deicod/archivedgames/ent/comment"
 	"github.com/deicod/archivedgames/ent/file"
+	"github.com/deicod/archivedgames/ent/filegroup"
 	"github.com/deicod/archivedgames/ent/game"
+	"github.com/deicod/archivedgames/ent/gamelike"
 	"github.com/deicod/archivedgames/ent/image"
 	"github.com/deicod/archivedgames/ent/predicate"
 )
@@ -21,16 +24,22 @@ import (
 // GameQuery is the builder for querying Game entities.
 type GameQuery struct {
 	config
-	ctx             *QueryContext
-	order           []game.OrderOption
-	inters          []Interceptor
-	predicates      []predicate.Game
-	withFiles       *FileQuery
-	withImages      *ImageQuery
-	modifiers       []func(*sql.Selector)
-	loadTotal       []func(context.Context, []*Game) error
-	withNamedFiles  map[string]*FileQuery
-	withNamedImages map[string]*ImageQuery
+	ctx               *QueryContext
+	order             []game.OrderOption
+	inters            []Interceptor
+	predicates        []predicate.Game
+	withFiles         *FileQuery
+	withImages        *ImageQuery
+	withComments      *CommentQuery
+	withGroups        *FileGroupQuery
+	withLikes         *GameLikeQuery
+	modifiers         []func(*sql.Selector)
+	loadTotal         []func(context.Context, []*Game) error
+	withNamedFiles    map[string]*FileQuery
+	withNamedImages   map[string]*ImageQuery
+	withNamedComments map[string]*CommentQuery
+	withNamedGroups   map[string]*FileGroupQuery
+	withNamedLikes    map[string]*GameLikeQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -104,6 +113,72 @@ func (_q *GameQuery) QueryImages() *ImageQuery {
 			sqlgraph.From(game.Table, game.FieldID, selector),
 			sqlgraph.To(image.Table, image.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, game.ImagesTable, game.ImagesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryComments chains the current query on the "comments" edge.
+func (_q *GameQuery) QueryComments() *CommentQuery {
+	query := (&CommentClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(game.Table, game.FieldID, selector),
+			sqlgraph.To(comment.Table, comment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, game.CommentsTable, game.CommentsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryGroups chains the current query on the "groups" edge.
+func (_q *GameQuery) QueryGroups() *FileGroupQuery {
+	query := (&FileGroupClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(game.Table, game.FieldID, selector),
+			sqlgraph.To(filegroup.Table, filegroup.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, game.GroupsTable, game.GroupsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryLikes chains the current query on the "likes" edge.
+func (_q *GameQuery) QueryLikes() *GameLikeQuery {
+	query := (&GameLikeClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(game.Table, game.FieldID, selector),
+			sqlgraph.To(gamelike.Table, gamelike.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, game.LikesTable, game.LikesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -298,13 +373,16 @@ func (_q *GameQuery) Clone() *GameQuery {
 		return nil
 	}
 	return &GameQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]game.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.Game{}, _q.predicates...),
-		withFiles:  _q.withFiles.Clone(),
-		withImages: _q.withImages.Clone(),
+		config:       _q.config,
+		ctx:          _q.ctx.Clone(),
+		order:        append([]game.OrderOption{}, _q.order...),
+		inters:       append([]Interceptor{}, _q.inters...),
+		predicates:   append([]predicate.Game{}, _q.predicates...),
+		withFiles:    _q.withFiles.Clone(),
+		withImages:   _q.withImages.Clone(),
+		withComments: _q.withComments.Clone(),
+		withGroups:   _q.withGroups.Clone(),
+		withLikes:    _q.withLikes.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -330,6 +408,39 @@ func (_q *GameQuery) WithImages(opts ...func(*ImageQuery)) *GameQuery {
 		opt(query)
 	}
 	_q.withImages = query
+	return _q
+}
+
+// WithComments tells the query-builder to eager-load the nodes that are connected to
+// the "comments" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *GameQuery) WithComments(opts ...func(*CommentQuery)) *GameQuery {
+	query := (&CommentClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withComments = query
+	return _q
+}
+
+// WithGroups tells the query-builder to eager-load the nodes that are connected to
+// the "groups" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *GameQuery) WithGroups(opts ...func(*FileGroupQuery)) *GameQuery {
+	query := (&FileGroupClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withGroups = query
+	return _q
+}
+
+// WithLikes tells the query-builder to eager-load the nodes that are connected to
+// the "likes" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *GameQuery) WithLikes(opts ...func(*GameLikeQuery)) *GameQuery {
+	query := (&GameLikeClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withLikes = query
 	return _q
 }
 
@@ -411,9 +522,12 @@ func (_q *GameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Game, e
 	var (
 		nodes       = []*Game{}
 		_spec       = _q.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [5]bool{
 			_q.withFiles != nil,
 			_q.withImages != nil,
+			_q.withComments != nil,
+			_q.withGroups != nil,
+			_q.withLikes != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -451,6 +565,27 @@ func (_q *GameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Game, e
 			return nil, err
 		}
 	}
+	if query := _q.withComments; query != nil {
+		if err := _q.loadComments(ctx, query, nodes,
+			func(n *Game) { n.Edges.Comments = []*Comment{} },
+			func(n *Game, e *Comment) { n.Edges.Comments = append(n.Edges.Comments, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withGroups; query != nil {
+		if err := _q.loadGroups(ctx, query, nodes,
+			func(n *Game) { n.Edges.Groups = []*FileGroup{} },
+			func(n *Game, e *FileGroup) { n.Edges.Groups = append(n.Edges.Groups, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withLikes; query != nil {
+		if err := _q.loadLikes(ctx, query, nodes,
+			func(n *Game) { n.Edges.Likes = []*GameLike{} },
+			func(n *Game, e *GameLike) { n.Edges.Likes = append(n.Edges.Likes, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for name, query := range _q.withNamedFiles {
 		if err := _q.loadFiles(ctx, query, nodes,
 			func(n *Game) { n.appendNamedFiles(name) },
@@ -462,6 +597,27 @@ func (_q *GameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Game, e
 		if err := _q.loadImages(ctx, query, nodes,
 			func(n *Game) { n.appendNamedImages(name) },
 			func(n *Game, e *Image) { n.appendNamedImages(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedComments {
+		if err := _q.loadComments(ctx, query, nodes,
+			func(n *Game) { n.appendNamedComments(name) },
+			func(n *Game, e *Comment) { n.appendNamedComments(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedGroups {
+		if err := _q.loadGroups(ctx, query, nodes,
+			func(n *Game) { n.appendNamedGroups(name) },
+			func(n *Game, e *FileGroup) { n.appendNamedGroups(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedLikes {
+		if err := _q.loadLikes(ctx, query, nodes,
+			func(n *Game) { n.appendNamedLikes(name) },
+			func(n *Game, e *GameLike) { n.appendNamedLikes(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -530,6 +686,99 @@ func (_q *GameQuery) loadImages(ctx context.Context, query *ImageQuery, nodes []
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "game_images" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *GameQuery) loadComments(ctx context.Context, query *CommentQuery, nodes []*Game, init func(*Game), assign func(*Game, *Comment)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*Game)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Comment(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(game.CommentsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.game_comments
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "game_comments" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "game_comments" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *GameQuery) loadGroups(ctx context.Context, query *FileGroupQuery, nodes []*Game, init func(*Game), assign func(*Game, *FileGroup)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*Game)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.FileGroup(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(game.GroupsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.game_groups
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "game_groups" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "game_groups" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *GameQuery) loadLikes(ctx context.Context, query *GameLikeQuery, nodes []*Game, init func(*Game), assign func(*Game, *GameLike)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*Game)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.GameLike(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(game.LikesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.game_like_game
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "game_like_game" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "game_like_game" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -645,6 +894,48 @@ func (_q *GameQuery) WithNamedImages(name string, opts ...func(*ImageQuery)) *Ga
 		_q.withNamedImages = make(map[string]*ImageQuery)
 	}
 	_q.withNamedImages[name] = query
+	return _q
+}
+
+// WithNamedComments tells the query-builder to eager-load the nodes that are connected to the "comments"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *GameQuery) WithNamedComments(name string, opts ...func(*CommentQuery)) *GameQuery {
+	query := (&CommentClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedComments == nil {
+		_q.withNamedComments = make(map[string]*CommentQuery)
+	}
+	_q.withNamedComments[name] = query
+	return _q
+}
+
+// WithNamedGroups tells the query-builder to eager-load the nodes that are connected to the "groups"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *GameQuery) WithNamedGroups(name string, opts ...func(*FileGroupQuery)) *GameQuery {
+	query := (&FileGroupClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedGroups == nil {
+		_q.withNamedGroups = make(map[string]*FileGroupQuery)
+	}
+	_q.withNamedGroups[name] = query
+	return _q
+}
+
+// WithNamedLikes tells the query-builder to eager-load the nodes that are connected to the "likes"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *GameQuery) WithNamedLikes(name string, opts ...func(*GameLikeQuery)) *GameQuery {
+	query := (&GameLikeClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedLikes == nil {
+		_q.withNamedLikes = make(map[string]*GameLikeQuery)
+	}
+	_q.withNamedLikes[name] = query
 	return _q
 }
 
