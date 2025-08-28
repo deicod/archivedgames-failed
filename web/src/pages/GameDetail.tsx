@@ -4,6 +4,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import ImageUploader from '../components/ImageUploader';
 import Seo from '../components/Seo';
 import { useAuth } from 'react-oidc-context';
+import { useMutation, graphql as relayGraphql } from 'react-relay';
 import ReportDialog from '../components/ReportDialog';
 
 const Query = graphql`
@@ -14,9 +15,16 @@ const Query = graphql`
           id slug title year publisher platform
           images(first: 4) { edges { node { id s3Key width height kind } } }
           files(first: 50) { edges { node { id originalName sizeBytes format } } }
+          comments(first: 50) { edges { node { id userID contentSanitized createdAt editedAt deletedAt } } }
         }
       }
     }
+  }
+`;
+
+const AddCommentMutation = relayGraphql`
+  mutation GameDetail_AddComment_Mutation($t: String!, $id: String!, $content: String!, $lang: String) {
+    addComment(subjectType: $t, subjectId: $id, content: $content, language: $lang) { id }
   }
 `;
 
@@ -69,6 +77,17 @@ export default function GameDetail(){
   const files = node.files.edges?.map((e: any) => e.node) || [];
   const [reportOpen, setReportOpen] = React.useState(false);
   const [reportId, setReportId] = React.useState<string | null>(null);
+  const comments = (node.comments?.edges || []).map((e:any)=> e.node);
+  const [commentText, setCommentText] = React.useState('');
+  const [commitAddComment, isAdding] = useMutation(AddCommentMutation as any);
+  const onAddComment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!commentText.trim()) return;
+    commitAddComment({
+      variables: { t: 'game', id: node.id, content: commentText, lang: 'en' },
+      onCompleted: () => { setCommentText(''); window.location.reload(); },
+    });
+  };
   const origin = (typeof window !== 'undefined') ? window.location.origin : '';
   const canonical = `/game/${node.slug}`;
   const platform = (node.platform || '').toString();
@@ -135,6 +154,28 @@ export default function GameDetail(){
             <ImageUploader gameId={node.id} kind="COVER" allowMultiple={false} />
             <ImageUploader gameId={node.id} kind="GALLERY" allowMultiple={true} />
           </div> : null}
+
+        <div className="mt-6 space-y-3">
+          <h2 className="text-lg font-semibold">Comments</h2>
+          <div className="space-y-2 max-h-64 overflow-auto pr-1">
+            {comments.length === 0 && <div className="text-sm text-white/60">No comments yet.</div>}
+            {comments.map((c:any)=> (
+              <div key={c.id} className="text-sm border-b border-white/10 pb-2">
+                <div className="text-white/80" dangerouslySetInnerHTML={{ __html: c.contentSanitized }} />
+                <div className="text-xs text-white/50 mt-1">by {c.userId} • {new Date(c.createdAt).toLocaleString()}</div>
+              </div>
+            ))}
+          </div>
+          {auth?.isAuthenticated ? (
+            <form onSubmit={onAddComment} className="space-y-2">
+              <textarea value={commentText} onChange={e=>setCommentText(e.target.value)} rows={3} placeholder="Add a comment"
+                className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-sm" />
+              <button type="submit" disabled={isAdding || !commentText.trim()} className="px-3 py-1 rounded bg-white/10 hover:bg-white/20 disabled:opacity-50">Post comment</button>
+            </form>
+          ) : (
+            <div className="text-sm text-white/60">Login to comment.</div>
+          )}
+        </div>
       </aside>
     </div>
     <ReportDialog open={reportOpen} onClose={()=>setReportOpen(false)} subjectType="file" subjectId={reportId} />

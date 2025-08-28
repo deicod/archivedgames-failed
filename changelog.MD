@@ -103,6 +103,14 @@ Entry template:
   - FE: `/search` page with query + platform filter; paginated results (basic)
   - Tracks: #58
 
+
+- 2025-08-28: Comments — schema, CRUD, rate limits, UI
+  - Ent: add `Comment` with sanitized content; edges to Game/File
+  - GraphQL: `addComment`, `editComment`, `deleteComment` (auth; author/admin restrictions)
+  - Rate limits: per-minute caps via in-memory limiter keyed by user/IP
+  - FE: GameDetail shows comments and add form for authenticated users
+  - Tracks: #24, #25
+
 - 2025-08-28: Backlog — shadcn/ui follow-ups
   - Add shadcn/ui components and refactor views (#53)
   - Theme toggle and tokens (Tailwind v4) (#54)

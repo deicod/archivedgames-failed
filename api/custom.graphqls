@@ -50,4 +50,7 @@ extend type Mutation {
   deleteImage(imageId: String!): Boolean!
   setReportStatus(reportId: String!, status: ReportStatus!, note: String): Report!
   setReportStatusBulk(reportIds: [String!]!, status: ReportStatus!, note: String): [Report!]!
+  addComment(subjectType: String!, subjectId: String!, content: String!, language: String): Comment!
+  editComment(id: String!, content: String!): Comment!
+  deleteComment(id: String!): Boolean!
 }

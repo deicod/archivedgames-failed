@@ -27,6 +27,7 @@ import (
 	"github.com/deicod/archivedgames/internal/imageproc"
 	reqctx "github.com/deicod/archivedgames/internal/request"
 	"github.com/deicod/archivedgames/internal/s3client"
+	"github.com/deicod/archivedgames/internal/sanitize"
 )
 
 // CreateImageUploads is the resolver for the createImageUploads field.
@@ -242,6 +243,89 @@ func (r *mutationResolver) SetReportStatusBulk(ctx context.Context, reportIds []
 		out = append(out, rep)
 	}
 	return out, nil
+}
+
+// AddComment is the resolver for the addComment field.
+func (r *mutationResolver) AddComment(ctx context.Context, subjectType string, subjectID string, content string, language *string) (*ent.Comment, error) {
+	uid, err := auth.RequireUser(ctx)
+	if err != nil {
+		return nil, err
+	}
+	sanitized := sanitize.HTML(content)
+	c := r.Client.Comment.Create().
+		SetSubjectType(subjectType).
+		SetSubjectID(subjectID).
+		SetUserID(uid).
+		SetContentSanitized(sanitized)
+	if language != nil && *language != "" {
+		c = c.SetLanguage(*language)
+	}
+	switch strings.ToLower(subjectType) {
+	case "game":
+		if _, err := r.Client.Game.Get(ctx, subjectID); err == nil {
+			c = c.SetGameID(subjectID)
+		}
+	case "file":
+		if _, err := r.Client.File.Get(ctx, subjectID); err == nil {
+			c = c.SetFileID(subjectID)
+		}
+	}
+	return c.Save(ctx)
+}
+
+// EditComment is the resolver for the editComment field.
+func (r *mutationResolver) EditComment(ctx context.Context, id string, content string) (*ent.Comment, error) {
+	uid, err := auth.RequireUser(ctx)
+	if err != nil {
+		return nil, err
+	}
+	cm, err := r.Client.Comment.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	isAdmin := false
+	for _, ro := range auth.Roles(ctx) {
+		if ro == "admin" {
+			isAdmin = true
+			break
+		}
+	}
+	if !isAdmin && cm.UserID != uid {
+		return nil, errors.New("forbidden")
+	}
+	sanitized := sanitize.HTML(content)
+	now := time.Now()
+	if err := r.Client.Comment.UpdateOneID(id).SetContentSanitized(sanitized).SetEditedAt(now).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return r.Client.Comment.Get(ctx, id)
+}
+
+// DeleteComment is the resolver for the deleteComment field.
+func (r *mutationResolver) DeleteComment(ctx context.Context, id string) (bool, error) {
+	uid, err := auth.RequireUser(ctx)
+	if err != nil {
+		return false, err
+	}
+	cm, err := r.Client.Comment.Get(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	isAdmin := false
+	for _, ro := range auth.Roles(ctx) {
+		if ro == "admin" {
+			isAdmin = true
+			break
+		}
+	}
+	if !isAdmin && cm.UserID != uid {
+		return false, errors.New("forbidden")
+	}
+	now := time.Now()
+	if err := r.Client.Comment.UpdateOneID(id).SetDeletedAt(now).SetContentSanitized("").Exec(ctx); err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // GetDownloadURL is the resolver for the getDownloadURL field.

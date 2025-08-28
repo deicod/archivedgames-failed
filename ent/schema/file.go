@@ -43,5 +43,6 @@ func (File) Edges() []ent.Edge {
     return []ent.Edge{
         edge.From("game", Game.Type).Ref("files").Unique().Required(),
         edge.From("group", FileGroup.Type).Ref("files").Unique(),
+        edge.To("comments", Comment.Type).Annotations(entgql.RelayConnection()),
     }
 }
