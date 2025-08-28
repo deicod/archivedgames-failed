@@ -89,20 +89,20 @@ type CommentWhereInput struct {
 	LanguageNotNil       *bool    `json:"languageNotNil,omitempty"`
 	LanguageEqualFold    *string  `json:"languageEqualFold,omitempty"`
 	LanguageContainsFold *string  `json:"languageContainsFold,omitempty"`
-	// content_sanitized field predicates
-	ContentSanitized             *string  `json:"contentSanitized,omitempty"`
-	ContentSanitizedNeq          *string  `json:"contentSanitizedNEQ,omitempty"`
-	ContentSanitizedIn           []string `json:"contentSanitizedIn,omitempty"`
-	ContentSanitizedNotIn        []string `json:"contentSanitizedNotIn,omitempty"`
-	ContentSanitizedGt           *string  `json:"contentSanitizedGT,omitempty"`
-	ContentSanitizedGte          *string  `json:"contentSanitizedGTE,omitempty"`
-	ContentSanitizedLt           *string  `json:"contentSanitizedLT,omitempty"`
-	ContentSanitizedLte          *string  `json:"contentSanitizedLTE,omitempty"`
-	ContentSanitizedContains     *string  `json:"contentSanitizedContains,omitempty"`
-	ContentSanitizedHasPrefix    *string  `json:"contentSanitizedHasPrefix,omitempty"`
-	ContentSanitizedHasSuffix    *string  `json:"contentSanitizedHasSuffix,omitempty"`
-	ContentSanitizedEqualFold    *string  `json:"contentSanitizedEqualFold,omitempty"`
-	ContentSanitizedContainsFold *string  `json:"contentSanitizedContainsFold,omitempty"`
+	// content field predicates
+	Content             *string  `json:"content,omitempty"`
+	ContentNeq          *string  `json:"contentNEQ,omitempty"`
+	ContentIn           []string `json:"contentIn,omitempty"`
+	ContentNotIn        []string `json:"contentNotIn,omitempty"`
+	ContentGt           *string  `json:"contentGT,omitempty"`
+	ContentGte          *string  `json:"contentGTE,omitempty"`
+	ContentLt           *string  `json:"contentLT,omitempty"`
+	ContentLte          *string  `json:"contentLTE,omitempty"`
+	ContentContains     *string  `json:"contentContains,omitempty"`
+	ContentHasPrefix    *string  `json:"contentHasPrefix,omitempty"`
+	ContentHasSuffix    *string  `json:"contentHasSuffix,omitempty"`
+	ContentEqualFold    *string  `json:"contentEqualFold,omitempty"`
+	ContentContainsFold *string  `json:"contentContainsFold,omitempty"`
 	// created_at field predicates
 	CreatedAt      *time.Time   `json:"createdAt,omitempty"`
 	CreatedAtNeq   *time.Time   `json:"createdAtNEQ,omitempty"`

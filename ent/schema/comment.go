@@ -27,7 +27,7 @@ func (Comment) Fields() []ent.Field {
     field.String("subject_id"),
     field.String("user_id"),
     field.String("language").Optional(),
-    field.String("content_sanitized"),
+    field.String("content"),
     field.Time("created_at").Default(time.Now).Immutable(),
     field.Time("edited_at").Optional().Nillable(),
     field.Time("deleted_at").Optional().Nillable(),

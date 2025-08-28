@@ -22,8 +22,8 @@ const (
 	FieldUserID = "user_id"
 	// FieldLanguage holds the string denoting the language field in the database.
 	FieldLanguage = "language"
-	// FieldContentSanitized holds the string denoting the content_sanitized field in the database.
-	FieldContentSanitized = "content_sanitized"
+	// FieldContent holds the string denoting the content field in the database.
+	FieldContent = "content"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldEditedAt holds the string denoting the edited_at field in the database.
@@ -59,7 +59,7 @@ var Columns = []string{
 	FieldSubjectID,
 	FieldUserID,
 	FieldLanguage,
-	FieldContentSanitized,
+	FieldContent,
 	FieldCreatedAt,
 	FieldEditedAt,
 	FieldDeletedAt,
@@ -122,9 +122,9 @@ func ByLanguage(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLanguage, opts...).ToFunc()
 }
 
-// ByContentSanitized orders the results by the content_sanitized field.
-func ByContentSanitized(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldContentSanitized, opts...).ToFunc()
+// ByContent orders the results by the content field.
+func ByContent(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldContent, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

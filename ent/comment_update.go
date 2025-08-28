@@ -92,16 +92,16 @@ func (_u *CommentUpdate) ClearLanguage() *CommentUpdate {
 	return _u
 }
 
-// SetContentSanitized sets the "content_sanitized" field.
-func (_u *CommentUpdate) SetContentSanitized(v string) *CommentUpdate {
-	_u.mutation.SetContentSanitized(v)
+// SetContent sets the "content" field.
+func (_u *CommentUpdate) SetContent(v string) *CommentUpdate {
+	_u.mutation.SetContent(v)
 	return _u
 }
 
-// SetNillableContentSanitized sets the "content_sanitized" field if the given value is not nil.
-func (_u *CommentUpdate) SetNillableContentSanitized(v *string) *CommentUpdate {
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (_u *CommentUpdate) SetNillableContent(v *string) *CommentUpdate {
 	if v != nil {
-		_u.SetContentSanitized(*v)
+		_u.SetContent(*v)
 	}
 	return _u
 }
@@ -252,8 +252,8 @@ func (_u *CommentUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.LanguageCleared() {
 		_spec.ClearField(comment.FieldLanguage, field.TypeString)
 	}
-	if value, ok := _u.mutation.ContentSanitized(); ok {
-		_spec.SetField(comment.FieldContentSanitized, field.TypeString, value)
+	if value, ok := _u.mutation.Content(); ok {
+		_spec.SetField(comment.FieldContent, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.EditedAt(); ok {
 		_spec.SetField(comment.FieldEditedAt, field.TypeTime, value)
@@ -407,16 +407,16 @@ func (_u *CommentUpdateOne) ClearLanguage() *CommentUpdateOne {
 	return _u
 }
 
-// SetContentSanitized sets the "content_sanitized" field.
-func (_u *CommentUpdateOne) SetContentSanitized(v string) *CommentUpdateOne {
-	_u.mutation.SetContentSanitized(v)
+// SetContent sets the "content" field.
+func (_u *CommentUpdateOne) SetContent(v string) *CommentUpdateOne {
+	_u.mutation.SetContent(v)
 	return _u
 }
 
-// SetNillableContentSanitized sets the "content_sanitized" field if the given value is not nil.
-func (_u *CommentUpdateOne) SetNillableContentSanitized(v *string) *CommentUpdateOne {
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (_u *CommentUpdateOne) SetNillableContent(v *string) *CommentUpdateOne {
 	if v != nil {
-		_u.SetContentSanitized(*v)
+		_u.SetContent(*v)
 	}
 	return _u
 }
@@ -597,8 +597,8 @@ func (_u *CommentUpdateOne) sqlSave(ctx context.Context) (_node *Comment, err er
 	if _u.mutation.LanguageCleared() {
 		_spec.ClearField(comment.FieldLanguage, field.TypeString)
 	}
-	if value, ok := _u.mutation.ContentSanitized(); ok {
-		_spec.SetField(comment.FieldContentSanitized, field.TypeString, value)
+	if value, ok := _u.mutation.Content(); ok {
+		_spec.SetField(comment.FieldContent, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.EditedAt(); ok {
 		_spec.SetField(comment.FieldEditedAt, field.TypeTime, value)

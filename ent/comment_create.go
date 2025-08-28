@@ -54,9 +54,9 @@ func (_c *CommentCreate) SetNillableLanguage(v *string) *CommentCreate {
 	return _c
 }
 
-// SetContentSanitized sets the "content_sanitized" field.
-func (_c *CommentCreate) SetContentSanitized(v string) *CommentCreate {
-	_c.mutation.SetContentSanitized(v)
+// SetContent sets the "content" field.
+func (_c *CommentCreate) SetContent(v string) *CommentCreate {
+	_c.mutation.SetContent(v)
 	return _c
 }
 
@@ -210,8 +210,8 @@ func (_c *CommentCreate) check() error {
 	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Comment.user_id"`)}
 	}
-	if _, ok := _c.mutation.ContentSanitized(); !ok {
-		return &ValidationError{Name: "content_sanitized", err: errors.New(`ent: missing required field "Comment.content_sanitized"`)}
+	if _, ok := _c.mutation.Content(); !ok {
+		return &ValidationError{Name: "content", err: errors.New(`ent: missing required field "Comment.content"`)}
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Comment.created_at"`)}
@@ -267,9 +267,9 @@ func (_c *CommentCreate) createSpec() (*Comment, *sqlgraph.CreateSpec) {
 		_spec.SetField(comment.FieldLanguage, field.TypeString, value)
 		_node.Language = value
 	}
-	if value, ok := _c.mutation.ContentSanitized(); ok {
-		_spec.SetField(comment.FieldContentSanitized, field.TypeString, value)
-		_node.ContentSanitized = value
+	if value, ok := _c.mutation.Content(); ok {
+		_spec.SetField(comment.FieldContent, field.TypeString, value)
+		_node.Content = value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(comment.FieldCreatedAt, field.TypeTime, value)

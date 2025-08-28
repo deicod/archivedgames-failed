@@ -17,7 +17,7 @@ const Query = graphql`
           viewerDidLike
           images(first: 4) { edges { node { id s3Key width height kind } } }
           files(first: 50) { edges { node { id originalName sizeBytes format reactionSummary { up down viewer } } } }
-          comments(first: 50) { edges { node { id userID contentSanitized createdAt editedAt deletedAt } } }
+          comments(first: 50) { edges { node { id userID content createdAt editedAt deletedAt } } }
         }
       }
     }
@@ -196,7 +196,7 @@ export default function GameDetail(){
             {comments.length === 0 && <div className="text-sm text-white/60">No comments yet.</div>}
             {comments.map((c:any)=> (
               <div key={c.id} className="text-sm border-b border-white/10 pb-2">
-                <div className="text-white/80" dangerouslySetInnerHTML={{ __html: c.contentSanitized }} />
+                <div className="text-white/80" dangerouslySetInnerHTML={{ __html: c.content }} />
                 <div className="text-xs text-white/50 mt-1">by {c.userId} • {new Date(c.createdAt).toLocaleString()}</div>
               </div>
             ))}

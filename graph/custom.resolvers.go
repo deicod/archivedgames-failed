@@ -282,7 +282,7 @@ func (r *mutationResolver) AddComment(ctx context.Context, subjectType string, s
 		SetSubjectType(subjectType).
 		SetSubjectID(subjectID).
 		SetUserID(uid).
-		SetContentSanitized(sanitized)
+		SetContent(sanitized)
 	if language != nil && *language != "" {
 		c = c.SetLanguage(*language)
 	}
@@ -321,7 +321,7 @@ func (r *mutationResolver) EditComment(ctx context.Context, id string, content s
 	}
 	sanitized := sanitize.HTML(content)
 	now := time.Now()
-	if err := r.Client.Comment.UpdateOneID(id).SetContentSanitized(sanitized).SetEditedAt(now).Exec(ctx); err != nil {
+	if err := r.Client.Comment.UpdateOneID(id).SetContent(sanitized).SetEditedAt(now).Exec(ctx); err != nil {
 		return nil, err
 	}
 	return r.Client.Comment.Get(ctx, id)
@@ -348,7 +348,7 @@ func (r *mutationResolver) DeleteComment(ctx context.Context, id string) (bool, 
 		return false, errors.New("forbidden")
 	}
 	now := time.Now()
-	if err := r.Client.Comment.UpdateOneID(id).SetDeletedAt(now).SetContentSanitized("").Exec(ctx); err != nil {
+	if err := r.Client.Comment.UpdateOneID(id).SetDeletedAt(now).SetContent("").Exec(ctx); err != nil {
 		return false, err
 	}
 	return true, nil

@@ -85,10 +85,10 @@ func (_q *CommentQuery) collectField(ctx context.Context, oneNode bool, opCtx *g
 				selectedFields = append(selectedFields, comment.FieldLanguage)
 				fieldSeen[comment.FieldLanguage] = struct{}{}
 			}
-		case "contentSanitized":
-			if _, ok := fieldSeen[comment.FieldContentSanitized]; !ok {
-				selectedFields = append(selectedFields, comment.FieldContentSanitized)
-				fieldSeen[comment.FieldContentSanitized] = struct{}{}
+		case "content":
+			if _, ok := fieldSeen[comment.FieldContent]; !ok {
+				selectedFields = append(selectedFields, comment.FieldContent)
+				fieldSeen[comment.FieldContent] = struct{}{}
 			}
 		case "createdAt":
 			if _, ok := fieldSeen[comment.FieldCreatedAt]; !ok {
