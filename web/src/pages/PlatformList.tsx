@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Seo from '../components/Seo';
+import { Button } from '@/components/ui/button';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 const Query = graphql`
@@ -31,7 +32,7 @@ export default function PlatformList(){
         ))}
       </ul>
       {conn.pageInfo.hasNextPage && (
-        <button onClick={loadMore} className="mt-4 px-3 py-1 rounded bg-white/10 hover:bg-white/20">Load more</button>
+        <Button onClick={loadMore} className="mt-4">Load more</Button>
       )}
     </div>
   );

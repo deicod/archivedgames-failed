@@ -62,6 +62,13 @@ Entry template:
   - Frontend now requests `?w=512` for cover and gallery images
   - Tracks: #46
 
+- 2025-08-28: Frontend — adopt shadcn/ui (base)
+  - Add shadcn/ui scaffolding: `components.json`, `cn` util, `Button` component
+  - Add deps: `class-variance-authority`, `clsx`, `tailwind-merge`, `@radix-ui/react-slot`, `lucide-react`
+  - Tailwind v4: add `tailwindcss-animate` plugin via `@plugin`; base theme tokens in CSS
+  - Vite: alias `@` → `src`; replace some buttons (Login/Logout/Support/Load more) with `<Button>`
+  - Tracks: #52
+
 - 2025-08-28: Planning — NEXT.md linked to GitHub issues
   - Annotate `docs/NEXT.md` with direct links to open issues for each next step
   - Create tracking issues for missing items: #44 (FileGroup model), #45 (Platform validation & DOS zips), #46 (Image thumbnails), #47 (Publisher/year in body), #48 (Observability metrics/logging)
