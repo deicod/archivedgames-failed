@@ -93,7 +93,7 @@ Entry template:
   - Tracks: #56
 
 - 2025-08-28: Frontend — React Router v7
-  - Upgrade `react-router-dom` to v7; keep `BrowserRouter` + `Routes`/`Route` usage
+  - Upgrade to v7 and migrate imports from `react-router-dom` → `react-router` (DOM-specific deep import not needed for our usage)
   - Build verified; no code changes required beyond version bump
   - Tracks: #57
 

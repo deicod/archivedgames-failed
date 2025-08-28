@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate } from 'react-router';
 import Home from './pages/Home';
 import PlatformList from './pages/PlatformList';
 import GameDetail from './pages/GameDetail';

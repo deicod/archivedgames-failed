@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import ImageUploader from '../components/ImageUploader';
 import Seo from '../components/Seo';
