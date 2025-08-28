@@ -9,24 +9,26 @@ This document captures current status and the prioritized next steps so we can p
 
 ## Prioritized Next Steps
 1) Ingestion polish (C1–C4)
-- Confidence scoring: mark `needs_review` for ambiguous titles; add simple rules/guidance.
-- Optional: persist a stronger grouping model (FileGroup) and link Files.
-- Platform‑specific format validation; better DOS zip content handling (future).
+- Confidence scoring: mark `needs_review` for ambiguous titles; add simple rules/guidance. (baseline shipped)
+- Optional: persist a stronger grouping model (FileGroup) and link Files. [#44](https://github.com/deicod/archivedgames/issues/44)
+- Platform‑specific format validation; better DOS zip content handling (future). [#45](https://github.com/deicod/archivedgames/issues/45)
 
 2) Images & UX
-- Thumbnails/derived sizes (would need a background job or on‑the‑fly scaler; optional for MVP).
-- Add “Set cover” control on current cover slot (if not cover), small UI polish.
+- Thumbnails/derived sizes (would need a background job or on‑the‑fly scaler; optional for MVP). [#46](https://github.com/deicod/archivedgames/issues/46)
+- Add “Set cover” control on current cover slot (if not cover), small UI polish. Tracked under [#40](https://github.com/deicod/archivedgames/issues/40)
 
 3) Moderation (I2)
-- AdminReports paging polish (total counts), bulk actions.
-- Optional: Role gating in UI based on ID token claims (UI already hides link unless admin).
+- AdminReports paging polish (total counts), bulk actions. [#35](https://github.com/deicod/archivedgames/issues/35)
+- Report submission polish and flows. [#34](https://github.com/deicod/archivedgames/issues/34)
+- Frontend route + role‑gated access. [#43](https://github.com/deicod/archivedgames/issues/43)
 
 4) SEO/Meta
+- Canonical URLs + JSON‑LD on game pages. [#36](https://github.com/deicod/archivedgames/issues/36)
 - Optional: nicer OG platform images (replace solid color placeholders with branded assets).
-- Add publisher/year to game page body, not just meta.
+- Add publisher/year to game page body, not just meta. [#47](https://github.com/deicod/archivedgames/issues/47)
 
 5) Observability
-- Structured logs + request IDs; basic metrics (resolver timings, ingest throughput).
+- Structured logs + request IDs; basic metrics (resolver timings, ingest throughput). [#48](https://github.com/deicod/archivedgames/issues/48)
 
 ## How To Run
 - Server (dev):
@@ -59,3 +61,4 @@ go run ./cmd/ingest --root ./games --dry-run
 - Changelog: `changelog.MD` (reverse‑chronological)
 - V1 Plan: `docs/ArchivedGames_V1_MVP_Plan_v0_2.md`
 - Data Model: `docs/Data_Model_and_API_ent_first.md`
+ - Tracking Issue: [#20 — Next Steps (post v0.1)](https://github.com/deicod/archivedgames/issues/20)

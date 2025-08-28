@@ -9,6 +9,18 @@ Entry template:
 ---
 
 
+- 2025-08-28: Ingestion polish — platform allowlist + disk/side labels
+  - Validate file extensions per platform (C64/Amiga/DOS) and flag `needs_review` when mismatched
+  - Inspect DOS `.zip` contents and auto-clear `needs_review` when `.exe`/`.com` present; keep `rar/7z` flagged for review
+  - Parse and persist `disk_number` and `side` from filenames; append label to `normalized_name`
+  - Keep grouping via `set_key` (platform+slug); `FileGroup` model tracked in #44 for a follow-up
+  - Tracks: #45, #44
+
+- 2025-08-28: Planning — NEXT.md linked to GitHub issues
+  - Annotate `docs/NEXT.md` with direct links to open issues for each next step
+  - Create tracking issues for missing items: #44 (FileGroup model), #45 (Platform validation & DOS zips), #46 (Image thumbnails), #47 (Publisher/year in body), #48 (Observability metrics/logging)
+  - Sync tracking issue #20 body to mirror updated `docs/NEXT.md`
+
 - 2025-08-28: Relay global IDs + frontend queries
   - Switch all entities to string `id` primary keys using rs/xid; remove separate `xid` fields
   - Update Node/Nodes resolvers and pagination to use `Cursor[string]`; align gqlgen mappings
