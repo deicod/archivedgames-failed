@@ -43,6 +43,13 @@ Entry template:
   - Build verified (Relay + Vite)
   - Tracks: #36
 
+- 2025-08-28: Auth — react-oidc-context + oidc-client-ts
+  - Configure `AuthProvider` with `onSigninCallback` to clean `code/state` from URL
+  - Add `silent_redirect_uri` and `/oidc-silent` route that runs `signinSilentCallback()`
+  - Use LocalStorage `WebStorageStateStore`; keep PKCE flow and token sync for API
+  - Add explicit `oidc-client-ts` dependency
+  - Tracks: #50
+
 - 2025-08-28: Planning — NEXT.md linked to GitHub issues
   - Annotate `docs/NEXT.md` with direct links to open issues for each next step
   - Create tracking issues for missing items: #44 (FileGroup model), #45 (Platform validation & DOS zips), #46 (Image thumbnails), #47 (Publisher/year in body), #48 (Observability metrics/logging)

@@ -7,6 +7,7 @@ import { useAuth } from 'react-oidc-context';
 import SupportButton from './components/SupportButton';
 import { isAdminFromToken } from './utils/jwt';
 import AdminReports from './pages/AdminReports';
+import OidcSilent from './pages/OidcSilent';
 
 const Header: React.FC = () => {
   const auth = useAuth();
@@ -48,6 +49,7 @@ const App: React.FC = () => {
         <Route path="/platform/:platform" element={<PlatformList />} />
         <Route path="/game/:slug" element={<GameDetail />} />
         <Route path="/admin/reports" element={<AdminReports />} />
+        <Route path="/oidc-silent" element={<OidcSilent />} />
       </Routes>
     </main>
     <footer className="border-t border-white/10 py-6 text-center text-xs text-white/60">© ArchivedGames</footer>
