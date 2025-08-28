@@ -87,6 +87,11 @@ Entry template:
   - Switch server logs to slog JSON and add timings for key operations (download URL, opensearch, prerender)
   - Tracks: #48
 
+- 2025-08-28: Frontend — separate layouts (public vs admin)
+  - PublicLayout for user-facing pages; AdminLayout for moderation/administration
+  - Updated routing to render pages inside appropriate layout wrappers
+  - Tracks: #56
+
 - 2025-08-28: Backlog — shadcn/ui follow-ups
   - Add shadcn/ui components and refactor views (#53)
   - Theme toggle and tokens (Tailwind v4) (#54)
