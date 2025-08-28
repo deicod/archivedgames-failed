@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7449866851097a9cbbd9c9874a56dc55>>
+ * @generated SignedSource<<a63371f80699ccdd90477ec574f69fa3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
+export type GamePlatform = "AMIGA" | "C64" | "DOS" | "%future added value";
 export type ImageKind = "COVER" | "GALLERY" | "%future added value";
 export type GameDetail_Query$variables = {
   slug: string;
@@ -39,8 +40,11 @@ export type GameDetail_Query$data = {
             } | null | undefined;
           } | null | undefined> | null | undefined;
         };
+        readonly platform: GamePlatform;
+        readonly publisher: string | null | undefined;
         readonly slug: string;
         readonly title: string;
+        readonly year: number | null | undefined;
       } | null | undefined;
     } | null | undefined> | null | undefined;
   };
@@ -120,6 +124,27 @@ v2 = [
                 "args": null,
                 "kind": "ScalarField",
                 "name": "title",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "year",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "publisher",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "platform",
                 "storageKey": null
               },
               {
@@ -279,16 +304,16 @@ return {
     "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "aaef63553d8cab65d2a4d2bc8f5fa828",
+    "cacheID": "b4bf8444b285cbbaf50119b20866b7d0",
     "id": null,
     "metadata": {},
     "name": "GameDetail_Query",
     "operationKind": "query",
-    "text": "query GameDetail_Query(\n  $slug: String!\n) {\n  games(first: 1, where: {slug: $slug}) {\n    edges {\n      node {\n        id\n        slug\n        title\n        images(first: 4) {\n          edges {\n            node {\n              id\n              s3Key\n              width\n              height\n              kind\n            }\n          }\n        }\n        files(first: 50) {\n          edges {\n            node {\n              id\n              originalName\n              sizeBytes\n              format\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query GameDetail_Query(\n  $slug: String!\n) {\n  games(first: 1, where: {slug: $slug}) {\n    edges {\n      node {\n        id\n        slug\n        title\n        year\n        publisher\n        platform\n        images(first: 4) {\n          edges {\n            node {\n              id\n              s3Key\n              width\n              height\n              kind\n            }\n          }\n        }\n        files(first: 50) {\n          edges {\n            node {\n              id\n              originalName\n              sizeBytes\n              format\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "9f0be86774d76b524dd94c51f112b224";
+(node as any).hash = "50b459f6c19fc68ebc8f0a11364cca5b";
 
 export default node;

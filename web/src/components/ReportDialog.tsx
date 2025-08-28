@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 
 type Props = {
   open: boolean;
@@ -56,8 +55,8 @@ export default function ReportDialog({ open, subjectType, subjectId, onClose }: 
           {error && <div className="text-red-400 text-sm">{error}</div>}
         </div>
         <div className="mt-4 flex justify-end gap-2">
-          <Button variant="ghost" onClick={() => !busy && onClose()}>Cancel</Button>
-          <Button onClick={submit} disabled={busy || !subjectId}>{busy ? 'Sending…' : 'Submit report'}</Button>
+          <button className="px-3 py-2 rounded bg-white/10 hover:bg-white/20" onClick={() => !busy && onClose()}>Cancel</button>
+          <button onClick={submit} disabled={busy || !subjectId}>{busy ? 'Sending…' : 'Submit report'}</button>
         </div>
       </div>
     </div>

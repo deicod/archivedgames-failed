@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { useAuth } from 'react-oidc-context';
-import { Button } from '@/components/ui/button';
 
 const AdminHeader: React.FC = () => {
   const auth = useAuth();
@@ -15,7 +14,7 @@ const AdminHeader: React.FC = () => {
         </nav>
         <div className="flex-1" />
         {auth.isAuthenticated ? (
-          <Button onClick={() => auth.signoutRedirect()}>Logout</Button>
+          <button onClick={() => auth.signoutRedirect()}>Logout</button>
         ) : null}
       </div>
     </header>

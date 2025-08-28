@@ -2,7 +2,6 @@
 @source "./index.html";
 @source "./src/**/*.{ts,tsx}";
 
-@plugin "tailwindcss-animate";
 
 @layer base {
   :root {

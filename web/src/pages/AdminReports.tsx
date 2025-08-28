@@ -1,7 +1,6 @@
 import React from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useAuth } from 'react-oidc-context';
-import { Button } from '@/components/ui/button';
 
 const Query = graphql`
   query AdminReports_Query($first: Int!, $offset: Int!, $subjectType: String) {
@@ -77,9 +76,9 @@ export default function AdminReports(){
         <div className="flex-1" />
         <label className="text-sm">Admin note:</label>
         <input value={adminNote} onChange={e=>setAdminNote(e.target.value)} placeholder="optional" className="bg-white/5 px-2 py-1 rounded text-sm w-64" />
-        <Button variant="ghost" onClick={()=>bulkStatus('TRIAGED')}>Mark Triaged</Button>
-        <Button variant="ghost" onClick={()=>bulkStatus('REJECTED')}>Reject</Button>
-        <Button variant="destructive" onClick={bulkQuarantine}>Quarantine files</Button>
+        <button className="px-2 py-1 rounded bg-white/10 hover:bg-white/20" onClick={()=>bulkStatus('TRIAGED')}>Mark Triaged</button>
+        <button className="px-2 py-1 rounded bg-white/10 hover:bg-white/20" onClick={()=>bulkStatus('REJECTED')}>Reject</button>
+        <button className="px-2 py-1 rounded bg-red-500/20 hover:bg-red-500/30" onClick={bulkQuarantine}>Quarantine files</button>
       </div>
       <div className="text-sm text-white/60">{total ? `Showing ${start}–${end} of ${total}` : 'No reports'}</div>
       <table className="w-full text-sm mt-2">
@@ -93,17 +92,17 @@ export default function AdminReports(){
               <td>{r.reason}</td>
               <td className="text-white/60">{r.note||''}</td>
               <td className="space-x-2">
-                {r.subjectType==='file' ? <Button variant="destructive" onClick={()=>quarantine(r.subjectID)}>Quarantine</Button> : null}
-                <Button variant="ghost" onClick={()=>setStatus(r.id,'TRIAGED')}>Triaged</Button>
-                <Button variant="ghost" onClick={()=>setStatus(r.id,'REJECTED')}>Reject</Button>
+                {r.subjectType==='file' ? <button className="px-2 py-1 rounded bg-red-500/20 hover:bg-red-500/30" onClick={()=>quarantine(r.subjectID)}>Quarantine</button> : null}
+                <button className="px-2 py-1 rounded bg-white/10 hover:bg-white/20" onClick={()=>setStatus(r.id,'TRIAGED')}>Triaged</button>
+                <button className="px-2 py-1 rounded bg-white/10 hover:bg-white/20" onClick={()=>setStatus(r.id,'REJECTED')}>Reject</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
       <div className="flex gap-2 mt-3">
-        <Button onClick={()=> setOffset(Math.max(0, offset-pageSize))} disabled={!hasPrev}>Prev</Button>
-        <Button onClick={()=> setOffset(offset+pageSize)} disabled={!hasNext}>Next</Button>
+        <button onClick={()=> setOffset(Math.max(0, offset-pageSize))} disabled={!hasPrev}>Prev</button>
+        <button onClick={()=> setOffset(offset+pageSize)} disabled={!hasNext}>Next</button>
       </div>
     </div>
   );

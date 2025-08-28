@@ -3,6 +3,14 @@
 # JSON passthrough for SiteSetting.value
 scalar RawMessage
 
+enum SearchSort {
+  RELEVANCE
+  TITLE_ASC
+  TITLE_DESC
+  YEAR_ASC
+  YEAR_DESC
+}
+
 extend type Query {
   getDownloadURL(fileId: String!, ttlSeconds: Int = 120): String!
   opensearchSuggestions(q: String!, platform: GamePlatform): [String!]!
@@ -15,6 +23,7 @@ extend type Query {
     yearFrom: Int
     yearTo: Int
     format: String
+    sort: SearchSort = TITLE_ASC
     first: Int = 20
     after: Cursor
   ): GameConnection!

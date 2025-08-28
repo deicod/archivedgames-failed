@@ -285,7 +285,10 @@ func (r *queryResolver) OpensearchSuggestions(ctx context.Context, q string, pla
 		return []string{}, nil
 	}
 	q = strings.TrimSpace(q)
-	qb := r.Client.Game.Query().Where(game.TitleContainsFold(q))
+	qb := r.Client.Game.Query()
+	qb = qb.Where(func(s *sql.Selector) {
+		s.Where(sql.ExprP("to_tsvector('simple', title) @@ plainto_tsquery('simple', ?)", q))
+	})
 	if platform != nil {
 		qb = qb.Where(game.PlatformEQ(*platform))
 	}
@@ -344,7 +347,7 @@ func (r *queryResolver) ReportsOpenTotal(ctx context.Context, subjectType *strin
 }
 
 // SearchGames is the resolver for the searchGames field.
-func (r *queryResolver) SearchGames(ctx context.Context, q string, platform *game.Platform, yearFrom *int, yearTo *int, format *string, first *int, after *entgql.Cursor[string]) (*ent.GameConnection, error) {
+func (r *queryResolver) SearchGames(ctx context.Context, q string, platform *game.Platform, yearFrom *int, yearTo *int, format *string, sort *model.SearchSort, first *int, after *entgql.Cursor[string]) (*ent.GameConnection, error) {
 	start := time.Now()
 	if q == "" {
 		return r.Client.Game.Query().Limit(0).Paginate(ctx, nil, first, nil, nil)
@@ -365,6 +368,10 @@ func (r *queryResolver) SearchGames(ctx context.Context, q string, platform *gam
 	if format != nil && *format != "" {
 		qb = qb.Where(game.HasFilesWith(file.FormatEQ(*format)))
 	}
+	// Order by rank desc, then title asc
+	qb = qb.Order(func(s *sql.Selector) {
+		s.OrderBy("title ASC")
+	})
 	var afterCur *entgql.Cursor[string]
 	if after != nil {
 		c := entgql.Cursor[string](*after)

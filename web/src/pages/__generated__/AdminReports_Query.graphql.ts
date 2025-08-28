@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ebb9ead1e7c7cedd622308cf9ae600b7>>
+ * @generated SignedSource<<7a999b11bb39dc5855bbc7ae62138b64>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,6 +24,7 @@ export type AdminReports_Query$data = {
     readonly subjectID: string;
     readonly subjectType: string;
   }>;
+  readonly reportsOpenTotal: number;
 };
 export type AdminReports_Query = {
   response: AdminReports_Query$data;
@@ -48,7 +49,12 @@ var v0 = [
     "name": "subjectType"
   }
 ],
-v1 = [
+v1 = {
+  "kind": "Variable",
+  "name": "subjectType",
+  "variableName": "subjectType"
+},
+v2 = [
   {
     "kind": "ClientExtension",
     "selections": [
@@ -65,11 +71,7 @@ v1 = [
             "name": "offset",
             "variableName": "offset"
           },
-          {
-            "kind": "Variable",
-            "name": "subjectType",
-            "variableName": "subjectType"
-          }
+          (v1/*: any*/)
         ],
         "concreteType": "Report",
         "kind": "LinkedField",
@@ -120,6 +122,15 @@ v1 = [
           }
         ],
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": [
+          (v1/*: any*/)
+        ],
+        "kind": "ScalarField",
+        "name": "reportsOpenTotal",
+        "storageKey": null
       }
     ]
   }
@@ -130,7 +141,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "AdminReports_Query",
-    "selections": (v1/*: any*/),
+    "selections": (v2/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -139,7 +150,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "AdminReports_Query",
-    "selections": (v1/*: any*/)
+    "selections": (v2/*: any*/)
   },
   "params": {
     "cacheID": "5f7ee2ed4a71cc6b9ad8a0efd7a90a01",
@@ -152,6 +163,6 @@ return {
 };
 })();
 
-(node as any).hash = "1d9a204421c7680c2eb2355912c4a964";
+(node as any).hash = "c9e316343cca1449f9792ccc83b7e6a5";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6dae469b020b43307b45d674d6c46acc>>
+ * @generated SignedSource<<4248011a84e484ce111f9c7b6e6c1a39>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,9 +11,13 @@
 import { ConcreteRequest } from 'relay-runtime';
 export type GamePlatform = "AMIGA" | "C64" | "DOS" | "%future added value";
 export type Search_Query$variables = {
+  after?: any | null | undefined;
   first?: number | null | undefined;
+  format?: string | null | undefined;
   platform?: GamePlatform | null | undefined;
   q: string;
+  yearFrom?: number | null | undefined;
+  yearTo?: number | null | undefined;
 };
 export type Search_Query$data = {
   readonly searchGames: {
@@ -41,19 +45,39 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "first"
+  "name": "after"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "platform"
+  "name": "first"
 },
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "format"
+},
+v3 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "platform"
+},
+v4 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "q"
 },
-v3 = [
+v5 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "yearFrom"
+},
+v6 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "yearTo"
+},
+v7 = [
   {
     "kind": "ClientExtension",
     "selections": [
@@ -62,8 +86,18 @@ v3 = [
         "args": [
           {
             "kind": "Variable",
+            "name": "after",
+            "variableName": "after"
+          },
+          {
+            "kind": "Variable",
             "name": "first",
             "variableName": "first"
+          },
+          {
+            "kind": "Variable",
+            "name": "format",
+            "variableName": "format"
           },
           {
             "kind": "Variable",
@@ -74,6 +108,16 @@ v3 = [
             "kind": "Variable",
             "name": "q",
             "variableName": "q"
+          },
+          {
+            "kind": "Variable",
+            "name": "yearFrom",
+            "variableName": "yearFrom"
+          },
+          {
+            "kind": "Variable",
+            "name": "yearTo",
+            "variableName": "yearTo"
           }
         ],
         "concreteType": "GameConnection",
@@ -174,25 +218,33 @@ return {
     "argumentDefinitions": [
       (v0/*: any*/),
       (v1/*: any*/),
-      (v2/*: any*/)
+      (v2/*: any*/),
+      (v3/*: any*/),
+      (v4/*: any*/),
+      (v5/*: any*/),
+      (v6/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
     "name": "Search_Query",
-    "selections": (v3/*: any*/),
+    "selections": (v7/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
+      (v4/*: any*/),
+      (v3/*: any*/),
+      (v5/*: any*/),
+      (v6/*: any*/),
       (v2/*: any*/),
       (v1/*: any*/),
       (v0/*: any*/)
     ],
     "kind": "Operation",
     "name": "Search_Query",
-    "selections": (v3/*: any*/)
+    "selections": (v7/*: any*/)
   },
   "params": {
     "cacheID": "84175312e30bee1537dd244f99f125a6",
@@ -205,6 +257,6 @@ return {
 };
 })();
 
-(node as any).hash = "7b03bb3fc7a6229a521052c39c1db360";
+(node as any).hash = "8dd33fb27c1e79821b16ca6b2d1241f9";
 
 export default node;
