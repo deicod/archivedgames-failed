@@ -14,8 +14,9 @@ import (
     "strconv"
 
 	"github.com/deicod/archivedgames/ent"
-	"github.com/deicod/archivedgames/ent/file"
-	"github.com/deicod/archivedgames/ent/game"
+    "github.com/deicod/archivedgames/ent/file"
+    "github.com/deicod/archivedgames/ent/filegroup"
+    "github.com/deicod/archivedgames/ent/game"
 )
 
 var (
@@ -231,7 +232,28 @@ func Scan(ctx context.Context, client *ent.Client, root string, opts *Options) e
 			}
 		}
 
-		// Compute checksum and size.
+        // After we ensure the game exists, find or create FileGroup by key (scoped to Game)
+        var fg *ent.FileGroup
+        if opts.DryRun {
+            fg = &ent.FileGroup{ID: "dry-" + groupKey, Key: groupKey}
+        } else {
+            fg, err = client.FileGroup.
+                Query().
+                Where(filegroup.KeyEQ(groupKey)).
+                Only(ctx)
+            if err != nil {
+                if ent.IsNotFound(err) {
+                    fg, err = client.FileGroup.Create().SetKey(groupKey).SetGame(g).Save(ctx)
+                    if err != nil {
+                        return err
+                    }
+                } else {
+                    return err
+                }
+            }
+        }
+
+        // Compute checksum and size.
 		f, err := os.Open(path)
 		if err != nil {
 			return err
@@ -295,7 +317,7 @@ func Scan(ctx context.Context, client *ent.Client, root string, opts *Options) e
             normalizedName = fmt.Sprintf("%s (Side %s)", title, sideLabel)
         }
         if opts.DryRun {
-            fmt.Printf("[DRY] add file: %s size=%d fmt=%s game=%s set=%s review=%v label=\"%s\"\n", rel, size, fmtStr, g.Slug, groupKey, needsReview, normalizedName)
+            fmt.Printf("[DRY] add file: %s size=%d fmt=%s game=%s group=%s review=%v label=\"%s\"\n", rel, size, fmtStr, g.Slug, fg.Key, needsReview, normalizedName)
             return nil
         }
         fc := client.File.Create().
@@ -308,7 +330,8 @@ func Scan(ctx context.Context, client *ent.Client, root string, opts *Options) e
             SetFormat(fmtStr).
             SetSource("local").
             SetNeedsReview(needsReview).
-            SetGame(g)
+            SetGame(g).
+            SetGroup(fg)
         if diskNumPtr != nil {
             fc = fc.SetDiskNumber(*diskNumPtr)
         }

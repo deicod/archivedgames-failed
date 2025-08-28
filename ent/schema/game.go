@@ -32,8 +32,9 @@ func (Game) Fields() []ent.Field {
 }
 
 func (Game) Edges() []ent.Edge {
-	return []ent.Edge{
-		edge.To("files", File.Type).Annotations(entgql.RelayConnection()),
-		edge.To("images", Image.Type).Annotations(entgql.RelayConnection()),
-	}
+    return []ent.Edge{
+        edge.To("files", File.Type).Annotations(entgql.RelayConnection()),
+        edge.To("images", Image.Type).Annotations(entgql.RelayConnection()),
+        edge.To("groups", FileGroup.Type).Annotations(entgql.RelayConnection()),
+    }
 }

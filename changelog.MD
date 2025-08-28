@@ -16,6 +16,13 @@ Entry template:
   - Keep grouping via `set_key` (platform+slug); `FileGroup` model tracked in #44 for a follow-up
   - Tracks: #45, #44
 
+- 2025-08-28: FileGroup model and linking
+  - Add `FileGroup` entity with unique `key` and edge to `Game`; expose Relay connection
+  - Link `File` to `FileGroup` via `group` edge; keep `set_key` for compatibility
+  - Update ingest to find/create `FileGroup` per `platform:slug` and assign on file create
+  - Update GraphQL config to map `FileGroup` types to ent models
+  - Tracks: #44
+
 - 2025-08-28: Planning — NEXT.md linked to GitHub issues
   - Annotate `docs/NEXT.md` with direct links to open issues for each next step
   - Create tracking issues for missing items: #44 (FileGroup model), #45 (Platform validation & DOS zips), #46 (Image thumbnails), #47 (Publisher/year in body), #48 (Observability metrics/logging)

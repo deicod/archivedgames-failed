@@ -40,7 +40,8 @@ func (File) Fields() []ent.Field {
 }
 
 func (File) Edges() []ent.Edge {
-	return []ent.Edge{
-		edge.From("game", Game.Type).Ref("files").Unique().Required(),
-	}
+    return []ent.Edge{
+        edge.From("game", Game.Type).Ref("files").Unique().Required(),
+        edge.From("group", FileGroup.Type).Ref("files").Unique(),
+    }
 }

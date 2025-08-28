@@ -31,6 +31,9 @@ models:
   Image:
     model:
       - github.com/deicod/archivedgames/ent.Image
+  FileGroup:
+    model:
+      - github.com/deicod/archivedgames/ent.FileGroup
   Report:
     model:
       - github.com/deicod/archivedgames/ent.Report
@@ -55,6 +58,12 @@ models:
   ImageEdge:
     model:
       - github.com/deicod/archivedgames/ent.ImageEdge
+  FileGroupConnection:
+    model:
+      - github.com/deicod/archivedgames/ent.FileGroupConnection
+  FileGroupEdge:
+    model:
+      - github.com/deicod/archivedgames/ent.FileGroupEdge
   GameConnection:
     model:
       - github.com/deicod/archivedgames/ent.GameConnection
